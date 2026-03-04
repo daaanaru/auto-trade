@@ -207,7 +207,6 @@ python3 optimize.py --strategy monthly --symbol 6758.T --walk-forward
 ## セットアップ
 
 ```bash
-cd 50_ラボ/auto-trade/
 pip install -r requirements.txt
 
 # 環境変数を設定
@@ -236,7 +235,7 @@ cp .env.example .env
 ```
 auto-trade/
 ├── README.md                      # これ
-├── CLAUDE.md                      # プロジェクト状況（AI用）
+├── CLAUDE.md                      # プロジェクト状況
 ├── EXPERIMENTS.md                 # 全検証結果の総合レポート
 ├── FX_TRADING_RESEARCH.md         # FX自動売買の調査結果
 ├── requirements.txt               # Pythonパッケージ
