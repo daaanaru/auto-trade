@@ -1,0 +1,908 @@
+{
+  "description": "日経225全構成銘柄（yfinance用 XXXX.T 形式）",
+  "updated": "2026-03-04",
+  "source": "Nikkei 225 Index Components (topforeignstocks.com)",
+  "count": 225,
+  "tickers": [
+    {
+      "code": "6857.T",
+      "name": "Advantest Corp"
+    },
+    {
+      "code": "8267.T",
+      "name": "Aeon Co., Ltd"
+    },
+    {
+      "code": "5201.T",
+      "name": "Agc Inc"
+    },
+    {
+      "code": "2802.T",
+      "name": "Ajinomoto Co., Inc"
+    },
+    {
+      "code": "6770.T",
+      "name": "Alps Alpine Co., Ltd"
+    },
+    {
+      "code": "6113.T",
+      "name": "Amada Co., Ltd"
+    },
+    {
+      "code": "9202.T",
+      "name": "Ana Holdings Inc"
+    },
+    {
+      "code": "8304.T",
+      "name": "Aozora Bank, Ltd"
+    },
+    {
+      "code": "2502.T",
+      "name": "Asahi Group Holdings, Ltd"
+    },
+    {
+      "code": "3407.T",
+      "name": "Asahi Kasei Corp"
+    },
+    {
+      "code": "4503.T",
+      "name": "Astellas Pharma Inc"
+    },
+    {
+      "code": "7832.T",
+      "name": "Bandai Namco Holdings Inc"
+    },
+    {
+      "code": "5108.T",
+      "name": "Bridgestone Corp"
+    },
+    {
+      "code": "7751.T",
+      "name": "Canon Inc"
+    },
+    {
+      "code": "6952.T",
+      "name": "Casio Computer Co., Ltd"
+    },
+    {
+      "code": "9022.T",
+      "name": "Central Japan Railway Co., Ltd"
+    },
+    {
+      "code": "9502.T",
+      "name": "Chubu Electric Power Co., Inc"
+    },
+    {
+      "code": "4519.T",
+      "name": "Chugai Pharmaceutical Co., Ltd"
+    },
+    {
+      "code": "7762.T",
+      "name": "Citizen Watch Co., Ltd"
+    },
+    {
+      "code": "1721.T",
+      "name": "Comsys Holdings Corp"
+    },
+    {
+      "code": "7186.T",
+      "name": "Concordia Financial Group, Ltd"
+    },
+    {
+      "code": "8253.T",
+      "name": "Credit Saison Co., Ltd"
+    },
+    {
+      "code": "4751.T",
+      "name": "Cyberagent, Inc"
+    },
+    {
+      "code": "7912.T",
+      "name": "Dai Nippon Printing Co., Ltd"
+    },
+    {
+      "code": "8750.T",
+      "name": "Dai-Ichi Life Holdings, Inc"
+    },
+    {
+      "code": "4568.T",
+      "name": "Daiichi Sankyo Co., Ltd"
+    },
+    {
+      "code": "6367.T",
+      "name": "Daikin Industries, Ltd"
+    },
+    {
+      "code": "1925.T",
+      "name": "Daiwa House Ind. Co., Ltd"
+    },
+    {
+      "code": "8601.T",
+      "name": "Daiwa Securities Group Inc"
+    },
+    {
+      "code": "2432.T",
+      "name": "Dena Co., Ltd"
+    },
+    {
+      "code": "4061.T",
+      "name": "Denka Co., Ltd"
+    },
+    {
+      "code": "6902.T",
+      "name": "Denso Corp"
+    },
+    {
+      "code": "4324.T",
+      "name": "Dentsu Group Inc"
+    },
+    {
+      "code": "4631.T",
+      "name": "Dic Corp"
+    },
+    {
+      "code": "5714.T",
+      "name": "Dowa Holdings Co., Ltd"
+    },
+    {
+      "code": "9020.T",
+      "name": "East Japan Railway Co"
+    },
+    {
+      "code": "6361.T",
+      "name": "Ebara Corp"
+    },
+    {
+      "code": "4523.T",
+      "name": "Eisai Co., Ltd"
+    },
+    {
+      "code": "5020.T",
+      "name": "Eneos Holdings, Inc"
+    },
+    {
+      "code": "6954.T",
+      "name": "Fanuc Corp"
+    },
+    {
+      "code": "9983.T",
+      "name": "Fast Retailing Co., Ltd"
+    },
+    {
+      "code": "6504.T",
+      "name": "Fuji Electric Co., Ltd"
+    },
+    {
+      "code": "4901.T",
+      "name": "Fujifilm Holdings Corp"
+    },
+    {
+      "code": "5803.T",
+      "name": "Fujikura Ltd"
+    },
+    {
+      "code": "6702.T",
+      "name": "Fujitsu Ltd"
+    },
+    {
+      "code": "8354.T",
+      "name": "Fukuoka Financial Group, Inc"
+    },
+    {
+      "code": "5801.T",
+      "name": "Furukawa Electric Co., Ltd"
+    },
+    {
+      "code": "6674.T",
+      "name": "Gs Yuasa Corp"
+    },
+    {
+      "code": "1808.T",
+      "name": "Haseko Corp"
+    },
+    {
+      "code": "7205.T",
+      "name": "Hino Motors, Ltd"
+    },
+    {
+      "code": "6305.T",
+      "name": "Hitachi Const. Mach. Co., Ltd"
+    },
+    {
+      "code": "7004.T",
+      "name": "Hitachi Zosen Corp"
+    },
+    {
+      "code": "6501.T",
+      "name": "Hitachi, Ltd"
+    },
+    {
+      "code": "7267.T",
+      "name": "Honda Motor Co., Ltd"
+    },
+    {
+      "code": "7741.T",
+      "name": "Hoya Corp"
+    },
+    {
+      "code": "5019.T",
+      "name": "Idemitsu Kosan Co., Ltd"
+    },
+    {
+      "code": "7013.T",
+      "name": "Ihi Corp"
+    },
+    {
+      "code": "1605.T",
+      "name": "Inpex Corp"
+    },
+    {
+      "code": "3099.T",
+      "name": "Isetan Mitsukoshi Holdings Ltd"
+    },
+    {
+      "code": "7202.T",
+      "name": "Isuzu Motors Ltd"
+    },
+    {
+      "code": "8001.T",
+      "name": "Itochu Corp"
+    },
+    {
+      "code": "3086.T",
+      "name": "J.Front Retailing Co., Ltd"
+    },
+    {
+      "code": "9201.T",
+      "name": "Japan Airlines Co., Ltd"
+    },
+    {
+      "code": "8697.T",
+      "name": "Japan Exchange Group, Inc"
+    },
+    {
+      "code": "6178.T",
+      "name": "Japan Post Holdings Co., Ltd"
+    },
+    {
+      "code": "2914.T",
+      "name": "Japan Tobacco Inc"
+    },
+    {
+      "code": "5411.T",
+      "name": "Jfe Holdings, Inc"
+    },
+    {
+      "code": "1963.T",
+      "name": "Jgc Holdings Corp"
+    },
+    {
+      "code": "6473.T",
+      "name": "Jtekt Corp"
+    },
+    {
+      "code": "1812.T",
+      "name": "Kajima Corp"
+    },
+    {
+      "code": "4452.T",
+      "name": "Kao Corp"
+    },
+    {
+      "code": "7012.T",
+      "name": "Kawasaki Heavy Ind., Ltd"
+    },
+    {
+      "code": "9107.T",
+      "name": "Kawasaki Kisen Kaisha, Ltd"
+    },
+    {
+      "code": "9433.T",
+      "name": "Kddi Corp"
+    },
+    {
+      "code": "9008.T",
+      "name": "Keio Corp"
+    },
+    {
+      "code": "9009.T",
+      "name": "Keisei Electric Railway Co., Ltd"
+    },
+    {
+      "code": "6861.T",
+      "name": "Keyence Corp"
+    },
+    {
+      "code": "2801.T",
+      "name": "Kikkoman Corp"
+    },
+    {
+      "code": "2503.T",
+      "name": "Kirin Holdings Co., Ltd"
+    },
+    {
+      "code": "5406.T",
+      "name": "Kobe Steel, Ltd"
+    },
+    {
+      "code": "6301.T",
+      "name": "Komatsu Ltd"
+    },
+    {
+      "code": "9766.T",
+      "name": "Konami Group Corp"
+    },
+    {
+      "code": "4902.T",
+      "name": "Konica Minolta, Inc"
+    },
+    {
+      "code": "6326.T",
+      "name": "Kubota Corp"
+    },
+    {
+      "code": "3405.T",
+      "name": "Kuraray Co., Ltd"
+    },
+    {
+      "code": "6971.T",
+      "name": "Kyocera Corp"
+    },
+    {
+      "code": "4151.T",
+      "name": "Kyowa Kirin Co., Ltd"
+    },
+    {
+      "code": "6920.T",
+      "name": "Lasertec Corp"
+    },
+    {
+      "code": "4689.T",
+      "name": "Ly Corp"
+    },
+    {
+      "code": "2413.T",
+      "name": "M3, Inc"
+    },
+    {
+      "code": "8002.T",
+      "name": "Marubeni Corp"
+    },
+    {
+      "code": "8252.T",
+      "name": "Marui Group Co., Ltd"
+    },
+    {
+      "code": "7261.T",
+      "name": "Mazda Motor Corp"
+    },
+    {
+      "code": "2269.T",
+      "name": "Meiji Holdings Co., Ltd"
+    },
+    {
+      "code": "4385.T",
+      "name": "Mercari, Inc"
+    },
+    {
+      "code": "6479.T",
+      "name": "Minebea Mitsumi Inc"
+    },
+    {
+      "code": "4188.T",
+      "name": "Mitsubishi Chemical Group Corp"
+    },
+    {
+      "code": "8058.T",
+      "name": "Mitsubishi Corp"
+    },
+    {
+      "code": "6503.T",
+      "name": "Mitsubishi Electric Corp"
+    },
+    {
+      "code": "8802.T",
+      "name": "Mitsubishi Estate Co., Ltd"
+    },
+    {
+      "code": "7011.T",
+      "name": "Mitsubishi Heavy Ind., Ltd"
+    },
+    {
+      "code": "9301.T",
+      "name": "Mitsubishi Logistics Corp"
+    },
+    {
+      "code": "5711.T",
+      "name": "Mitsubishi Materials Corp"
+    },
+    {
+      "code": "7211.T",
+      "name": "Mitsubishi Motors Corp"
+    },
+    {
+      "code": "8306.T",
+      "name": "Mitsubishi Ufj Financial Group, Inc"
+    },
+    {
+      "code": "8031.T",
+      "name": "Mitsui & Co., Ltd"
+    },
+    {
+      "code": "4183.T",
+      "name": "Mitsui Chemicals, Inc"
+    },
+    {
+      "code": "8801.T",
+      "name": "Mitsui Fudosan Co., Ltd"
+    },
+    {
+      "code": "5706.T",
+      "name": "Mitsui Mining & Smelting Co"
+    },
+    {
+      "code": "9104.T",
+      "name": "Mitsui O.S.K.Lines, Ltd"
+    },
+    {
+      "code": "8411.T",
+      "name": "Mizuho Financial Group, Inc"
+    },
+    {
+      "code": "8725.T",
+      "name": "Ms&Ad Insurance Group Holdings, Inc"
+    },
+    {
+      "code": "6981.T",
+      "name": "Murata Manufacturing Co., Ltd"
+    },
+    {
+      "code": "6701.T",
+      "name": "Nec Corp"
+    },
+    {
+      "code": "3659.T",
+      "name": "Nexon Co., Ltd"
+    },
+    {
+      "code": "5333.T",
+      "name": "Ngk Insulators, Ltd"
+    },
+    {
+      "code": "2282.T",
+      "name": "Nh Foods Ltd"
+    },
+    {
+      "code": "2871.T",
+      "name": "Nichirei Corp"
+    },
+    {
+      "code": "6594.T",
+      "name": "Nidec Corp"
+    },
+    {
+      "code": "7731.T",
+      "name": "Nikon Corp"
+    },
+    {
+      "code": "7974.T",
+      "name": "Nintendo Co., Ltd"
+    },
+    {
+      "code": "5214.T",
+      "name": "Nippon Electric Glass Co., Ltd"
+    },
+    {
+      "code": "9147.T",
+      "name": "Nippon Express Holdings, Inc"
+    },
+    {
+      "code": "3863.T",
+      "name": "Nippon Paper Industries Co., Ltd"
+    },
+    {
+      "code": "5401.T",
+      "name": "Nippon Steel Corp"
+    },
+    {
+      "code": "9432.T",
+      "name": "Nippon Telegraph & Telephone Corp"
+    },
+    {
+      "code": "9101.T",
+      "name": "Nippon Yusen K.K"
+    },
+    {
+      "code": "4021.T",
+      "name": "Nissan Chemical Corp"
+    },
+    {
+      "code": "7201.T",
+      "name": "Nissan Motor Co., Ltd"
+    },
+    {
+      "code": "2002.T",
+      "name": "Nisshin Seifun Group Inc"
+    },
+    {
+      "code": "1332.T",
+      "name": "Nissui Corp"
+    },
+    {
+      "code": "9843.T",
+      "name": "Nitori Holdings Co., Ltd"
+    },
+    {
+      "code": "6988.T",
+      "name": "Nitto Denko Corp"
+    },
+    {
+      "code": "8604.T",
+      "name": "Nomura Holdings, Inc"
+    },
+    {
+      "code": "6471.T",
+      "name": "Nsk Ltd"
+    },
+    {
+      "code": "6472.T",
+      "name": "Ntn Corp"
+    },
+    {
+      "code": "9613.T",
+      "name": "Ntt Data Group Corp"
+    },
+    {
+      "code": "1802.T",
+      "name": "Obayashi Corp"
+    },
+    {
+      "code": "9007.T",
+      "name": "Odakyu Electric Railway Co., Ltd"
+    },
+    {
+      "code": "3861.T",
+      "name": "Oji Holdings Corp"
+    },
+    {
+      "code": "6103.T",
+      "name": "Okuma Corp"
+    },
+    {
+      "code": "7733.T",
+      "name": "Olympus Corp"
+    },
+    {
+      "code": "6645.T",
+      "name": "Omron Corp"
+    },
+    {
+      "code": "4661.T",
+      "name": "Oriental Land Co., Ltd"
+    },
+    {
+      "code": "8591.T",
+      "name": "Orix Corp"
+    },
+    {
+      "code": "9532.T",
+      "name": "Osaka Gas Co., Ltd"
+    },
+    {
+      "code": "4578.T",
+      "name": "Otsuka Holdings Co., Ltd"
+    },
+    {
+      "code": "5541.T",
+      "name": "Pacific Metals Co., Ltd"
+    },
+    {
+      "code": "6752.T",
+      "name": "Panasonic Holdings Corp"
+    },
+    {
+      "code": "4755.T",
+      "name": "Rakuten Group, Inc"
+    },
+    {
+      "code": "6098.T",
+      "name": "Recruit Holdings Co., Ltd"
+    },
+    {
+      "code": "6723.T",
+      "name": "Renesas Electronics Corp"
+    },
+    {
+      "code": "8308.T",
+      "name": "Resona Holdings, Inc"
+    },
+    {
+      "code": "4004.T",
+      "name": "Resonac Holdings Corp"
+    },
+    {
+      "code": "7752.T",
+      "name": "Ricoh Co., Ltd"
+    },
+    {
+      "code": "2501.T",
+      "name": "Sapporo Holdings Ltd"
+    },
+    {
+      "code": "7735.T",
+      "name": "Screen Holdings Co., Ltd"
+    },
+    {
+      "code": "9735.T",
+      "name": "Secom Co., Ltd"
+    },
+    {
+      "code": "6724.T",
+      "name": "Seiko Epson Corp"
+    },
+    {
+      "code": "1928.T",
+      "name": "Sekisui House, Ltd"
+    },
+    {
+      "code": "3382.T",
+      "name": "Seven & I Holdings Co., Ltd"
+    },
+    {
+      "code": "6753.T",
+      "name": "Sharp Corp"
+    },
+    {
+      "code": "1803.T",
+      "name": "Shimizu Corp"
+    },
+    {
+      "code": "4063.T",
+      "name": "Shin-Etsu Chemical Co., Ltd"
+    },
+    {
+      "code": "4507.T",
+      "name": "Shionogi & Co., Ltd"
+    },
+    {
+      "code": "4911.T",
+      "name": "Shiseido Co., Ltd"
+    },
+    {
+      "code": "5831.T",
+      "name": "Shizuoka Financial Group, Inc"
+    },
+    {
+      "code": "6273.T",
+      "name": "Smc Corp"
+    },
+    {
+      "code": "9434.T",
+      "name": "Softbank Corp"
+    },
+    {
+      "code": "9984.T",
+      "name": "Softbank Group Corp"
+    },
+    {
+      "code": "2768.T",
+      "name": "Sojitz Corp"
+    },
+    {
+      "code": "8630.T",
+      "name": "Sompo Holdings, Inc"
+    },
+    {
+      "code": "6758.T",
+      "name": "Sony Group Corp"
+    },
+    {
+      "code": "7270.T",
+      "name": "Subaru Corp"
+    },
+    {
+      "code": "3436.T",
+      "name": "Sumco Corp"
+    },
+    {
+      "code": "4005.T",
+      "name": "Sumitomo Chemical Co., Ltd"
+    },
+    {
+      "code": "8053.T",
+      "name": "Sumitomo Corp"
+    },
+    {
+      "code": "5802.T",
+      "name": "Sumitomo Electric Ind., Ltd"
+    },
+    {
+      "code": "6302.T",
+      "name": "Sumitomo Heavy Ind., Ltd"
+    },
+    {
+      "code": "5713.T",
+      "name": "Sumitomo Metal Mining Co., Ltd"
+    },
+    {
+      "code": "8316.T",
+      "name": "Sumitomo Mitsui Financial Group, Inc"
+    },
+    {
+      "code": "8309.T",
+      "name": "Sumitomo Mitsui Trust Holdings, Inc"
+    },
+    {
+      "code": "5232.T",
+      "name": "Sumitomo Osaka Cement Co., Ltd"
+    },
+    {
+      "code": "4506.T",
+      "name": "Sumitomo Pharma Co., Ltd"
+    },
+    {
+      "code": "8830.T",
+      "name": "Sumitomo Realty & Development Co., Ltd"
+    },
+    {
+      "code": "7269.T",
+      "name": "Suzuki Motor Corp"
+    },
+    {
+      "code": "8795.T",
+      "name": "T&D Holdings, Inc"
+    },
+    {
+      "code": "5233.T",
+      "name": "Taiheiyo Cement Corp"
+    },
+    {
+      "code": "1801.T",
+      "name": "Taisei Corp"
+    },
+    {
+      "code": "6976.T",
+      "name": "Taiyo Yuden Co., Ltd"
+    },
+    {
+      "code": "2531.T",
+      "name": "Takara Holdings Inc"
+    },
+    {
+      "code": "8233.T",
+      "name": "Takashimaya Co., Ltd"
+    },
+    {
+      "code": "4502.T",
+      "name": "Takeda Pharmaceutical Co., Ltd"
+    },
+    {
+      "code": "6762.T",
+      "name": "Tdk Corp"
+    },
+    {
+      "code": "3401.T",
+      "name": "Teijin Ltd"
+    },
+    {
+      "code": "4543.T",
+      "name": "Terumo Corp"
+    },
+    {
+      "code": "8331.T",
+      "name": "The Chiba Bank, Ltd"
+    },
+    {
+      "code": "5631.T",
+      "name": "The Japan Steel Works, Ltd"
+    },
+    {
+      "code": "9503.T",
+      "name": "The Kansai Electric Power Co., Inc"
+    },
+    {
+      "code": "5101.T",
+      "name": "The Yokohama Rubber Co., Ltd"
+    },
+    {
+      "code": "9001.T",
+      "name": "Tobu Railway Co., Ltd"
+    },
+    {
+      "code": "9602.T",
+      "name": "Toho Co., Ltd"
+    },
+    {
+      "code": "5301.T",
+      "name": "Tokai Carbon Co., Ltd"
+    },
+    {
+      "code": "8766.T",
+      "name": "Tokio Marine Holdings, Inc"
+    },
+    {
+      "code": "4043.T",
+      "name": "Tokuyama Corp"
+    },
+    {
+      "code": "9501.T",
+      "name": "Tokyo Electric Power Company Holdings, I"
+    },
+    {
+      "code": "8035.T",
+      "name": "Tokyo Electron Ltd"
+    },
+    {
+      "code": "9531.T",
+      "name": "Tokyo Gas Co., Ltd"
+    },
+    {
+      "code": "8804.T",
+      "name": "Tokyo Tatemono Co., Ltd"
+    },
+    {
+      "code": "9005.T",
+      "name": "Tokyu Corp"
+    },
+    {
+      "code": "3289.T",
+      "name": "Tokyu Fudosan Holdings Corp"
+    },
+    {
+      "code": "7911.T",
+      "name": "Toppan Holdings Inc"
+    },
+    {
+      "code": "3402.T",
+      "name": "Toray Industries, Inc"
+    },
+    {
+      "code": "4042.T",
+      "name": "Tosoh Corp"
+    },
+    {
+      "code": "5332.T",
+      "name": "Toto Ltd"
+    },
+    {
+      "code": "7203.T",
+      "name": "Toyota Motor Corp"
+    },
+    {
+      "code": "8015.T",
+      "name": "Toyota Tsusho Corp"
+    },
+    {
+      "code": "4704.T",
+      "name": "Trend Micro Inc"
+    },
+    {
+      "code": "4208.T",
+      "name": "Ube Corp"
+    },
+    {
+      "code": "9021.T",
+      "name": "West Japan Railway Co"
+    },
+    {
+      "code": "7951.T",
+      "name": "Yamaha Corp"
+    },
+    {
+      "code": "7272.T",
+      "name": "Yamaha Motor Co., Ltd"
+    },
+    {
+      "code": "9064.T",
+      "name": "Yamato Holdings Co., Ltd"
+    },
+    {
+      "code": "6506.T",
+      "name": "Yaskawa Electric Corp"
+    },
+    {
+      "code": "6841.T",
+      "name": "Yokogawa Electric Corp"
+    }
+  ]
+}

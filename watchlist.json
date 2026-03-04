@@ -1,0 +1,131 @@
+{
+  "description": "Monthly Momentum監視対象銘柄（WF検証合格銘柄を登録する）",
+  "symbols": [
+    {
+      "code": "6758.T",
+      "name": "ソニー",
+      "note": "WF Sharpe 1.99, 4/4 folds+"
+    },
+    {
+      "code": "9984.T",
+      "name": "ソフトバンクG",
+      "note": "WF Sharpe 0.84, 2/4 folds+"
+    },
+    {
+      "code": "7974.T",
+      "name": "任天堂",
+      "note": "WF Sharpe 0.77, 3/4 folds+"
+    },
+    {
+      "code": "8306.T",
+      "name": "三菱UFJ",
+      "note": "WF Sharpe 0.13, 3/4 folds+"
+    },
+    {
+      "code": "6861.T",
+      "name": "キーエンス",
+      "note": "WF Sharpe 0.06, 2/4 folds+"
+    },
+    {
+      "code": "4063.T",
+      "name": "信越化学",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.90, WF_Sharpe=0.23, Folds=3/4"
+    },
+    {
+      "code": "6594.T",
+      "name": "日本電産",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.83, WF_Sharpe=0.34, Folds=3/4"
+    },
+    {
+      "code": "9843.T",
+      "name": "Nitori Holdings Co., Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=1.76, WF_Sharpe=2.57, Folds=4/4"
+    },
+    {
+      "code": "4043.T",
+      "name": "Tokuyama Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=1.32, WF_Sharpe=1.99, Folds=4/4"
+    },
+    {
+      "code": "5301.T",
+      "name": "Tokai Carbon Co., Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=1.19, WF_Sharpe=2.17, Folds=4/4"
+    },
+    {
+      "code": "4689.T",
+      "name": "Ly Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=1.04, WF_Sharpe=1.09, Folds=3/4"
+    },
+    {
+      "code": "5714.T",
+      "name": "Dowa Holdings Co., Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.97, WF_Sharpe=0.45, Folds=3/4"
+    },
+    {
+      "code": "4005.T",
+      "name": "Sumitomo Chemical Co., Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.96, WF_Sharpe=1.13, Folds=3/4"
+    },
+    {
+      "code": "7735.T",
+      "name": "Screen Holdings Co., Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.86, WF_Sharpe=0.93, Folds=3/4"
+    },
+    {
+      "code": "2801.T",
+      "name": "Kikkoman Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.85, WF_Sharpe=1.06, Folds=4/4"
+    },
+    {
+      "code": "5711.T",
+      "name": "Mitsubishi Materials Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.82, WF_Sharpe=0.41, Folds=3/4"
+    },
+    {
+      "code": "1332.T",
+      "name": "Nissui Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.78, WF_Sharpe=0.81, Folds=3/4"
+    },
+    {
+      "code": "6920.T",
+      "name": "Lasertec Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.68, WF_Sharpe=0.65, Folds=3/4"
+    },
+    {
+      "code": "9101.T",
+      "name": "Nippon Yusen K.K",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.67, WF_Sharpe=0.86, Folds=3/4"
+    },
+    {
+      "code": "2432.T",
+      "name": "Dena Co., Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.66, WF_Sharpe=1.28, Folds=3/4"
+    },
+    {
+      "code": "9104.T",
+      "name": "Mitsui O.S.K.Lines, Ltd",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.58, WF_Sharpe=0.70, Folds=3/4"
+    },
+    {
+      "code": "4385.T",
+      "name": "Mercari, Inc",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.54, WF_Sharpe=1.19, Folds=3/4"
+    },
+    {
+      "code": "8001.T",
+      "name": "Itochu Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.50, WF_Sharpe=1.11, Folds=3/4"
+    },
+    {
+      "code": "6473.T",
+      "name": "Jtekt Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.47, WF_Sharpe=0.44, Folds=3/4"
+    },
+    {
+      "code": "6723.T",
+      "name": "Renesas Electronics Corp",
+      "note": "Auto-screened 2026-03-04: Sharpe=0.34, WF_Sharpe=1.13, Folds=3/4"
+    }
+  ],
+  "updated": "2026-03-04 11:43"
+}

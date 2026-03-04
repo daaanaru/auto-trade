@@ -1,0 +1,152 @@
+{
+  "日足(1d)": {
+    "SMA_Crossover": {
+      "annual_return": 70.71,
+      "max_drawdown": -12.18,
+      "sharpe_ratio": 1.43,
+      "win_rate": 33.3,
+      "total_trades": 3,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    },
+    "RSI_Reversion": {
+      "annual_return": -49.29,
+      "max_drawdown": -30.13,
+      "sharpe_ratio": -1.67,
+      "win_rate": 0.0,
+      "total_trades": 8,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    },
+    "BB_RSI_Combo": {
+      "annual_return": -8.37,
+      "max_drawdown": -14.56,
+      "sharpe_ratio": -0.14,
+      "win_rate": 16.7,
+      "total_trades": 6,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    },
+    "Monthly_Momentum": {
+      "annual_return": -6.57,
+      "max_drawdown": -4.21,
+      "sharpe_ratio": -0.9,
+      "win_rate": 25.0,
+      "total_trades": 8,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    },
+    "Volume_Divergence": {
+      "annual_return": 0.0,
+      "max_drawdown": 0.0,
+      "sharpe_ratio": 0.0,
+      "win_rate": 0.0,
+      "total_trades": 0,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    },
+    "Momentum_Pullback": {
+      "annual_return": 0.0,
+      "max_drawdown": 0.0,
+      "sharpe_ratio": 0.0,
+      "win_rate": 0.0,
+      "total_trades": 0,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    },
+    "Order_Block": {
+      "annual_return": 0.0,
+      "max_drawdown": 0.0,
+      "sharpe_ratio": 0.0,
+      "win_rate": 0.0,
+      "total_trades": 0,
+      "period": "2025-12-04 ～ 2026-03-04",
+      "status": "OK"
+    }
+  },
+  "1時間足(1h)": {
+    "SMA_Crossover": {
+      "annual_return": -13.61,
+      "max_drawdown": -48.31,
+      "sharpe_ratio": -2.35,
+      "win_rate": 18.4,
+      "total_trades": 76,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    },
+    "RSI_Reversion": {
+      "annual_return": -2.78,
+      "max_drawdown": -11.14,
+      "sharpe_ratio": -1.06,
+      "win_rate": 10.8,
+      "total_trades": 120,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    },
+    "BB_RSI_Combo": {
+      "annual_return": -0.74,
+      "max_drawdown": -3.97,
+      "sharpe_ratio": -0.79,
+      "win_rate": 16.7,
+      "total_trades": 48,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    },
+    "Monthly_Momentum": {
+      "annual_return": -0.59,
+      "max_drawdown": -2.57,
+      "sharpe_ratio": -2.03,
+      "win_rate": 16.7,
+      "total_trades": 12,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    },
+    "Volume_Divergence": {
+      "annual_return": -1.71,
+      "max_drawdown": -8.68,
+      "sharpe_ratio": -1.53,
+      "win_rate": 16.1,
+      "total_trades": 31,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    },
+    "Momentum_Pullback": {
+      "annual_return": -0.08,
+      "max_drawdown": -1.05,
+      "sharpe_ratio": -1.61,
+      "win_rate": 31.2,
+      "total_trades": 16,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    },
+    "Order_Block": {
+      "annual_return": 0.0,
+      "max_drawdown": 0.0,
+      "sharpe_ratio": 0.0,
+      "win_rate": 0.0,
+      "total_trades": 0,
+      "period": "2025-12-03 ～ 2026-01-14",
+      "status": "OK"
+    }
+  },
+  "5分足(5m)": {
+    "Volume_Divergence": {
+      "annual_return": -1.26,
+      "max_drawdown": -4.97,
+      "sharpe_ratio": -3.8,
+      "win_rate": 3.1,
+      "total_trades": 32,
+      "period": "2025-12-03 ～ 2025-12-07",
+      "status": "OK"
+    },
+    "Momentum_Pullback": {
+      "annual_return": 0.0,
+      "max_drawdown": 0.0,
+      "sharpe_ratio": 0.0,
+      "win_rate": 0.0,
+      "total_trades": 0,
+      "period": "2025-12-03 ～ 2025-12-07",
+      "status": "OK"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+.env
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Runtime data (personal trading logs)
+logs/
+paper_positions.json
+paper_trade_log.json
+performance_log.json
+crypto_daily_report.md
+monitoring_log.txt
+backtest_results.txt
+timeframe_backtest_results.txt
+trade_log.json
+live_trade_state.json
+
+# OS
+.DS_Store

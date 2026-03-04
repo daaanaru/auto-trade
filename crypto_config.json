@@ -1,0 +1,35 @@
+{
+  "description": "仮想通貨自律監視エージェント設定",
+  "exchange": {
+    "primary": "bitflyer",
+    "symbol": "BTC/JPY",
+    "yf_symbol": "BTC-JPY"
+  },
+  "strategy": {
+    "default": "vol_div",
+    "available": ["vol_div", "bb_rsi", "sma", "mom_pb"]
+  },
+  "monitoring": {
+    "interval_minutes": 60,
+    "lookback_period": "1y",
+    "data_interval": "1d"
+  },
+  "ollama": {
+    "model": "qwen2.5:7b",
+    "base_url": "http://localhost:11434",
+    "timeout_seconds": 120
+  },
+  "graduation_criteria": {
+    "min_days": 14,
+    "min_win_rate": 40.0,
+    "min_rolling_sharpe": 0.5,
+    "max_drawdown_pct": -15.0,
+    "backtest_deviation_pct": 20.0
+  },
+  "paper_trade": {
+    "initial_capital_jpy": 1000000,
+    "risk_per_trade": 0.05,
+    "commission_rate": 0.0015,
+    "slippage_rate": 0.001
+  }
+}

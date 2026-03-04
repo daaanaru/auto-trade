@@ -1,0 +1,43 @@
+{
+  "sma": {
+    "sma_short": 3,
+    "sma_long": 42
+  },
+  "rsi": {
+    "rsi_period": 8,
+    "rsi_oversold": 33,
+    "rsi_overbought": 78
+  },
+  "bb_rsi": {
+    "bb_period": 15,
+    "bb_std": 2.0,
+    "rsi_period": 23,
+    "rsi_oversold": 35,
+    "rsi_overbought": 78
+  },
+  "monthly": {
+    "entry_days": 7,
+    "volume_ma_period": 15,
+    "volume_threshold": 2.0
+  },
+  "vol_div": {
+    "mfi_period": 17,
+    "ema_period": 100,
+    "vo_short": 3,
+    "vo_long": 16,
+    "swing_lookback": 6,
+    "divergence_window": 30
+  },
+  "mom_pb": {
+    "ema_fast": 5,
+    "ema_mid": 19,
+    "ema_slow": 300,
+    "pullback_tolerance": 0.002,
+    "vol_increase_lookback": 4
+  },
+  "order_block": {
+    "ob_max_age": 10,
+    "ob_max_zones": 9,
+    "swing_lookback": 9
+  }
+}
