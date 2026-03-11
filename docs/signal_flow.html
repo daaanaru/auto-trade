@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>auto-trade BUYシグナル判定フロー</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Hiragino Sans', sans-serif; background: #0d1117; color: #c9d1d9; padding: 24px; }
+  h1 { text-align: center; margin-bottom: 8px; font-size: 1.6rem; color: #58a6ff; }
+  .subtitle { text-align: center; color: #8b949e; margin-bottom: 32px; font-size: 0.9rem; }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; max-width: 900px; margin: 0 auto; }
+  .arrow { font-size: 1.6rem; color: #8b949e; line-height: 1; padding: 4px 0; }
+  .box { border: 2px solid #30363d; border-radius: 12px; padding: 16px 24px; width: 100%; max-width: 700px; background: #161b22; }
+  .box h3 { font-size: 1rem; margin-bottom: 8px; }
+  .box p, .box li { font-size: 0.85rem; line-height: 1.6; color: #8b949e; }
+  .box ul { padding-left: 20px; }
+  .highlight { color: #7ee787; font-weight: bold; }
+  .warn { color: #f85149; }
+  .blue { color: #58a6ff; }
+  .gold { color: #d2a8ff; }
+
+  .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .step-num { background: #238636; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; flex-shrink: 0; }
+
+  .strategies { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .strat-card { border: 1px solid #30363d; border-radius: 8px; padding: 12px; background: #0d1117; }
+  .strat-card h4 { font-size: 0.85rem; margin-bottom: 6px; }
+  .strat-card .market-tag { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-bottom: 6px; }
+  .tag-jp { background: #1f2937; color: #f87171; border: 1px solid #f87171; }
+  .tag-us { background: #1f2937; color: #60a5fa; border: 1px solid #60a5fa; }
+  .tag-btc { background: #1f2937; color: #fbbf24; border: 1px solid #fbbf24; }
+  .tag-gold { background: #1f2937; color: #d2a8ff; border: 1px solid #d2a8ff; }
+
+  .cond { font-size: 0.8rem; color: #c9d1d9; margin: 4px 0; padding-left: 12px; border-left: 2px solid #238636; }
+
+  .discord-mock { background: #2f3136; border-radius: 8px; padding: 16px; margin-top: 16px; max-width: 700px; width: 100%; }
+  .discord-mock .embed { border-left: 4px solid #2ecc71; background: #36393f; border-radius: 4px; padding: 12px; margin-top: 8px; }
+  .discord-mock .embed-title { color: #2ecc71; font-weight: bold; font-size: 0.95rem; }
+  .discord-mock .embed-field { margin-top: 8px; }
+  .discord-mock .field-name { color: #fff; font-size: 0.8rem; font-weight: bold; }
+  .discord-mock .field-value { color: #b9bbbe; font-size: 0.8rem; }
+
+  .section-title { font-size: 1.2rem; color: #58a6ff; margin: 40px 0 16px; text-align: center; }
+  @media (max-width: 700px) { .strategies { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<h1>auto-trade BUYシグナル判定フロー</h1>
+<p class="subtitle">unified_screener.py → notifier.py → Discord通知 の全体像</p>
+
+<div class="flow">
+
+  <!-- Step 1 -->
+  <div class="box">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <h3>データ取得 <span class="blue">(yfinance)</span></h3>
+    </div>
+    <p>4市場の銘柄データを取得（日足OHLCV）。launchdで<span class="highlight">1日6回</span>（0,4,8,12,16,20時）自動実行。</p>
+    <ul>
+      <li>日本株: watchlist.json（WF合格22銘柄）</li>
+      <li>米国株: us_stock_tickers.json（主要50銘柄）</li>
+      <li>仮想通貨: BTC/ETH/XRP/XLM/MONA（固定）</li>
+      <li>ゴールド: GLD / GC=F（固定）</li>
+    </ul>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 2 -->
+  <div class="box">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <h3>テクニカル分析 <span class="blue">(戦略別)</span></h3>
+    </div>
+    <p>市場ごとに異なる戦略で分析。<span class="highlight">BUY=1 / SELL=-1 / NEUTRAL=0</span> を判定。</p>
+
+    <div class="strategies">
+      <div class="strat-card">
+        <span class="market-tag tag-jp">日本株</span>
+        <h4>月初モメンタム</h4>
+        <div class="cond">月初7日以内</div>
+        <div class="cond">出来高 ≥ 15日平均の2.0倍</div>
+        <p style="font-size:0.75rem;color:#8b949e;margin-top:6px;">出来高急増 = トレンド発生の兆候</p>
+      </div>
+      <div class="strat-card">
+        <span class="market-tag tag-us">米国株</span>
+        <span class="market-tag tag-gold">ゴールド</span>
+        <h4>BB+RSI逆張り</h4>
+        <div class="cond">価格 ≤ BB下限（15日±1.0σ）</div>
+        <div class="cond">RSI(23) &lt; 45（売られすぎ）</div>
+        <p style="font-size:0.75rem;color:#8b949e;margin-top:6px;">下がりすぎ→反発を狙う逆張り</p>
+      </div>
+      <div class="strat-card">
+        <span class="market-tag tag-btc">仮想通貨</span>
+        <h4>出来高ダイバージェンス</h4>
+        <div class="cond">MFI強気ダイバージェンス</div>
+        <div class="cond">価格 &gt; 100日EMA</div>
+        <div class="cond">出来高オシレーター上昇中</div>
+        <p style="font-size:0.75rem;color:#8b949e;margin-top:6px;">価格は下がるが出来高は上昇 = 反転のサイン</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 3 -->
+  <div class="box">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <h3>ファンダメンタル分析 <span class="blue">(yfinance企業情報)</span></h3>
+    </div>
+    <p>テクニカルBUYが出た銘柄のみ、企業の財務データをチェック。<span class="highlight">スコア &gt; 0</span> でエントリー許可。</p>
+    <ul>
+      <li><span class="highlight">PER &lt; 15</span> → +0.3（割安）</li>
+      <li><span class="highlight">PBR &lt; 1.5</span> → +0.2（資産価値に対して安い）</li>
+      <li><span class="highlight">配当利回り &gt; 3%</span> → +0.2</li>
+      <li><span class="highlight">売上成長 &gt; 10%</span> → +0.3</li>
+      <li><span class="warn">52週高値の95%超</span> → -0.1（高値圏で危険）</li>
+      <li><span class="warn">時価総額 &lt; $1B</span> → -0.1（小型でリスク大）</li>
+    </ul>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 4 -->
+  <div class="box" style="border-color: #238636;">
+    <div class="step-header">
+      <div class="step-num" style="background:#2ecc71;">4</div>
+      <h3 style="color:#2ecc71;">Discord通知 <span style="color:#8b949e;">(notifier.py)</span></h3>
+    </div>
+    <p>テクニカルBUY + ファンダOK の銘柄をDiscordに通知。<span class="highlight">「なぜBUYか」を理由付きで送信。</span></p>
+
+    <div class="discord-mock">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="background:#5865f2;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;">AT</div>
+        <div>
+          <span style="color:#fff;font-weight:bold;">auto-trade</span>
+          <span style="color:#72767d;font-size:0.75rem;margin-left:8px;">今日 16:00</span>
+        </div>
+      </div>
+      <div class="embed">
+        <div class="embed-title">BUYシグナル 2件検出</div>
+        <div style="color:#b9bbbe;font-size:0.8rem;margin-top:4px;">以下の銘柄でBUYシグナルが発生しました</div>
+
+        <div class="embed-field">
+          <div class="field-name">JPMorgan Chase(JPM)</div>
+          <div class="field-value">
+            価格: $218.50 / スコア: 32.1<br>
+            理由: RSI=32（45以下で売られすぎ） / 価格218.5 ≤ BB下限220.3（15日±1.0σ）<br>
+            戦略: BB+RSI逆張り
+          </div>
+        </div>
+
+        <div class="embed-field" style="margin-top:12px;">
+          <div class="field-name">ニトリ(9843.T)</div>
+          <div class="field-value">
+            価格: ¥18,250 / スコア: 2.3<br>
+            理由: 月初3日目（7日以内） / 出来高が15日平均の2.3倍（閾値2.0倍）<br>
+            戦略: 月初モメンタム
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <!-- Step 5 -->
+  <div class="box" style="border-color: #d2a8ff;">
+    <div class="step-header">
+      <div class="step-num" style="background:#8b5cf6;">5</div>
+      <h3 style="color:#d2a8ff;">ペーパートレード実行 <span style="color:#8b949e;">(1時間後に自動)</span></h3>
+    </div>
+    <p>screenerの1時間後にunified_paper_trade.pyが同じシグナルを再確認し、ポジションを取る。</p>
+    <ul>
+      <li>1銘柄 ≤ ポートフォリオの20%</li>
+      <li>同時保有 ≤ 5ポジション</li>
+      <li>損切り: <span class="warn">-5%</span> / 利確: <span class="highlight">+10%で半分</span></li>
+      <li>3/30に卒業判定 → 合格なら実弾移行</li>
+    </ul>
+  </div>
+
+</div>
+
+<h2 class="section-title">用語解説</h2>
+<div style="max-width:700px;margin:0 auto;">
+  <div class="box" style="margin-bottom:12px;">
+    <h3>RSI（相対力指数）</h3>
+    <p>直近の値上がり幅と値下がり幅の比率。0〜100の範囲。30以下は「売られすぎ」で反発しやすい。70以上は「買われすぎ」で下がりやすい。</p>
+  </div>
+  <div class="box" style="margin-bottom:12px;">
+    <h3>ボリンジャーバンド（BB）</h3>
+    <p>移動平均線の上下に標準偏差（σ）の幅を足した帯。価格がバンドの外に出ると「行きすぎ」で戻りやすい。</p>
+  </div>
+  <div class="box" style="margin-bottom:12px;">
+    <h3>MFI（マネーフローインデックス）</h3>
+    <p>出来高を加味したRSI。お金の流入量で売られすぎ/買われすぎを判断する。</p>
+  </div>
+  <div class="box" style="margin-bottom:12px;">
+    <h3>ダイバージェンス</h3>
+    <p>価格の動きと指標の動きが逆方向になること。例: 価格が安値更新したのにMFIは上がっている → 「そろそろ反転するかも」のサイン。</p>
+  </div>
+  <div class="box" style="margin-bottom:12px;">
+    <h3>EMA（指数移動平均）</h3>
+    <p>直近の価格を重視した移動平均。200日EMAの上にいれば上昇トレンド、下にいれば下降トレンド。</p>
+  </div>
+  <div class="box">
+    <h3>PER / PBR</h3>
+    <p>PER = 株価 ÷ 1株あたり利益。低いほど割安。PBR = 株価 ÷ 1株あたり純資産。1以下なら資産価値以下で買える。</p>
+  </div>
+</div>
+
+<p style="text-align:center;color:#484f58;margin-top:40px;font-size:0.75rem;">auto-trade signal flow diagram — DaNARU 2026-03-10</p>
+</body>
+</html>

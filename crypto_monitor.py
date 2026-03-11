@@ -78,12 +78,14 @@ def save_json(path: Path, data):
 # 価格取得
 # ==============================================================
 
-def fetch_live_price(config: dict) -> dict:
-    """bitFlyerからBTC/JPY価格を取得する。"""
+def fetch_live_price(config: dict, symbol: str = None) -> dict:
+    """bitFlyerから価格を取得する。symbolを指定すれば任意の銘柄を取得できる。"""
+    if symbol is None:
+        symbol = config["exchange"]["symbol"]
     try:
         import ccxt
         bf = ccxt.bitflyer({"enableRateLimit": True})
-        ticker = bf.fetch_ticker(config["exchange"]["symbol"])
+        ticker = bf.fetch_ticker(symbol)
         return {
             "price": ticker["last"],
             "bid": ticker["bid"],
@@ -91,20 +93,22 @@ def fetch_live_price(config: dict) -> dict:
             "spread": ticker["ask"] - ticker["bid"],
             "timestamp": datetime.now().isoformat(),
             "source": "bitflyer",
+            "symbol": symbol,
         }
     except Exception as e:
-        print(f"  [WARN] bitFlyer取得失敗: {e}")
+        print(f"  [WARN] bitFlyer取得失敗({symbol}): {e}")
         return None
 
 
-def fetch_ohlcv(config: dict) -> pd.DataFrame:
-    """yfinanceからBTC-JPYのOHLCVを取得する。"""
+def fetch_ohlcv(config: dict, yf_symbol: str = None) -> pd.DataFrame:
+    """yfinanceからOHLCVを取得する。yf_symbolを指定すれば任意の銘柄を取得できる。"""
     import yfinance as yf
-    symbol = config["exchange"]["yf_symbol"]
+    if yf_symbol is None:
+        yf_symbol = config["exchange"]["yf_symbol"]
     period = config["monitoring"]["lookback_period"]
     interval = config["monitoring"]["data_interval"]
 
-    df = yf.download(symbol, period=period, interval=interval, progress=False)
+    df = yf.download(yf_symbol, period=period, interval=interval, progress=False)
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.droplevel(1)
     df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
@@ -427,34 +431,70 @@ Price data unavailable. Report skipped.
 # ==============================================================
 
 def run_monitor(config: dict, run_paper_trade: bool = True):
-    """監視メインループ（1回分の実行）。"""
+    """監視メインループ（1回分の実行）。
+
+    crypto_config.jsonのsymbols配列に登録された全銘柄を巡回する。
+    symbols配列がなければ従来通りBTC/JPYのみ監視する。
+    """
     print(f"\n[Monitor] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # 1. 価格取得
-    print("[1/4] Fetching price...")
-    price_data = fetch_live_price(config)
-    if price_data:
-        print(f"  BTC/JPY: {price_data['price']:,.0f} (spread: {price_data['spread']:,.0f})")
-    else:
-        print("  [WARN] Price fetch failed, using yfinance fallback")
-        data = fetch_ohlcv(config)
-        price_data = {
-            "price": float(data["close"].iloc[-1]),
-            "bid": 0, "ask": 0, "spread": 0,
-            "timestamp": datetime.now().isoformat(),
-            "source": "yfinance",
-        }
-        print(f"  BTC/JPY: {price_data['price']:,.0f} (yfinance)")
+    # 監視対象銘柄リストを取得（後方互換: symbolsがなければBTC/JPYのみ）
+    symbols = config.get("symbols", [
+        {"ccxt": config["exchange"]["symbol"],
+         "yf": config["exchange"]["yf_symbol"],
+         "name": "ビットコイン"}
+    ])
 
-    # 2. OHLCV + シグナル判定
-    print("[2/4] Evaluating strategies...")
-    data = fetch_ohlcv(config)
-    signals = evaluate_all_strategies(data, config)
-    for key, sig in signals.items():
-        marker = "*" if sig["label"] != "NEUTRAL" else " "
-        print(f"  {marker} {sig['name']:25} -> {sig['label']}")
+    all_price_data = {}   # 銘柄ごとの価格データ
+    all_signals = {}      # 銘柄ごとのシグナル
 
-    # 3. ペーパートレード実行
+    # === 全銘柄を巡回 ===
+    print(f"[1/4] Fetching prices ({len(symbols)}銘柄)...")
+    for sym in symbols:
+        ccxt_sym = sym["ccxt"]
+        yf_sym = sym["yf"]
+        name = sym["name"]
+
+        # 価格取得（bitFlyer → yfinanceフォールバック）
+        price_data = fetch_live_price(config, symbol=ccxt_sym)
+        if price_data:
+            print(f"  {name}({ccxt_sym}): {price_data['price']:,.0f} (spread: {price_data['spread']:,.0f})")
+        else:
+            try:
+                data = fetch_ohlcv(config, yf_symbol=yf_sym)
+                price_data = {
+                    "price": float(data["close"].iloc[-1]),
+                    "bid": 0, "ask": 0, "spread": 0,
+                    "timestamp": datetime.now().isoformat(),
+                    "source": "yfinance",
+                    "symbol": ccxt_sym,
+                }
+                print(f"  {name}({ccxt_sym}): {price_data['price']:,.0f} (yfinance)")
+            except Exception as e:
+                print(f"  {name}({ccxt_sym}): [ERROR] {e}")
+                continue
+        all_price_data[ccxt_sym] = price_data
+
+    # === シグナル判定（全銘柄） ===
+    print(f"[2/4] Evaluating strategies ({len(symbols)}銘柄)...")
+    for sym in symbols:
+        yf_sym = sym["yf"]
+        name = sym["name"]
+        ccxt_sym = sym["ccxt"]
+        try:
+            data = fetch_ohlcv(config, yf_symbol=yf_sym)
+            if len(data) < 30:
+                print(f"  {name}: データ不足({len(data)}行) - スキップ")
+                continue
+            signals = evaluate_all_strategies(data, config)
+            all_signals[ccxt_sym] = signals
+            for key, sig in signals.items():
+                marker = "*" if sig["label"] != "NEUTRAL" else " "
+                print(f"  {marker} [{name:6}] {sig['name']:25} -> {sig['label']}")
+        except Exception as e:
+            print(f"  {name}: シグナル判定失敗 - {e}")
+
+    # === ペーパートレード実行（BTC/JPYのみ、従来互換） ===
     positions = load_json(POSITIONS_FILE)
     if not positions:
         print("  [WARN] No paper_positions.json found. Run paper_trade.py --reset first.")
@@ -463,7 +503,6 @@ def run_monitor(config: dict, run_paper_trade: bool = True):
 
     if run_paper_trade:
         print("[3/4] Executing paper trade...")
-        # paper_trade.pyのmain()を直接呼ぶ代わりに、サブプロセスで実行
         import subprocess
         result = subprocess.run(
             [sys.executable, str(PROJECT_ROOT / "paper_trade.py")],
@@ -471,9 +510,7 @@ def run_monitor(config: dict, run_paper_trade: bool = True):
             timeout=120,
         )
         if result.returncode == 0:
-            # 更新されたpositionsを再読み込み
             positions = load_json(POSITIONS_FILE)
-            # paper_trade.pyの出力から重要な行だけ抽出
             for line in result.stdout.split("\n"):
                 if any(tag in line for tag in ["[ENTRY]", "[CLOSE]", "[HOLD]", "Signal:"]):
                     print(f"  {line.strip()}")
@@ -482,12 +519,42 @@ def run_monitor(config: dict, run_paper_trade: bool = True):
     else:
         print("[3/4] Paper trade skipped (monitor-only mode)")
 
-    # 4. パフォーマンス記録
+    # === パフォーマンス記録（BTC/JPYの価格で記録、従来互換） ===
     print("[4/4] Recording performance...")
-    record = record_performance(price_data, signals, positions)
-    print(f"  Total value: {record['total_value_jpy']:,.0f} JPY | PnL: {record['realized_pnl_jpy']:+,.0f}")
+    btc_price = all_price_data.get("BTC/JPY", all_price_data.get(list(all_price_data.keys())[0]) if all_price_data else None)
+    btc_signals = all_signals.get("BTC/JPY", all_signals.get(list(all_signals.keys())[0]) if all_signals else {})
+    if btc_price:
+        record = record_performance(btc_price, btc_signals, positions)
+        print(f"  Total value: {record['total_value_jpy']:,.0f} JPY | PnL: {record['realized_pnl_jpy']:+,.0f}")
 
-    return price_data, signals, positions
+    # === LLM A/Bテスト記録（BTC/JPYのみ） ===
+    if btc_price:
+        try:
+            from llm_ab_tracker import record_ab
+            ab_entry = record_ab(btc_price["price"], btc_signals, config)
+            print(f"  [A/B] signal={ab_entry['a_signal_only']} llm={ab_entry['b_with_llm']} agree={ab_entry['agree']}")
+        except Exception as e:
+            print(f"  [A/B] tracking skipped: {e}")
+
+    # === 全銘柄のサマリー出力 ===
+    print(f"\n{'='*55}")
+    print(f"  仮想通貨サマリー ({len(all_price_data)}/{len(symbols)}銘柄)")
+    print(f"{'='*55}")
+    for sym in symbols:
+        ccxt_sym = sym["ccxt"]
+        name = sym["name"]
+        pd_ = all_price_data.get(ccxt_sym)
+        sigs = all_signals.get(ccxt_sym, {})
+        if pd_:
+            # 多数決シグナル（BUY/SELL/NEUTRALの最多数を表示）
+            labels = [s["label"] for s in sigs.values() if s["label"] != "ERROR"]
+            majority = max(set(labels), key=labels.count) if labels else "N/A"
+            print(f"  {name:10} {pd_['price']:>12,.0f} JPY  [{majority}]")
+        else:
+            print(f"  {name:10} {'---':>12}       [ERROR]")
+    print(f"{'='*55}")
+
+    return btc_price, btc_signals, positions
 
 
 def run_report(config: dict, price_data: dict = None, signals: dict = None, positions: dict = None):
