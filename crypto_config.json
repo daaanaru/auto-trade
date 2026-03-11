@@ -1,10 +1,17 @@
 {
-  "description": "仮想通貨自律監視エージェント設定",
+  "description": "仮想通貨自律監視エージェント設定（bitFlyer JPY建て全銘柄対応）",
   "exchange": {
     "primary": "bitflyer",
     "symbol": "BTC/JPY",
     "yf_symbol": "BTC-JPY"
   },
+  "symbols": [
+    {"ccxt": "BTC/JPY",  "yf": "BTC-JPY",  "name": "ビットコイン"},
+    {"ccxt": "ETH/JPY",  "yf": "ETH-JPY",  "name": "イーサリアム"},
+    {"ccxt": "XRP/JPY",  "yf": "XRP-JPY",  "name": "リップル"},
+    {"ccxt": "XLM/JPY",  "yf": "XLM-JPY",  "name": "ステラルーメン"},
+    {"ccxt": "MONA/JPY", "yf": "MONA-JPY", "name": "モナコイン"}
+  ],
   "strategy": {
     "default": "vol_div",
     "available": ["vol_div", "bb_rsi", "sma", "mom_pb"]
@@ -27,7 +34,7 @@
     "backtest_deviation_pct": 20.0
   },
   "paper_trade": {
-    "initial_capital_jpy": 1000000,
+    "initial_capital_jpy": 30000,
     "risk_per_trade": 0.05,
     "commission_rate": 0.0015,
     "slippage_rate": 0.001

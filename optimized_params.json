@@ -10,10 +10,10 @@
   },
   "bb_rsi": {
     "bb_period": 15,
-    "bb_std": 2.0,
+    "bb_std": 1.0,
     "rsi_period": 23,
-    "rsi_oversold": 35,
-    "rsi_overbought": 78
+    "rsi_oversold": 45,
+    "rsi_overbought": 60
   },
   "monthly": {
     "entry_days": 7,

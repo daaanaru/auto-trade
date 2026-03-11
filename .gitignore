@@ -8,13 +8,35 @@ venv/
 logs/
 paper_positions.json
 paper_trade_log.json
+paper_portfolio.json
+paper_portfolio_log.json
 performance_log.json
+screening_results_unified.json
+fullmarket_scan_results.json
+jpx_listed_stocks.csv
+daily_report.md
 crypto_daily_report.md
 monitoring_log.txt
 backtest_results.txt
 timeframe_backtest_results.txt
 trade_log.json
 live_trade_state.json
+llm_ab_log.json
+multi_market_results.json
+screening_results.json
+timeframe_backtest_results.json
+walk_forward_results.json
+wf_monthly_momentum_jp.json
+
+# Charts (generated images)
+charts/
+
+# Secrets
+credentials*.json*
+*.key
+*.pem
+token*.json*
+keys.json
 
 # OS
 .DS_Store

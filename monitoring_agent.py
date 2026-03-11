@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 
 # Add the automation directory to path to import LocalLLMClient
-sys.path.append(os.environ.get("AUTOMATION_PATH", os.path.join(os.path.dirname(__file__), "plugins")))
+sys.path.append(os.environ.get("AUTOMATION_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "00_本陣", "automation")))
 from llm_client import LocalLLMClient
 
 import requests

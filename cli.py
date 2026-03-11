@@ -17,7 +17,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.strategy_agent import StrategyAgent
+from strategy_agent import StrategyAgent
 
 
 BANNER = """
