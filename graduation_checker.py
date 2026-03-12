@@ -79,17 +79,27 @@ def check_min_days(perf_log: list, required: int) -> dict:
 
 
 def check_win_rate(positions: dict, required: float) -> dict:
-    """勝率チェック。"""
+    """勝率チェック。最低5回以上の取引が必要。"""
     total = positions.get("total_trades", 0)
     wins = positions.get("winning_trades", 0)
-    rate = (wins / total * 100) if total > 0 else 0.0
+    min_trades = 5  # 最低取引回数
 
+    if total < min_trades:
+        return {
+            "name": "勝率",
+            "required": f"{required}%以上（最低{min_trades}回取引）",
+            "actual": f"取引不足 ({total}/{min_trades}回)",
+            "value": 0.0,
+            "passed": False,
+        }
+
+    rate = (wins / total * 100)
     return {
         "name": "勝率",
         "required": f"{required}%以上",
         "actual": f"{rate:.1f}% ({wins}/{total})",
         "value": rate,
-        "passed": rate >= required if total > 0 else False,
+        "passed": rate >= required,
     }
 
 

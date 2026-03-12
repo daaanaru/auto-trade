@@ -55,12 +55,15 @@ INITIAL_CAPITAL_JPY = 30000.0  # 約$200
 MAX_POSITION_PCT = 0.20       # 1銘柄あたりポートフォリオの20%（レバレッジ後の実効値で計算）
 MAX_POSITIONS = 5              # 同時保有最大5ポジション（ロング+ショート合計）
 STOP_LOSS_PCT = -0.03          # -3%で強制クローズ（ロング用。ショートは+3%で発動）
-TAKE_PROFIT_PCT_1 = 0.05       # +5%で1/3利確（第1段階）
+TAKE_PROFIT_PCT_1 = 0.03       # +3%で1/3利確（第1段階）
 TAKE_PROFIT_PCT_2 = 0.10       # +10%でさらに1/3利確（第2段階）
 TRAILING_STOP_PCT = 0.03       # 高値から-3%でトレーリングストップ（残り全決済）
 COMMISSION_RATE = 0.001        # 手数料0.1%
 DEFAULT_LEVERAGE = 2           # デフォルトのレバレッジ倍率（購買力 = 現金 x この倍率）
 CASH_RESERVE_PCT = 0.10        # 現金保留率10%（総資産の10%を現金として常に確保）
+FORCE_EXIT_DAYS = 7            # 7日保有で強制決済（塩漬け防止）
+EARLY_TRAILING_TRIGGER = 0.02  # +2%到達でトレーリングストップ早期発動
+EARLY_TRAILING_STOP = 0.02     # 早期トレーリング: 高値から-2%で全決済
 
 # 為替レート取得
 def get_usdjpy_rate() -> float:
@@ -79,19 +82,12 @@ def get_usdjpy_rate() -> float:
     return 150.0  # フォールバック
 
 def _is_usd_ticker(code: str) -> bool:
-    """ティッカーがUSD建てかどうかを判定する。
-
-    yfinanceのティッカー名から通貨を推定する:
-    - xxxx.T → 東証（JPY建て）
-    - BTC-USD, ETH-USD → USD建て
-    - GLD, AAPL, NVDA 等 → 米国株（USD建て）
-    - USDJPY=X → 為替ペア（特殊）
-    """
+    """ティッカーがUSD建てかどうかを判定する。"""
     if code.endswith(".T"):
         return False  # 東証銘柄はJPY
     if code.endswith("=X"):
-        return False  # 為替ペアは変換不要
-    # BTC-JPY等のJPY建てペア
+        # FX pairs: JPY建てペア(USDJPY=X, EURJPY=X等)は変換不要
+        return "JPY" not in code
     if code.endswith("-JPY"):
         return False
     # 上記以外（米国株、BTC-USD、GLD等）はUSD建て
@@ -128,6 +124,7 @@ MARKET_STRATEGIES = {
     "us": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
     "btc": {"class": VolumeDivergenceStrategy, "param_key": "vol_div", "period": "1y"},
     "gold": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
+    "fx": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
 }
 
 # スキャン対象（軽量版: 各市場の代表銘柄）
@@ -166,6 +163,15 @@ SCAN_TICKERS = {
     "gold": [
         {"code": "GLD", "name": "Gold ETF"},
     ],
+    "fx": [
+        {"code": "EURUSD=X", "name": "ユーロ/ドル"},
+        {"code": "GBPUSD=X", "name": "ポンド/ドル"},
+        {"code": "USDJPY=X", "name": "ドル/円"},
+        {"code": "AUDUSD=X", "name": "豪ドル/ドル"},
+        {"code": "USDCHF=X", "name": "ドル/スイスフラン"},
+        {"code": "EURJPY=X", "name": "ユーロ/円"},
+        {"code": "GBPJPY=X", "name": "ポンド/円"},
+    ],
 }
 
 
@@ -173,22 +179,32 @@ SCAN_TICKERS = {
 # データ取得
 # ==============================================================
 
-def fetch_data(symbol: str, period: str = "3mo", min_rows: int = 30) -> Optional[pd.DataFrame]:
-    """yfinance から日足データを取得する。"""
-    try:
-        df = yf.download(symbol, period=period, interval="1d", progress=False)
-        if df.empty:
+def fetch_data(symbol: str, period: str = "3mo", min_rows: int = 30,
+               interval: str = "1d", max_retries: int = 3) -> Optional[pd.DataFrame]:
+    """yfinance からデータを取得する。リトライ付き。"""
+    for attempt in range(max_retries):
+        try:
+            df = yf.download(symbol, period=period, interval=interval, progress=False)
+            if df.empty:
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** (attempt + 1))
+                    continue
+                return None
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.droplevel(1)
+            df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
+            df.columns = ["open", "high", "low", "close", "volume"]
+            df = df.dropna()
+            if len(df) < min_rows:
+                return None
+            return df
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(2 ** (attempt + 1))
+                continue
+            print(f"  [ERROR] {symbol}: {e} (リトライ{max_retries}回失敗)")
             return None
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = df.columns.droplevel(1)
-        df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
-        df.columns = ["open", "high", "low", "close", "volume"]
-        df = df.dropna()
-        if len(df) < min_rows:
-            return None
-        return df
-    except Exception:
-        return None
+    return None
 
 
 def get_fundamental_score(symbol: str) -> dict:
@@ -397,49 +413,59 @@ def get_position_value(position: dict, fx_rate: float = None) -> float:
 
 
 def check_stop_loss_take_profit(portfolio: dict) -> list:
-    """全ポジションの損切り・利確・トレーリングストップをチェック。
+    """全ポジションの損切り・利確・トレーリングストップ・強制決済をチェック。
 
-    段階的利確:
-      第1段階: +5%で1/3利確
-      第2段階: +10%でさらに1/3利確
-    損切り: -3%で全決済
-    トレーリングストップ: 保有中の高値(安値)から-3%(+3%)で残り全決済
-    ショートは方向が逆転する。
+    改善点（v2）:
+      - 開場中は15分足で最新価格を取得（日中の変動を捉える）
+      - 第1段階利確を+3%に引き下げ（回転率向上）
+      - 保有7日超で強制決済（塩漬け防止）
+      - +2%到達で早期トレーリングストップ発動
     """
+    from market_hours import is_market_open
+
     actions = []
+    now = datetime.now()
+
     for pos in portfolio["positions"]:
-        data = fetch_data(pos["code"], period="5d", min_rows=1)
+        market = pos.get("market", "jp")
+
+        # 開場中は15分足で最新価格を取得、閉場中は日足
+        if is_market_open(market):
+            data = fetch_data(pos["code"], period="5d", min_rows=1, interval="15m")
+        else:
+            data = fetch_data(pos["code"], period="5d", min_rows=1, interval="1d")
+
         if data is None:
             continue
         current_price = float(data["close"].iloc[-1].item())
         side = pos.get("side", "long")
 
-        # 価格変動率（プラス=値上がり、マイナス=値下がり）
+        # 価格変動率
         price_change_pct = (current_price - pos["entry_price"]) / pos["entry_price"]
 
-        # ショートの場合、損益の方向が逆になる
+        # ショートの場合、損益の方向が逆
         if side == "short":
             pnl_pct = -price_change_pct
         else:
             pnl_pct = price_change_pct
 
         # --- トレーリングストップ用: 高値/安値の更新 ---
-        # ロング: 高値を追跡。ショート: 安値を追跡
         if side == "long":
             prev_peak = pos.get("trailing_peak", pos["entry_price"])
             new_peak = max(prev_peak, current_price)
             pos["trailing_peak"] = new_peak
-            # 高値からの下落率
             drawdown_from_peak = (current_price - new_peak) / new_peak
-        else:  # short
+        else:
             prev_trough = pos.get("trailing_trough", pos["entry_price"])
             new_trough = min(prev_trough, current_price)
             pos["trailing_trough"] = new_trough
-            # 安値からの上昇率（ショートにとっては逆行）
             drawdown_from_peak = (current_price - new_trough) / new_trough
 
-        # --- 利確済み段階の追跡 ---
-        tp_stage = pos.get("tp_stage", 0)  # 0=未利確, 1=第1段階済, 2=第2段階済
+        tp_stage = pos.get("tp_stage", 0)
+
+        # --- 保有日数チェック ---
+        entry_date = datetime.fromisoformat(pos["entry_date"])
+        holding_days = (now - entry_date).days
 
         # === 判定ロジック（優先度順） ===
 
@@ -447,59 +473,64 @@ def check_stop_loss_take_profit(portfolio: dict) -> list:
         if pnl_pct <= STOP_LOSS_PCT:
             actions.append({
                 "action": "STOP_LOSS",
-                "code": pos["code"],
-                "name": pos["name"],
-                "side": side,
-                "entry_price": pos["entry_price"],
-                "current_price": current_price,
-                "pnl_pct": pnl_pct,
-                "shares": pos["shares"],  # 全株決済
+                "code": pos["code"], "name": pos["name"], "side": side,
+                "entry_price": pos["entry_price"], "current_price": current_price,
+                "pnl_pct": pnl_pct, "shares": pos["shares"],
             })
 
-        # 2. トレーリングストップ（高値/安値から3%逆行で残り全決済）
-        #    第1段階利確済み（tp_stage >= 1）の場合のみ発動
+        # 2. 強制決済（7日保有で塩漬け防止）
+        elif holding_days >= FORCE_EXIT_DAYS:
+            actions.append({
+                "action": "FORCE_EXIT",
+                "code": pos["code"], "name": pos["name"], "side": side,
+                "entry_price": pos["entry_price"], "current_price": current_price,
+                "pnl_pct": pnl_pct, "shares": pos["shares"],
+                "holding_days": holding_days,
+            })
+
+        # 3. トレーリングストップ（利確済みポジション: 高値/安値から3%逆行で全決済）
         elif tp_stage >= 1 and (
             (side == "long" and drawdown_from_peak <= -TRAILING_STOP_PCT) or
             (side == "short" and drawdown_from_peak >= TRAILING_STOP_PCT)
         ):
             actions.append({
                 "action": "TRAILING_STOP",
-                "code": pos["code"],
-                "name": pos["name"],
-                "side": side,
-                "entry_price": pos["entry_price"],
-                "current_price": current_price,
-                "pnl_pct": pnl_pct,
-                "shares": pos["shares"],  # 残り全株決済
+                "code": pos["code"], "name": pos["name"], "side": side,
+                "entry_price": pos["entry_price"], "current_price": current_price,
+                "pnl_pct": pnl_pct, "shares": pos["shares"],
             })
 
-        # 3. 第1段階利確（+5%で1/3利確）
+        # 4. 早期トレーリングストップ（+2%到達後、高値から-2%で全決済）
+        elif tp_stage == 0 and pnl_pct >= EARLY_TRAILING_TRIGGER and (
+            (side == "long" and drawdown_from_peak <= -EARLY_TRAILING_STOP) or
+            (side == "short" and drawdown_from_peak >= EARLY_TRAILING_STOP)
+        ):
+            actions.append({
+                "action": "EARLY_TRAILING_STOP",
+                "code": pos["code"], "name": pos["name"], "side": side,
+                "entry_price": pos["entry_price"], "current_price": current_price,
+                "pnl_pct": pnl_pct, "shares": pos["shares"],
+            })
+
+        # 5. 第1段階利確（+3%で1/3利確）
         elif tp_stage == 0 and pnl_pct >= TAKE_PROFIT_PCT_1:
             shares_to_sell = pos["shares"] / 3
             actions.append({
                 "action": "TAKE_PROFIT_1",
-                "code": pos["code"],
-                "name": pos["name"],
-                "side": side,
-                "entry_price": pos["entry_price"],
-                "current_price": current_price,
-                "pnl_pct": pnl_pct,
-                "shares": shares_to_sell,
+                "code": pos["code"], "name": pos["name"], "side": side,
+                "entry_price": pos["entry_price"], "current_price": current_price,
+                "pnl_pct": pnl_pct, "shares": shares_to_sell,
                 "_tp_stage_after": 1,
             })
 
-        # 4. 第2段階利確（+10%でさらに1/3利確）
+        # 6. 第2段階利確（+10%でさらに1/3利確）
         elif tp_stage == 1 and pnl_pct >= TAKE_PROFIT_PCT_2:
-            shares_to_sell = pos["shares"] / 2  # 残りの半分 = 元の1/3
+            shares_to_sell = pos["shares"] / 2
             actions.append({
                 "action": "TAKE_PROFIT_2",
-                "code": pos["code"],
-                "name": pos["name"],
-                "side": side,
-                "entry_price": pos["entry_price"],
-                "current_price": current_price,
-                "pnl_pct": pnl_pct,
-                "shares": shares_to_sell,
+                "code": pos["code"], "name": pos["name"], "side": side,
+                "entry_price": pos["entry_price"], "current_price": current_price,
+                "pnl_pct": pnl_pct, "shares": shares_to_sell,
                 "_tp_stage_after": 2,
             })
 
@@ -820,6 +851,11 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
     for market in markets:
         if market not in MARKET_STRATEGIES:
+            continue
+
+        from market_hours import should_scan
+        if not should_scan(market):
+            print(f"\n[Step 2] {market.upper()}: 閉場中のためスキップ")
             continue
 
         config = MARKET_STRATEGIES[market]
@@ -1182,7 +1218,7 @@ def main():
         description="全市場統合ペーパートレーダー ($200, 期限: 2026/03/30)"
     )
     parser.add_argument(
-        "--market", choices=["jp", "us", "btc", "gold"],
+        "--market", choices=["jp", "us", "btc", "gold", "fx"],
         help="特定の市場のみ巡回"
     )
     parser.add_argument("--summary", action="store_true", help="ポートフォリオ状況表示")
@@ -1191,6 +1227,8 @@ def main():
     parser.add_argument("--dry-run", action="store_true", dest="dry_run",
                         help="シグナル確認のみ（売買しない）")
     parser.add_argument("--json", action="store_true", help="JSON出力")
+    parser.add_argument("--monitor", action="store_true",
+                        help="保有ポジションの損切り/利確チェックのみ（新規スキャンなし）")
     args = parser.parse_args()
 
     # リセット
@@ -1219,7 +1257,28 @@ def main():
         return
 
     # メイン: スキャン＆トレード
-    markets = [args.market] if args.market else ["jp", "us", "btc", "gold"]
+    # モニターモード: 損切り/利確チェックのみ
+    if args.monitor:
+        print(f"[MONITOR] 保有ポジションのSL/TPチェック...")
+        actions = check_stop_loss_take_profit(portfolio)
+        for action in actions:
+            portfolio = execute_sell(
+                portfolio, action["code"], action["current_price"],
+                action["shares"], action["action"]
+            )
+            if "_tp_stage_after" in action:
+                for p in portfolio["positions"]:
+                    if p["code"] == action["code"]:
+                        p["tp_stage"] = action["_tp_stage_after"]
+                        break
+        if not actions:
+            print("  損切り・利確対象なし")
+        save_portfolio(portfolio)
+        record_portfolio_snapshot(portfolio)
+        print_summary(portfolio)
+        return
+
+    markets = [args.market] if args.market else ["jp", "us", "btc", "gold", "fx"]
     portfolio = scan_and_trade(portfolio, markets, dry_run=args.dry_run)
 
     if not args.dry_run:

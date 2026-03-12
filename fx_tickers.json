@@ -1,0 +1,14 @@
+{
+  "tickers": [
+    {"code": "EURUSD=X", "name": "ユーロ/ドル"},
+    {"code": "GBPUSD=X", "name": "ポンド/ドル"},
+    {"code": "USDJPY=X", "name": "ドル/円"},
+    {"code": "AUDUSD=X", "name": "豪ドル/ドル"},
+    {"code": "USDCHF=X", "name": "ドル/スイスフラン"},
+    {"code": "USDCAD=X", "name": "ドル/カナダドル"},
+    {"code": "NZDUSD=X", "name": "NZドル/ドル"},
+    {"code": "EURJPY=X", "name": "ユーロ/円"},
+    {"code": "GBPJPY=X", "name": "ポンド/円"},
+    {"code": "AUDJPY=X", "name": "豪ドル/円"}
+  ]
+}

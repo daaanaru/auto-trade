@@ -2,7 +2,7 @@
 """
 全市場統合スクリーナー
 
-日本株・米国株・BTC・ゴールドを1つのスクリプトで一括スキャンし、
+日本株・米国株・BTC・ゴールド・FXを1つのスクリプトで一括スキャンし、
 市場ごとに最適な戦略でシグナルを判定する。
 
 対応市場と戦略:
@@ -10,6 +10,7 @@
   - 米国株（主要50銘柄）      : BB+RSI Combo
   - BTC（BTC-USD）            : Volume Divergence
   - ゴールド（GLD ETF）       : BB+RSI Combo
+  - FX（外国為替）            : BB+RSI Combo
 
 使い方:
     python unified_screener.py                       # 全市場スキャン
@@ -17,6 +18,7 @@
     python unified_screener.py --market us            # 米国株のみ
     python unified_screener.py --market btc           # BTCのみ
     python unified_screener.py --market gold          # ゴールドのみ
+    python unified_screener.py --market fx            # FXのみ
     python unified_screener.py --json                 # JSON出力
     python unified_screener.py --buy-only             # BUYシグナルのみ
     python unified_screener.py --full                 # フルスクリーニング（WF検証付き）
@@ -41,6 +43,7 @@ import yfinance as yf
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
 
+from market_hours import should_scan
 from engine import BacktestEngine, BacktestConfig
 from strategies.monthly_momentum import MonthlyMomentumStrategy
 from strategies.bb_rsi_combo import BBRSIComboStrategy
@@ -99,6 +102,15 @@ MARKET_CONFIG = {
         "data_period": "3mo",
         "fetch_delay": 0.3,
     },
+    "fx": {
+        "name": "外国為替",
+        "strategy_key": "bb_rsi",
+        "strategy_class": BBRSIComboStrategy,
+        "tickers_file": "fx_tickers.json",
+        "tickers_loader": "ticker_list",
+        "data_period": "3mo",
+        "fetch_delay": 0.3,
+    },
 }
 
 
@@ -106,22 +118,33 @@ MARKET_CONFIG = {
 # データ取得
 # ==============================================================
 
-def fetch_data(symbol: str, period: str = "3mo") -> Optional[pd.DataFrame]:
-    """yfinance から日足データを取得する。エラー時はNoneを返す。"""
-    try:
-        df = yf.download(symbol, period=period, interval="1d", progress=False)
-        if df.empty:
+def fetch_data(symbol: str, period: str = "3mo", interval: str = "1d",
+               max_retries: int = 3) -> Optional[pd.DataFrame]:
+    """yfinance からデータを取得する。リトライ付き。"""
+    min_rows = 5 if interval != "1d" else 30
+    for attempt in range(max_retries):
+        try:
+            df = yf.download(symbol, period=period, interval=interval, progress=False)
+            if df.empty:
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** (attempt + 1))
+                    continue
+                return None
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.droplevel(1)
+            df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
+            df.columns = ["open", "high", "low", "close", "volume"]
+            df = df.dropna()
+            if len(df) < min_rows:
+                return None
+            return df
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(2 ** (attempt + 1))
+                continue
+            print(f"  [ERROR] {symbol}: {e} (リトライ{max_retries}回失敗)")
             return None
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = df.columns.droplevel(1)
-        df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
-        df.columns = ["open", "high", "low", "close", "volume"]
-        df = df.dropna()
-        if len(df) < 30:
-            return None
-        return df
-    except Exception:
-        return None
+    return None
 
 
 # ==============================================================
@@ -560,7 +583,7 @@ def main():
         description="全市場統合スクリーナー（日本株/米国株/BTC/ゴールド）"
     )
     parser.add_argument(
-        "--market", choices=["jp", "us", "btc", "gold"],
+        "--market", choices=["jp", "us", "btc", "gold", "fx"],
         help="特定の市場のみスキャン（デフォルト: 全市場）"
     )
     parser.add_argument(
@@ -585,10 +608,11 @@ def main():
     all_params = load_params()
 
     # 対象市場を決定
+    forced = bool(args.market)  # --market指定時は時間フィルタを無視
     if args.market:
         markets = [args.market]
     else:
-        markets = ["jp", "us", "btc", "gold"]
+        markets = ["jp", "us", "btc", "gold", "fx"]
 
     # フルスクリーニングモード
     if args.full:
@@ -599,6 +623,10 @@ def main():
     # 通常スキャンモード
     all_data = []
     for market in markets:
+        # 市場時間フィルタ（--market指定時は強制スキャン）
+        if not forced and not should_scan(market):
+            print(f"  {MARKET_CONFIG[market]['name']}: 閉場中のためスキップ")
+            continue
         print(f"  スキャン中: {MARKET_CONFIG[market]['name']}...", end="", flush=True)
         market_data = scan_market(market, all_params, buy_only=args.buy_only)
         all_data.append(market_data)
