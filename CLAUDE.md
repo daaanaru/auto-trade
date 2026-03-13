@@ -14,9 +14,11 @@
 - **Optunaパラメータ最適化完了**（6/7戦略がプラス転換）
 - **マルチマーケット検証完了**: 日本株/米国株/BTC/ゴールド
 - **ウォークフォワード検証完了**: Sony x Monthly Momentum WF Sharpe 1.99（最高評価）
-- **全市場統合スクリーナー稼働中**: 日本株/米国株/BTC/ゴールドを毎朝6:00に一括スキャン
-- **$200ペーパートレード稼働中**: 全市場対応（テクニカル+ファンダメンタル分析）、3/30期限
+- **全市場統合スクリーナー稼働中**: 日本株/米国株/BTC/ゴールド/FXを2時間ごとにスキャン（市場時間フィルター付き）
+- **30万円ペーパートレード稼働中（3/13リセット）**: 5市場対応、50枠（各市場10枠）、3/30期限
+- **市場別ファンダメンタル分析（3/13追加）**: 株:PER/PBR, FX:DXY/金利差, BTC:半減期サイクル, Gold:VIX/実質金利
 - **ショート+レバレッジ対応済み（3/10追加）**: SELLシグナル+ファンダスコア<0でショートエントリー、レバレッジ2倍
+- **ポジション監視15分ごと（3/12追加）**: --monitorモードでSL/TP/強制決済(7日)/早期トレーリングを常時監視
 - **自動卒業判定**: graduation_checker.py で毎日9:30に条件チェック
 - **統合ダッシュボード**: dashboard.py で全市場の状況を一覧表示
 - **実弾投入レイヤー準備完了**: bitFlyer ccxt経由（live_trade.py、DRY_RUNデフォルト）
@@ -35,10 +37,12 @@
 
 | ファイル | 役割 |
 |---------|------|
-| **unified_screener.py** | **全市場統合スクリーナー（日本株/米国株/BTC/ゴールド）** |
-| **unified_paper_trade.py** | **全市場統合ペーパートレーダー（$200, テクニカル+ファンダ）** |
+| **unified_screener.py** | **全市場統合スクリーナー（日本株/米国株/BTC/ゴールド/FX）** |
+| **unified_paper_trade.py** | **全市場統合ペーパートレーダー（30万円, テクニカル+市場別ファンダ）** |
 | **graduation_checker.py** | **自動卒業判定ツール** |
 | **dashboard.py** | **統合ダッシュボード（rich表示）** |
+| **market_fundamental.py** | **市場別ファンダメンタル分析（株:PER/PBR, FX:DXY/金利差, BTC:半減期, Gold:VIX/実質金利）** |
+| **market_hours.py** | **市場時間フィルター（閉場中のスキャン抑制）** |
 | engine.py | バックテストエンジン + DataFetcher（YFinance/CCXT） |
 | trade_engine.py | TradeEngine基底クラス（Paper/Live共通インターフェース） |
 | optimize.py | Optunaパラメータ最適化 + ウォークフォワード検証 |
@@ -48,32 +52,32 @@
 | crypto_monitor.py | 仮想通貨自律監視（Ollama LLM分析 + 卒業条件チェック） |
 | jp_stock_screener.py | 日経225全自動スクリーニング + WF検証 |
 | us_stock_tickers.json | S&P500主要50銘柄リスト + ゴールドティッカー |
-| fx_tickers.json | FXティッカーリスト（3/12追加） |
-| market_hours.py | 市場時間フィルター（3/12追加。閉場中のAPI呼び出し抑制） |
-| paper_portfolio_v1_backup.json | リセット前のポートフォリオバックアップ |
-| paper_portfolio.json | $200ペーパートレードのポートフォリオ状態 |
+| fx_tickers.json | FXティッカーリスト（10ペア） |
+| paper_portfolio.json | 30万円ペーパートレードのポートフォリオ状態 |
+| trade_history.json | 全トレード履歴（永続記録） |
 | daily_report.md | 日次損益レポート（自動生成） |
 | watchlist.json | シグナル監視対象銘柄（WF合格銘柄を登録） |
 | optimized_params.json | Optuna最適化済みパラメータ |
 | crypto_config.json | 仮想通貨監視設定 |
 | llm_ab_tracker.py | LLM A/Bテスト。シグナルのみ vs Ollama qwen2.5:7b のトレード判断を並行記録 |
 
-### $200ペーパートレード体制（3/30期限）
+### 30万円ペーパートレード体制（3/13リセット、3/30期限）
 
 | 項目 | 設定 |
 |------|------|
-| 初期資金 | 30,000 JPY ($200) |
+| 初期資金 | 300,000 JPY |
 | レバレッジ | 2倍（購買力 = 現金 x 2） |
-| 1銘柄上限 | ポートフォリオの20%（レバレッジ後の実効値で計算） |
-| 同時保有上限 | 5ポジション（ロング+ショート合計） |
+| 1銘柄上限 | ポートフォリオの4%（50枠に合わせて分散） |
+| 同時保有上限 | 50ポジション（各市場10枠 x 5市場） |
 | 損切り | -3%で全決済（ロング/ショート共通） |
-| 利確第1段階 | +5%で1/3利確 |
+| 利確第1段階 | +3%で1/3利確 |
 | 利確第2段階 | +10%でさらに1/3利確 |
-| トレーリングストップ | 第1利確後、高値(安値)から-3%(+3%)で残り全決済 |
-| ロングエントリー | テクニカルBUY + ファンダスコア >= 0.1 |
-| ショートエントリー | テクニカルSELL + ファンダスコア < 0（業績悪い銘柄を空売り） |
+| トレーリングストップ | +2%到達で発動、高値(安値)から-2%(+2%)で残り全決済 |
+| 強制決済 | 7日経過で自動決済（塩漬け防止） |
+| ロングエントリー | テクニカルBUY + 市場別ファンダスコア >= 0.1 |
+| ショートエントリー | テクニカルSELL + 市場別ファンダスコア < 0 |
 | 同一銘柄制限 | ロング+ショート同時保有禁止 |
-| 判断基準 | チャート面（7戦略）+ ファンダメンタル面（PER/PBR/配当/売上成長） |
+| 判断基準 | チャート面（7戦略）+ 市場別ファンダメンタル面（株:PER/PBR, FX:DXY/金利差, BTC:半減期, Gold:VIX） |
 
 ### 卒業条件（ペーパートレード → 実弾投入）
 
@@ -91,15 +95,16 @@
 
 | ジョブ | 実行時間 | スクリプト |
 |--------|---------|-----------|
-| **unified-screener** | **6回/日（0,4,8,12,16,20時）** | unified_screener.py --save |
-| **unified-paper-trade** | **6回/日（1,5,9,13,17,21時）** | unified_paper_trade.py |
+| **unified-screener** | **12回/日（2時間ごと :00）** | unified_screener.py --save |
+| **unified-paper-trade** | **12回/日（2時間ごと :30）** | unified_paper_trade.py |
+| **position-monitor** | **15分ごと** | unified_paper_trade.py --monitor（SL/TP監視のみ） |
 | **graduation-checker** | **2回/日（9:30, 21:30）** | graduation_checker.py |
 | signal-monitor | 毎朝8:50 | signal_monitor.py --watchlist |
 | paper-trade | 毎日9:00 | paper_trade.py |
 | crypto-monitor | 毎時 | crypto_monitor.py |
 | crypto-full-report | 毎日9:00 | crypto_monitor.py --report |
 | jp_stock_screener | 毎週日曜深夜 | jp_stock_screener.py |
-| **jp-fullmarket-scanner** | **毎朝8:00** | **jp_fullmarket_scanner.py --save --min-score 5（東証全3,615銘柄）** |
+| **jp-fullmarket-scanner** | **毎朝6:00** | **jp_fullmarket_scanner.py --save --min-score 5（東証全3,615銘柄）** |
 
 ### 通知連携
 
@@ -110,9 +115,9 @@
 
 ## 山頂
 
-- $200ペーパートレードで3/30まで運用し、利益を出す
+- 30万円ペーパートレードで3/30まで運用し、利益を出す
 - 卒業条件をクリアした戦略で少額実弾投入
-- 複数市場×複数戦略のポートフォリオ運用
+- 5市場×複数戦略のポートフォリオ運用
 
 ## 次の一歩
 
