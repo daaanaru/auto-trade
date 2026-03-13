@@ -2,7 +2,7 @@
 StrategyAgent: 自然言語の指示をトレード戦略コードに変換するAIエージェント
 
 使い方:
-    agent = StrategyAgent(api_key=os.environ["ANTHROPIC_API_KEY"])
+    agent = StrategyAgent(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     result = await agent.run("RSIが30以下でBB下抜けしたら買う戦略をBTCで試して")
 """
 
