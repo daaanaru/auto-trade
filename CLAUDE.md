@@ -29,7 +29,7 @@
 | 米国株 | yfinance | AAPL, NVDA, GOOGL, JPM, LLY 他50銘柄 | BB+RSI Combo |
 | BTC | yfinance / ccxt (Bybit) | BTC-USD, BTC/USDT | Volume Divergence |
 | ゴールド | yfinance | GLD, GC=F | BB+RSI Combo |
-| FX | yfinance | USDJPY=X | 全戦略不適合（非対応） |
+| FX | yfinance | EURUSD=X, USDJPY=X, GBPUSD=X 他10ペア | **BB+RSI Combo（3/12対応開始・上様指示）** |
 
 ### 主要ファイル
 
