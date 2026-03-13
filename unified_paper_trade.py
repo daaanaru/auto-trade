@@ -48,12 +48,13 @@ PORTFOLIO_LOG_FILE = os.path.join(BASE_DIR, "paper_portfolio_log.json")
 TRADE_LOG_FILE = os.path.join(BASE_DIR, "paper_trade_log.json")
 DAILY_REPORT_FILE = os.path.join(BASE_DIR, "daily_report.md")
 
-INITIAL_CAPITAL_USD = 200.0
-INITIAL_CAPITAL_JPY = 30000.0  # 約$200
+INITIAL_CAPITAL_USD = 2000.0
+INITIAL_CAPITAL_JPY = 300000.0  # 約$2000（検証用）
 
 # リスク管理ルール
-MAX_POSITION_PCT = 0.20       # 1銘柄あたりポートフォリオの20%（レバレッジ後の実効値で計算）
-MAX_POSITIONS = 5              # 同時保有最大5ポジション（ロング+ショート合計）
+MAX_POSITION_PCT = 0.04        # 1銘柄あたりポートフォリオの4%（50枠分散）
+MAX_POSITIONS = 50             # 同時保有最大50ポジション（5市場 x 10枠）
+MAX_POSITIONS_PER_MARKET = 10  # 1市場あたり最大10ポジション
 STOP_LOSS_PCT = -0.03          # -3%で強制クローズ（ロング用。ショートは+3%で発動）
 TAKE_PROFIT_PCT_1 = 0.03       # +3%で1/3利確（第1段階）
 TAKE_PROFIT_PCT_2 = 0.10       # +10%でさらに1/3利確（第2段階）
@@ -557,8 +558,11 @@ def execute_buy(portfolio: dict, code: str, name: str, market: str,
     if any(p["code"] == code for p in portfolio["positions"]):
         return portfolio
 
-    # 同時保有上限チェック（ロング+ショート合計）
+    # 同時保有上限チェック（全体 + 市場別）
     if len(portfolio["positions"]) >= MAX_POSITIONS:
+        return portfolio
+    market_positions = sum(1 for p in portfolio["positions"] if p.get("market") == market)
+    if market_positions >= MAX_POSITIONS_PER_MARKET:
         return portfolio
 
     # 現金保留率ガード: 総資産の10%を現金として確保
@@ -638,8 +642,11 @@ def execute_short(portfolio: dict, code: str, name: str, market: str,
     if any(p["code"] == code for p in portfolio["positions"]):
         return portfolio
 
-    # 同時保有上限チェック（ロング+ショート合計）
+    # 同時保有上限チェック（全体 + 市場別）
     if len(portfolio["positions"]) >= MAX_POSITIONS:
+        return portfolio
+    market_positions = sum(1 for p in portfolio["positions"] if p.get("market") == market)
+    if market_positions >= MAX_POSITIONS_PER_MARKET:
         return portfolio
 
     # 現金保留率ガード: 総資産の10%を現金として確保
@@ -975,8 +982,12 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
         for candidate in buy_candidates:
             if len(portfolio["positions"]) >= MAX_POSITIONS:
-                print(f"  ポジション上限({MAX_POSITIONS})に達しました")
+                print(f"  全体ポジション上限({MAX_POSITIONS})に達しました")
                 break
+            market_count = sum(1 for p in portfolio["positions"] if p.get("market") == candidate["market"])
+            if market_count >= MAX_POSITIONS_PER_MARKET:
+                print(f"  {candidate['market'].upper()} 市場枠上限({MAX_POSITIONS_PER_MARKET})に達しました")
+                continue
             portfolio = execute_buy(
                 portfolio, candidate["code"], candidate["name"],
                 candidate["market"], candidate["price"],
@@ -992,8 +1003,12 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
         for candidate in short_candidates:
             if len(portfolio["positions"]) >= MAX_POSITIONS:
-                print(f"  ポジション上限({MAX_POSITIONS})に達しました")
+                print(f"  全体ポジション上限({MAX_POSITIONS})に達しました")
                 break
+            market_count = sum(1 for p in portfolio["positions"] if p.get("market") == candidate["market"])
+            if market_count >= MAX_POSITIONS_PER_MARKET:
+                print(f"  {candidate['market'].upper()} 市場枠上限({MAX_POSITIONS_PER_MARKET})に達しました")
+                continue
             portfolio = execute_short(
                 portfolio, candidate["code"], candidate["name"],
                 candidate["market"], candidate["price"],
