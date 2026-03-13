@@ -38,6 +38,7 @@ sys.path.insert(0, BASE_DIR)
 from strategies.monthly_momentum import MonthlyMomentumStrategy
 from strategies.bb_rsi_combo import BBRSIComboStrategy
 from strategies.volume_divergence import VolumeDivergenceStrategy
+from market_fundamental import get_market_fundamental_score
 
 # ==============================================================
 # 設定
@@ -46,6 +47,7 @@ from strategies.volume_divergence import VolumeDivergenceStrategy
 PORTFOLIO_FILE = os.path.join(BASE_DIR, "paper_portfolio.json")
 PORTFOLIO_LOG_FILE = os.path.join(BASE_DIR, "paper_portfolio_log.json")
 TRADE_LOG_FILE = os.path.join(BASE_DIR, "paper_trade_log.json")
+TRADE_HISTORY_FILE = os.path.join(BASE_DIR, "trade_history.json")
 DAILY_REPORT_FILE = os.path.join(BASE_DIR, "daily_report.md")
 
 INITIAL_CAPITAL_USD = 2000.0
@@ -310,6 +312,26 @@ def append_trade_log(entry: dict):
     log.append(entry)
     with open(TRADE_LOG_FILE, "w") as f:
         json.dump(log, f, indent=2, ensure_ascii=False, default=str)
+
+
+def append_trade_history(record: dict):
+    """全トレード履歴をtrade_history.jsonに永続保存する。
+
+    スキーマ: {"trades": [{"timestamp", "symbol", "action", "price", "shares", "pnl", "strategy", ...}]}
+    ファイルが存在しない場合は自動生成する。
+    """
+    data = {"trades": []}
+    if os.path.exists(TRADE_HISTORY_FILE):
+        try:
+            with open(TRADE_HISTORY_FILE, "r") as f:
+                data = json.load(f)
+            if "trades" not in data:
+                data["trades"] = []
+        except (json.JSONDecodeError, ValueError):
+            data = {"trades": []}
+    data["trades"].append(record)
+    with open(TRADE_HISTORY_FILE, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False, default=str)
 
 
 # ==============================================================
@@ -611,6 +633,19 @@ def execute_buy(portfolio: dict, code: str, name: str, market: str,
         "timestamp": datetime.now().isoformat(),
     })
 
+    append_trade_history({
+        "timestamp": datetime.now().isoformat(),
+        "symbol": code,
+        "action": "BUY",
+        "price": price,
+        "shares": round(shares, 6),
+        "pnl": None,
+        "strategy": strategy,
+        "side": "long",
+        "market": market,
+        "name": name,
+    })
+
     # 通知
     try:
         from notifier import notify_buy_signal
@@ -692,6 +727,19 @@ def execute_short(portfolio: dict, code: str, name: str, market: str,
         "invest_jpy": round(invest_amount, 2), "strategy": strategy,
         "fundamental_score": fundamental.get("score", 0),
         "timestamp": datetime.now().isoformat(),
+    })
+
+    append_trade_history({
+        "timestamp": datetime.now().isoformat(),
+        "symbol": code,
+        "action": "SELL",
+        "price": price,
+        "shares": round(shares, 6),
+        "pnl": None,
+        "strategy": strategy,
+        "side": "short",
+        "market": market,
+        "name": name,
     })
 
     # 通知
@@ -789,6 +837,21 @@ def execute_sell(portfolio: dict, code: str, price: float, shares: float,
     pnl_label = f"{net_pnl:+,.0f}" if abs(net_pnl) < 10000 else f"{net_pnl:+,.2f}"
     close_action = "COVER" if side == "short" else "SELL"
     print(f"  [{close_action}/{side_label}] {pos['name']}({code}) @ {price:,.2f} x {sell_shares:.4f} | PnL: {pnl_label} JPY ({reason})")
+
+    append_trade_history({
+        "timestamp": datetime.now().isoformat(),
+        "symbol": code,
+        "action": "CLOSE",
+        "price": price,
+        "shares": round(sell_shares, 6),
+        "pnl": round(net_pnl, 2),
+        "strategy": pos.get("strategy", ""),
+        "side": side,
+        "market": market,
+        "name": pos.get("name", ""),
+        "entry_price": pos.get("entry_price"),
+        "reason": reason,
+    })
 
     # 通知
     try:
@@ -895,7 +958,7 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
             # BUYシグナル → ロング候補
             if signal == 1:
-                fundamental = get_fundamental_score(code)
+                fundamental = get_market_fundamental_score(code, market)
                 if fundamental["score"] >= 0.1:  # 閾値0.1: 浮動小数点丸め誤差(-0.0等)を排除し、意味ある優位性を要求
                     buy_candidates.append({
                         "code": code,
@@ -912,7 +975,7 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
             # SELLシグナル → ショート候補
             elif signal == -1:
-                fundamental = get_fundamental_score(code)
+                fundamental = get_market_fundamental_score(code, market)
                 # ショート条件: テクニカルSELL + ファンダスコア < 0（業績が悪い銘柄を空売り）
                 if fundamental["score"] < 0:
                     short_candidates.append({
