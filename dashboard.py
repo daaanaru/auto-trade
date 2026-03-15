@@ -50,7 +50,7 @@ def file_mtime(filename: str) -> str:
 def gather_signals(no_fetch: bool = False) -> list[dict]:
     """watchlist + BTC + 米国株 + ゴールドのシグナル情報を集める。
 
-    no_fetch=True の場合は performance_log から最新シグナルだけ返す。
+    no_fetch=True の場合は paper_trade_log から最新シグナルだけ返す。
     """
     results = []
 
@@ -98,24 +98,26 @@ def gather_signals(no_fetch: bool = False) -> list[dict]:
                 "error": "no-fetch mode",
             })
 
-    # --- BTC（performance_log の最新エントリ） ---
-    perf = load_json("performance_log.json")
-    if perf and len(perf) > 0:
-        latest = perf[-1]
-        signals = latest.get("signals", {})
-        # 最も重要な戦略シグナルを決定（BUY/SELL > NEUTRAL）
-        btc_signal = "NEUTRAL"
-        for _strat, sig in signals.items():
-            if sig in ("BUY", "SELL"):
-                btc_signal = sig
+    # --- BTC（paper_trade_log から最新BTC取引を参照） ---
+    trade_log = load_json("paper_trade_log.json")
+    btc_trade = None
+    if trade_log:
+        # 直近のBTC関連取引を探す
+        for entry in reversed(trade_log):
+            if entry.get("market") == "btc" or "BTC" in entry.get("code", ""):
+                btc_trade = entry
                 break
+    if btc_trade:
+        btc_signal = btc_trade.get("action", "NEUTRAL")  # BUY/SELL
+        if btc_signal not in ("BUY", "SELL"):
+            btc_signal = "NEUTRAL"
         results.append({
             "market": "BTC",
-            "symbol": "BTC/JPY",
+            "symbol": btc_trade.get("code", "BTC-JPY"),
             "name": "ビットコイン",
             "signal": btc_signal,
-            "price": latest.get("price_jpy", 0),
-            "score": 0,
+            "price": btc_trade.get("price", 0),
+            "score": btc_trade.get("fundamental_score", 0),
             "error": None,
         })
 
@@ -189,25 +191,48 @@ def gather_signals(no_fetch: bool = False) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def gather_paper_trade() -> dict:
-    """ペーパートレードの現在状態を返す。"""
-    positions = load_json("paper_positions.json")
-    trade_log = load_json("paper_trade_log.json")
-    perf = load_json("performance_log.json")
+    """統合ペーパートレード（30万円版）の現在状態を返す。
 
-    if positions is None:
+    データソース:
+      - paper_portfolio.json: ポジション・現金・実現損益
+      - paper_portfolio_log.json: 評価額の時系列ログ
+      - paper_trade_log.json: 取引ログ
+    """
+    portfolio = load_json("paper_portfolio.json")
+    perf_log = load_json("paper_portfolio_log.json")
+    trade_log = load_json("paper_trade_log.json")
+
+    if portfolio is None:
         return {"available": False}
+
+    initial_capital = portfolio.get("initial_capital_jpy", 300000.0)
+    cash = portfolio.get("cash_jpy", 0)
+    positions = portfolio.get("positions", [])
+    realized_pnl = portfolio.get("total_realized_pnl", 0)
+
+    # 最新の評価額（portfolio_logから）
+    total_value = initial_capital
+    unrealized_pnl = 0.0
+    if perf_log and len(perf_log) > 0:
+        latest = perf_log[-1]
+        total_value = latest.get("total_value_jpy", initial_capital)
+        unrealized_pnl = latest.get("unrealized_pnl_jpy", 0)
 
     result = {
         "available": True,
-        "capital": positions.get("capital", 0),
-        "position_btc": positions.get("position", 0),
-        "entry_price": positions.get("entry_price", 0),
-        "total_pnl": positions.get("total_pnl", 0),
-        "total_trades": positions.get("total_trades", 0),
-        "winning_trades": positions.get("winning_trades", 0),
-        "losing_trades": positions.get("losing_trades", 0),
-        "strategy": positions.get("strategy", "---"),
-        "last_updated": positions.get("last_updated", "---"),
+        "capital": initial_capital,
+        "cash_jpy": cash,
+        "total_value": total_value,
+        "position_count": len(positions),
+        "total_pnl": realized_pnl,
+        "unrealized_pnl": unrealized_pnl,
+        "realized_pnl": realized_pnl,
+        "total_trades": portfolio.get("total_trades", 0),
+        "winning_trades": portfolio.get("winning_trades", 0),
+        "losing_trades": portfolio.get("losing_trades", 0),
+        "leverage": portfolio.get("leverage", 2),
+        "last_updated": portfolio.get("last_updated", "---"),
+        "created_at": portfolio.get("created_at", "---"),
     }
 
     # 勝率
@@ -217,21 +242,19 @@ def gather_paper_trade() -> dict:
     else:
         result["win_rate"] = 0.0
 
-    # 最新の評価額（performance_logから）
-    if perf and len(perf) > 0:
-        latest = perf[-1]
-        result["current_price"] = latest.get("price_jpy", 0)
-        result["total_value"] = latest.get("total_value_jpy", 0)
-        result["unrealized_pnl"] = latest.get("unrealized_pnl_jpy", 0)
-        result["realized_pnl"] = latest.get("realized_pnl_jpy", 0)
-    else:
-        result["current_price"] = 0
-        result["total_value"] = result["capital"]
-        result["unrealized_pnl"] = 0
-        result["realized_pnl"] = 0
-
     # 取引ログ件数
     result["log_entries"] = len(trade_log) if trade_log else 0
+
+    # 市場別ポジション内訳
+    market_counts = {}
+    for p in positions:
+        m = p.get("market", "unknown")
+        market_counts[m] = market_counts.get(m, 0) + 1
+    result["market_breakdown"] = market_counts
+
+    # ロング/ショート内訳
+    result["long_count"] = sum(1 for p in positions if p.get("side") == "long")
+    result["short_count"] = sum(1 for p in positions if p.get("side") == "short")
 
     return result
 
@@ -243,8 +266,8 @@ def gather_paper_trade() -> dict:
 def gather_graduation() -> dict:
     """卒業条件の達成状況を返す。"""
     config = load_json("crypto_config.json")
-    positions = load_json("paper_positions.json")
-    perf = load_json("performance_log.json")
+    positions = load_json("paper_portfolio.json")
+    perf = load_json("paper_portfolio_log.json")
 
     if config is None:
         return {"available": False}
@@ -364,37 +387,32 @@ def gather_graduation() -> dict:
 # ---------------------------------------------------------------------------
 
 def gather_signal_history(days: int = 7) -> list[dict]:
-    """performance_log から過去N日のシグナル変化を抽出する。"""
-    perf = load_json("performance_log.json")
-    if not perf:
+    """paper_trade_log から過去N日の取引（エントリ/決済）を抽出する。"""
+    trade_log = load_json("paper_trade_log.json")
+    if not trade_log:
         return []
 
     cutoff = datetime.now() - timedelta(days=days)
     history = []
-    prev_signals = {}
 
-    for entry in perf:
+    for entry in trade_log:
         try:
             ts = datetime.fromisoformat(entry["timestamp"])
         except (ValueError, KeyError):
             continue
         if ts < cutoff:
-            prev_signals = entry.get("signals", {})
             continue
 
-        current_signals = entry.get("signals", {})
-        for strat, sig in current_signals.items():
-            prev = prev_signals.get(strat, sig)
-            if sig != prev and sig in ("BUY", "SELL"):
-                history.append({
-                    "timestamp": entry["timestamp"],
-                    "market": "BTC",
-                    "symbol": "BTC/JPY",
-                    "strategy": strat,
-                    "signal": sig,
-                    "price": entry.get("price_jpy", 0),
-                })
-        prev_signals = current_signals
+        action = entry.get("action", "")
+        if action in ("BUY", "SELL", "CLOSE"):
+            history.append({
+                "timestamp": entry["timestamp"],
+                "market": entry.get("market", "").upper(),
+                "symbol": entry.get("code", ""),
+                "strategy": entry.get("strategy", "-"),
+                "signal": action,
+                "price": entry.get("price", 0),
+            })
 
     return history
 
@@ -456,21 +474,28 @@ def render_rich(signals: list, paper: dict, graduation: dict, history: list):
 
     # --- 2. ペーパートレード状況 ---
     if paper["available"]:
-        pt_table = Table(title="ペーパートレード (BTC/JPY)", show_lines=False)
+        leverage = paper.get("leverage", 2)
+        pt_table = Table(title=f"統合ペーパートレード (30万円, {leverage}xレバ)", show_lines=False)
         pt_table.add_column("項目", width=20)
-        pt_table.add_column("値", justify="right", width=20)
+        pt_table.add_column("値", justify="right", width=28)
 
-        pnl_style = "green" if paper["total_pnl"] >= 0 else "red"
+        pnl_style = "green" if paper["realized_pnl"] >= 0 else "red"
         unreal_style = "green" if paper["unrealized_pnl"] >= 0 else "red"
+        total_return = (paper["total_value"] - paper["capital"]) / paper["capital"] * 100
 
-        pt_table.add_row("資本金", f"{paper['capital']:,.0f} JPY")
-        pt_table.add_row("評価額", f"{paper['total_value']:,.0f} JPY")
-        pt_table.add_row("BTC保有", f"{paper['position_btc']:.6f} BTC")
-        pt_table.add_row("累計損益", f"[{pnl_style}]{paper['total_pnl']:+,.0f} JPY[/{pnl_style}]")
+        pt_table.add_row("初期資本", f"{paper['capital']:,.0f} JPY")
+        pt_table.add_row("現金残高", f"{paper['cash_jpy']:,.0f} JPY")
+        pt_table.add_row("評価額(実質)", f"{paper['total_value']:,.0f} JPY ({total_return:+.2f}%)")
+        pt_table.add_row("ポジション数", f"{paper['position_count']} (L:{paper['long_count']} / S:{paper['short_count']})")
+        pt_table.add_row("実現損益", f"[{pnl_style}]{paper['realized_pnl']:+,.0f} JPY[/{pnl_style}]")
         pt_table.add_row("含み損益", f"[{unreal_style}]{paper['unrealized_pnl']:+,.0f} JPY[/{unreal_style}]")
-        pt_table.add_row("取引回数", f"{paper['total_trades']}回")
+        pt_table.add_row("決済回数", f"{paper['total_trades']}回 (勝{paper['winning_trades']}/負{paper['losing_trades']})")
         pt_table.add_row("勝率", f"{paper['win_rate']}%")
-        pt_table.add_row("戦略", paper["strategy"])
+        # 市場内訳
+        breakdown = paper.get("market_breakdown", {})
+        if breakdown:
+            bd_str = " / ".join(f"{m}:{c}" for m, c in sorted(breakdown.items()))
+            pt_table.add_row("市場内訳", bd_str)
         pt_table.add_row("最終更新", paper["last_updated"][:16] if len(paper["last_updated"]) > 16 else paper["last_updated"])
 
         console.print(pt_table)
@@ -519,8 +544,8 @@ def render_rich(signals: list, paper: dict, graduation: dict, history: list):
 
     console.print()
     console.print(f"[dim]データ更新: watchlist {file_mtime('watchlist.json')} / "
-                  f"performance_log {file_mtime('performance_log.json')} / "
-                  f"paper_positions {file_mtime('paper_positions.json')}[/dim]")
+                  f"portfolio_log {file_mtime('paper_portfolio_log.json')} / "
+                  f"portfolio {file_mtime('paper_portfolio.json')}[/dim]")
     console.print()
 
 
