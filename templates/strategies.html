@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>戦略解説 - 投資部ダッシュボード</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --border:    #2a2d3a;
+      --text:      #e2e8f0;
+      --muted:     #718096;
+      --green:     #48bb78;
+      --red:       #fc8181;
+      --yellow:    #f6ad55;
+      --blue:      #63b3ed;
+      --purple:    #b794f4;
+      --accent:    #4299e1;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'SF Pro Display', 'Hiragino Sans', 'Meiryo', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 16px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+
+    /* ===== ナビゲーション ===== */
+    .nav-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      padding: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .nav-link {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+    .nav-link.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ===== ヘッダー ===== */
+    header {
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { font-size: 20px; font-weight: 700; }
+
+    /* ===== カード ===== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    /* ===== セクションヘッダー ===== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .section-header h2 { font-size: 15px; font-weight: 600; }
+    .section-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    /* ===== テーブル ===== */
+    .table-wrapper { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+
+    /* ===== 戦略カード ===== */
+    .strat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    .strat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid var(--accent);
+    }
+    .strat-card.active-card { border-left-color: var(--green); }
+    .strat-card.standby-card { border-left-color: var(--muted); }
+    .strat-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .strat-market {
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .strat-market-us   { background: rgba(183,148,244,0.12); color: var(--purple); }
+    .strat-market-jp   { background: rgba(99,179,237,0.12); color: var(--blue); }
+    .strat-market-btc  { background: rgba(246,173,85,0.12); color: var(--yellow); }
+    .strat-market-gold { background: rgba(246,173,85,0.12); color: var(--yellow); }
+    .strat-market-fx   { background: rgba(183,148,244,0.12); color: var(--purple); }
+    .strat-market-all  { background: rgba(113,128,150,0.12); color: var(--muted); }
+    .strat-desc {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.7;
+    }
+    .strat-type {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ===== スケジュール表 ===== */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .schedule-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      text-align: center;
+    }
+    .schedule-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    .schedule-label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .schedule-time {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ===== 待機戦略リスト ===== */
+    .standby-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .standby-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .standby-name {
+      font-weight: 600;
+      font-size: 13px;
+      min-width: 160px;
+    }
+    .standby-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+
+    /* ===== フッター ===== */
+    footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== ナビゲーション ===== -->
+<nav class="nav-bar">
+  <a href="/" class="nav-link">トップ</a>
+  <a href="/strategies" class="nav-link active">戦略解説</a>
+  <a href="/analysis" class="nav-link">分析</a>
+</nav>
+
+<!-- ===== ヘッダー ===== -->
+<header>
+  <h1>戦略解説</h1>
+</header>
+
+<!-- ===== システム概要: 巡回スケジュール ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>システム概要 - 巡回スケジュール</h2>
+  </div>
+  <div class="schedule-grid">
+    <div class="schedule-item">
+      <div class="schedule-label">スクリーナー</div>
+      <div class="schedule-time">2時間ごと（:00）</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">
+        全5市場を巡回スキャン<br>BUY/SELLシグナル検出
+      </div>
+    </div>
+    <div class="schedule-item">
+      <div class="schedule-label">ペーパートレーダー</div>
+      <div class="schedule-time">2時間ごと（:30）</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">
+        シグナルに基づき<br>エントリー/決済判断
+      </div>
+    </div>
+    <div class="schedule-item">
+      <div class="schedule-label">ポジション監視</div>
+      <div class="schedule-time">15分ごと</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">
+        SL/TP/強制決済<br>トレーリングストップ
+      </div>
+    </div>
+    <div class="schedule-item">
+      <div class="schedule-label">卒業判定</div>
+      <div class="schedule-time">毎日 9:30 / 21:30</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">
+        卒業条件の自動チェック<br>実弾投入可否を判定
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 実戦配備中の3戦略 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>実戦配備中の戦略</h2>
+    <span class="section-badge" style="background:rgba(72,187,120,0.15); color:var(--green);">ACTIVE 3</span>
+  </div>
+  <div class="strat-grid">
+
+    <!-- BB+RSI Combo -->
+    <div class="strat-card active-card">
+      <div class="strat-name">BB+RSI Combo</div>
+      <div>
+        <span class="strat-market strat-market-us">米国株</span>
+        <span class="strat-market strat-market-gold">ゴールド</span>
+        <span class="strat-market strat-market-fx">FX</span>
+      </div>
+      <div class="strat-desc">
+        ボリンジャーバンド下限 + RSI 30以下で<span class="pos">BUY</span>、
+        上限 + RSI 70以上で<span class="neg">SELL</span>。
+        レンジ相場で威力を発揮する逆張り戦略。
+      </div>
+      <div class="strat-type">
+        タイプ: 逆張り / レンジ相場向き
+      </div>
+    </div>
+
+    <!-- Monthly Momentum -->
+    <div class="strat-card active-card">
+      <div class="strat-name">Monthly Momentum</div>
+      <div>
+        <span class="strat-market strat-market-jp">日本株</span>
+      </div>
+      <div class="strat-desc">
+        月初3営業日 + 出来高急増で<span class="pos">BUY</span>。
+        月末に手仕舞い。「月初効果」のアノマリーを活用した戦略。
+        WF検証で日本株22銘柄が合格済み。
+      </div>
+      <div class="strat-type">
+        タイプ: アノマリー / モメンタム
+      </div>
+    </div>
+
+    <!-- Volume Divergence -->
+    <div class="strat-card active-card">
+      <div class="strat-name">Volume Divergence</div>
+      <div>
+        <span class="strat-market strat-market-btc">仮想通貨</span>
+      </div>
+      <div class="strat-desc">
+        MFIダイバージェンス + EMA200 + 出来高の複合判断でトレンド転換を狙う。
+        シグナル発生頻度は低いが、的中時のリターンが大きい。
+      </div>
+      <div class="strat-type">
+        タイプ: トレンド転換狙い / シグナル少
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== 待機中の5戦略 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>待機中の戦略</h2>
+    <span class="section-badge" style="background:rgba(113,128,150,0.15); color:var(--muted);">STANDBY 5</span>
+  </div>
+  <div class="standby-list">
+    <div class="standby-item">
+      <div class="standby-name">SMA Crossover</div>
+      <div class="standby-desc">短期SMAが長期SMAを上抜けでBUY、下抜けでSELL。トレンドフォロー型の基本戦略</div>
+    </div>
+    <div class="standby-item">
+      <div class="standby-name">RSI Reversion</div>
+      <div class="standby-desc">RSIの売られすぎ/買われすぎゾーンからの反転を狙う平均回帰戦略</div>
+    </div>
+    <div class="standby-item">
+      <div class="standby-name">Momentum Pullback</div>
+      <div class="standby-desc">上昇トレンド中の押し目買い。ADXでトレンド強度を確認しつつRSIの一時的下落でエントリー</div>
+    </div>
+    <div class="standby-item">
+      <div class="standby-name">Order Block</div>
+      <div class="standby-desc">機関投資家の大口注文痕跡（オーダーブロック）を検出し、価格がそのゾーンに戻った時にエントリー</div>
+    </div>
+    <div class="standby-item">
+      <div class="standby-name">VolScale SMA</div>
+      <div class="standby-desc">ボラティリティでポジションサイズを調整するSMAクロスオーバー。荒れ相場でリスクを自動縮小</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== リスク管理ルール ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>リスク管理ルール</h2>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>ルール</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600;">損切り（ストップロス）</td>
+          <td><span class="neg">-3%</span> で全決済</td>
+          <td style="color:var(--muted); font-size:12px;">ロング/ショート共通</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">利確 第1段階</td>
+          <td><span class="pos">+3%</span> で1/3利確</td>
+          <td style="color:var(--muted); font-size:12px;">利益の一部を確定</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">利確 第2段階</td>
+          <td><span class="pos">+10%</span> でさらに1/3利確</td>
+          <td style="color:var(--muted); font-size:12px;">大きな利益を段階的に確保</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">トレーリングストップ</td>
+          <td>+2%到達で発動、高値から<span class="neg">-2%</span>で残り全決済</td>
+          <td style="color:var(--muted); font-size:12px;">ショートは安値から+2%</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">強制決済</td>
+          <td>7日経過で自動決済</td>
+          <td style="color:var(--muted); font-size:12px;">塩漬け防止</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">レバレッジ</td>
+          <td>2倍（購買力 = 現金 x 2）</td>
+          <td style="color:var(--muted); font-size:12px;">全市場共通</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">1銘柄上限</td>
+          <td>ポートフォリオの4%</td>
+          <td style="color:var(--muted); font-size:12px;">50枠に分散</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">同時保有上限</td>
+          <td>50ポジション（各市場10枠 x 5市場）</td>
+          <td style="color:var(--muted); font-size:12px;">ロング+ショート合計</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 卒業条件 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>卒業条件（ペーパー → 実弾）</h2>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>条件</th>
+          <th>閾値</th>
+          <th>意味</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600;">運用期間</td>
+          <td>14日以上</td>
+          <td style="color:var(--muted); font-size:12px;">十分なサンプル数を確保するため</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">勝率</td>
+          <td>40%以上</td>
+          <td style="color:var(--muted); font-size:12px;">損小利大を前提に最低ライン</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">ローリングSharpe</td>
+          <td>0.5以上</td>
+          <td style="color:var(--muted); font-size:12px;">リスク調整後リターンの品質指標</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">最大ドローダウン</td>
+          <td>-15%以内</td>
+          <td style="color:var(--muted); font-size:12px;">資金の毀損幅を制限</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">BT乖離</td>
+          <td>+-20%以内</td>
+          <td style="color:var(--muted); font-size:12px;">バックテスト結果との整合性。乖離大 = 過剰適合の疑い</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  DaNARU 投資部ダッシュボード &mdash; 戦略解説 &mdash; port 8090
+</footer>
+
+</body>
+</html>

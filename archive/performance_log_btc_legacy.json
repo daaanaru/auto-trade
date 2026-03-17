@@ -1,0 +1,4762 @@
+[
+  {
+    "timestamp": "2026-03-04T11:38:21.373661",
+    "price_jpy": 10741751.0,
+    "spread": 2036.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T11:41:07.318523",
+    "price_jpy": 10740705.0,
+    "spread": 6232.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T11:57:21.654141",
+    "price_jpy": 10785731.0,
+    "spread": 5818.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T12:00:12.067318",
+    "price_jpy": 10780154.0,
+    "spread": 7831.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T13:00:13.332027",
+    "price_jpy": 10677764.0,
+    "spread": 2316.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T14:00:14.407583",
+    "price_jpy": 10682574.0,
+    "spread": 3459.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T15:00:11.882542",
+    "price_jpy": 10758719.0,
+    "spread": 6522.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T16:00:11.084992",
+    "price_jpy": 10802616.0,
+    "spread": 3362.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T17:00:14.202983",
+    "price_jpy": 10961160.0,
+    "spread": 8184.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T18:00:13.523716",
+    "price_jpy": 11196406.0,
+    "spread": 8689.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T19:00:13.337902",
+    "price_jpy": 11260279.0,
+    "spread": 3721.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T20:00:13.838375",
+    "price_jpy": 11226574.0,
+    "spread": 8028.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T21:00:14.518360",
+    "price_jpy": 11192431.0,
+    "spread": 5814.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T22:00:14.783872",
+    "price_jpy": 11227412.0,
+    "spread": 7630.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-04T23:00:11.516779",
+    "price_jpy": 11254712.0,
+    "spread": 6783.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T00:00:15.160252",
+    "price_jpy": 11300002.0,
+    "spread": 3213.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T01:00:09.906074",
+    "price_jpy": 11544755.0,
+    "spread": 6436.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T02:00:12.595206",
+    "price_jpy": 11515358.0,
+    "spread": 10471.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T03:00:09.474974",
+    "price_jpy": 11506484.0,
+    "spread": 4411.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T04:00:14.185945",
+    "price_jpy": 11583779.0,
+    "spread": 21381.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T05:00:12.437755",
+    "price_jpy": 11572277.0,
+    "spread": 9153.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T06:00:12.132579",
+    "price_jpy": 11468623.0,
+    "spread": 18931.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T07:00:14.600669",
+    "price_jpy": 11520000.0,
+    "spread": 3149.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T08:00:19.758600",
+    "price_jpy": 11415037.0,
+    "spread": 6873.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T09:00:15.472823",
+    "price_jpy": 11413102.0,
+    "spread": 10246.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T09:00:18.207256",
+    "price_jpy": 11413102.0,
+    "spread": 10246.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T10:00:13.145727",
+    "price_jpy": 11415205.0,
+    "spread": 7475.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T11:00:10.345820",
+    "price_jpy": 11386432.0,
+    "spread": 7001.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T12:00:13.223276",
+    "price_jpy": 11403404.0,
+    "spread": 6214.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T13:00:14.606198",
+    "price_jpy": 11407649.0,
+    "spread": 7496.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T14:00:14.438818",
+    "price_jpy": 11466101.0,
+    "spread": 5799.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T15:00:14.564600",
+    "price_jpy": 11402620.0,
+    "spread": 5633.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T16:00:14.473097",
+    "price_jpy": 11409896.0,
+    "spread": 8136.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T17:00:15.088285",
+    "price_jpy": 11349330.0,
+    "spread": 6025.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T18:00:13.715874",
+    "price_jpy": 11396898.0,
+    "spread": 4928.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T19:00:13.623837",
+    "price_jpy": 11423555.0,
+    "spread": 7411.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T20:00:15.144199",
+    "price_jpy": 11559092.0,
+    "spread": 7073.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T20:52:00.663321",
+    "price_jpy": 11479494.0,
+    "spread": 4472.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T20:52:01.060685",
+    "price_jpy": 11479494.0,
+    "spread": 4472.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T21:00:14.695946",
+    "price_jpy": 11490525.0,
+    "spread": 9564.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T22:00:14.187108",
+    "price_jpy": 11494944.0,
+    "spread": 9616.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-05T23:00:14.821686",
+    "price_jpy": 11453063.0,
+    "spread": 8265.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T00:00:09.661387",
+    "price_jpy": 11458834.0,
+    "spread": 7756.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T01:00:11.015618",
+    "price_jpy": 11297876.0,
+    "spread": 8926.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T02:00:14.638544",
+    "price_jpy": 11254000.0,
+    "spread": 8520.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T03:00:11.538978",
+    "price_jpy": 11160740.0,
+    "spread": 7542.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T04:00:12.984284",
+    "price_jpy": 11213682.0,
+    "spread": 8058.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T05:00:12.230221",
+    "price_jpy": 11202206.0,
+    "spread": 5741.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T06:00:11.911243",
+    "price_jpy": 11240063.0,
+    "spread": 9122.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T07:00:11.852392",
+    "price_jpy": 11229708.0,
+    "spread": 9035.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T08:00:12.829329",
+    "price_jpy": 11234276.0,
+    "spread": 7608.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T09:00:15.420041",
+    "price_jpy": 11183387.0,
+    "spread": 4663.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T09:00:15.421312",
+    "price_jpy": 11183387.0,
+    "spread": 4663.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T10:00:12.141210",
+    "price_jpy": 11192612.0,
+    "spread": 7150.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T11:00:13.790125",
+    "price_jpy": 11236626.0,
+    "spread": 8024.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T12:00:17.157820",
+    "price_jpy": 11240677.0,
+    "spread": 6565.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T13:00:10.048992",
+    "price_jpy": 11214538.0,
+    "spread": 2867.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T14:00:11.836379",
+    "price_jpy": 11153393.0,
+    "spread": 7243.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T15:00:11.110826",
+    "price_jpy": 11141962.0,
+    "spread": 5623.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T16:00:11.321262",
+    "price_jpy": 11156640.0,
+    "spread": 5827.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T17:00:15.278984",
+    "price_jpy": 11216185.0,
+    "spread": 5826.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T18:00:09.777651",
+    "price_jpy": 11183448.0,
+    "spread": 7256.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T19:00:13.525283",
+    "price_jpy": 11151419.0,
+    "spread": 7824.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T20:00:15.107707",
+    "price_jpy": 11150365.0,
+    "spread": 10058.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T21:00:16.163545",
+    "price_jpy": 11113062.0,
+    "spread": 7937.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T22:00:14.955106",
+    "price_jpy": 11060256.0,
+    "spread": 6719.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-06T23:00:13.757354",
+    "price_jpy": 10953087.0,
+    "spread": 7087.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T00:00:12.974241",
+    "price_jpy": 10812919.0,
+    "spread": 9727.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T01:00:14.455975",
+    "price_jpy": 10817288.0,
+    "spread": 6876.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T02:00:14.248811",
+    "price_jpy": 10801584.0,
+    "spread": 5349.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T03:00:14.079930",
+    "price_jpy": 10740189.0,
+    "spread": 6642.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T04:00:11.483869",
+    "price_jpy": 10772452.0,
+    "spread": 7365.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T05:00:14.464110",
+    "price_jpy": 10766260.0,
+    "spread": 5700.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T06:00:12.772193",
+    "price_jpy": 10768228.0,
+    "spread": 4478.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T07:00:11.789994",
+    "price_jpy": 10790000.0,
+    "spread": 6710.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T08:00:12.516954",
+    "price_jpy": 10798164.0,
+    "spread": 6587.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T09:00:15.181318",
+    "price_jpy": 10774941.0,
+    "spread": 8981.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T09:00:15.414950",
+    "price_jpy": 10774941.0,
+    "spread": 9025.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T10:00:11.156247",
+    "price_jpy": 10796663.0,
+    "spread": 3072.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T11:00:10.814977",
+    "price_jpy": 10795985.0,
+    "spread": 5397.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T12:00:12.198804",
+    "price_jpy": 10813891.0,
+    "spread": 7987.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T13:00:12.813505",
+    "price_jpy": 10772566.0,
+    "spread": 2975.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T14:00:15.312523",
+    "price_jpy": 10768198.0,
+    "spread": 1601.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T15:00:11.878202",
+    "price_jpy": 10754253.0,
+    "spread": 7909.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T16:00:14.479265",
+    "price_jpy": 10702166.0,
+    "spread": 5886.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T17:00:11.033013",
+    "price_jpy": 10723904.0,
+    "spread": 7239.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T18:00:14.618408",
+    "price_jpy": 10721248.0,
+    "spread": 5557.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T19:00:13.999650",
+    "price_jpy": 10754216.0,
+    "spread": 7844.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T20:00:15.014478",
+    "price_jpy": 10732444.0,
+    "spread": 6435.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T21:00:14.065613",
+    "price_jpy": 10751394.0,
+    "spread": 5916.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T22:00:14.281791",
+    "price_jpy": 10745785.0,
+    "spread": 6713.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-07T23:00:11.824992",
+    "price_jpy": 10731438.0,
+    "spread": 4594.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T00:00:11.394469",
+    "price_jpy": 10744512.0,
+    "spread": 6764.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T01:00:12.572980",
+    "price_jpy": 10725067.0,
+    "spread": 5934.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T02:00:13.924727",
+    "price_jpy": 10708350.0,
+    "spread": 6068.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T03:00:12.916508",
+    "price_jpy": 10709451.0,
+    "spread": 3457.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T04:00:14.207968",
+    "price_jpy": 10676080.0,
+    "spread": 6538.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T05:00:14.308197",
+    "price_jpy": 10605675.0,
+    "spread": 7520.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T06:00:17.217160",
+    "price_jpy": 10655223.0,
+    "spread": 8665.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T07:00:14.309639",
+    "price_jpy": 10650000.0,
+    "spread": 7871.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T08:00:10.750623",
+    "price_jpy": 10631149.0,
+    "spread": 6505.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T09:00:12.193868",
+    "price_jpy": 10623518.0,
+    "spread": 7794.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T09:00:12.217745",
+    "price_jpy": 10623518.0,
+    "spread": 7794.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T10:00:13.487193",
+    "price_jpy": 10623967.0,
+    "spread": 7331.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T11:00:10.253603",
+    "price_jpy": 10624772.0,
+    "spread": 7033.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T12:00:12.816179",
+    "price_jpy": 10565046.0,
+    "spread": 7444.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T13:00:13.570322",
+    "price_jpy": 10581987.0,
+    "spread": 6801.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T14:00:12.047611",
+    "price_jpy": 10527539.0,
+    "spread": 8421.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T15:00:14.135984",
+    "price_jpy": 10608354.0,
+    "spread": 4493.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T16:00:11.723179",
+    "price_jpy": 10605661.0,
+    "spread": 5793.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T17:00:15.005916",
+    "price_jpy": 10640649.0,
+    "spread": 6386.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T18:00:14.986004",
+    "price_jpy": 10679511.0,
+    "spread": 6090.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T19:00:13.006975",
+    "price_jpy": 10703323.0,
+    "spread": 5644.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T20:00:09.546279",
+    "price_jpy": 10736377.0,
+    "spread": 6708.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T21:00:15.740782",
+    "price_jpy": 10677141.0,
+    "spread": 4677.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T22:00:12.414937",
+    "price_jpy": 10636997.0,
+    "spread": 7542.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-08T23:00:14.494497",
+    "price_jpy": 10628943.0,
+    "spread": 9817.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T00:00:09.653591",
+    "price_jpy": 10630834.0,
+    "spread": 6162.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T01:00:13.329250",
+    "price_jpy": 10609585.0,
+    "spread": 5602.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T02:00:11.473112",
+    "price_jpy": 10558949.0,
+    "spread": 6471.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T03:00:14.804833",
+    "price_jpy": 10581794.0,
+    "spread": 4954.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T04:00:14.463573",
+    "price_jpy": 10550869.0,
+    "spread": 11626.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T05:00:10.220099",
+    "price_jpy": 10636725.0,
+    "spread": 6149.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T06:00:15.413465",
+    "price_jpy": 10624382.0,
+    "spread": 8991.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T07:00:14.257712",
+    "price_jpy": 10595516.0,
+    "spread": 2367.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T08:00:14.455695",
+    "price_jpy": 10497370.0,
+    "spread": 8469.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T09:00:14.344855",
+    "price_jpy": 10462806.0,
+    "spread": 6175.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T09:00:14.666555",
+    "price_jpy": 10462806.0,
+    "spread": 6175.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T10:00:14.172005",
+    "price_jpy": 10535772.0,
+    "spread": 8482.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T11:00:14.523843",
+    "price_jpy": 10512987.0,
+    "spread": 3455.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T12:00:13.805337",
+    "price_jpy": 10570713.0,
+    "spread": 3208.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T13:00:14.230601",
+    "price_jpy": 10693222.0,
+    "spread": 5641.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T14:00:10.149504",
+    "price_jpy": 10672192.0,
+    "spread": 4479.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T15:00:13.643493",
+    "price_jpy": 10766947.0,
+    "spread": 5418.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T16:00:11.378689",
+    "price_jpy": 10680467.0,
+    "spread": 3731.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T17:00:14.991588",
+    "price_jpy": 10714817.0,
+    "spread": 6360.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T18:00:15.344826",
+    "price_jpy": 10765234.0,
+    "spread": 4638.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T19:00:14.801194",
+    "price_jpy": 10779695.0,
+    "spread": 3442.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T20:00:14.874828",
+    "price_jpy": 10720417.0,
+    "spread": 5431.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T21:00:14.213156",
+    "price_jpy": 10749031.0,
+    "spread": 6880.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T22:00:14.294174",
+    "price_jpy": 10813320.0,
+    "spread": 6000.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-09T23:00:14.726490",
+    "price_jpy": 10929648.0,
+    "spread": 7446.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T00:00:10.731269",
+    "price_jpy": 10961910.0,
+    "spread": 7323.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T01:00:14.829054",
+    "price_jpy": 10901706.0,
+    "spread": 6745.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T02:00:13.440605",
+    "price_jpy": 10910684.0,
+    "spread": 7329.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T03:00:11.176263",
+    "price_jpy": 10869220.0,
+    "spread": 6588.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T04:00:14.514844",
+    "price_jpy": 10828999.0,
+    "spread": 8719.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T05:00:10.972214",
+    "price_jpy": 10890317.0,
+    "spread": 3738.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T06:00:14.122156",
+    "price_jpy": 10887500.0,
+    "spread": 7006.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T07:00:14.785695",
+    "price_jpy": 10892072.0,
+    "spread": 2557.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T08:00:11.209024",
+    "price_jpy": 10836667.0,
+    "spread": 3463.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T09:00:12.741405",
+    "price_jpy": 10811327.0,
+    "spread": 4407.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T09:00:12.759976",
+    "price_jpy": 10811327.0,
+    "spread": 4407.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T10:00:11.414084",
+    "price_jpy": 10899703.0,
+    "spread": 4444.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T11:00:12.007785",
+    "price_jpy": 10940221.0,
+    "spread": 7405.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T12:00:11.732001",
+    "price_jpy": 11094599.0,
+    "spread": 10264.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T13:00:11.659677",
+    "price_jpy": 10980000.0,
+    "spread": 8055.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T14:00:12.079230",
+    "price_jpy": 11068680.0,
+    "spread": 8126.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T15:00:13.540528",
+    "price_jpy": 11050454.0,
+    "spread": 4335.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T15:16:58.851636",
+    "price_jpy": 11016949.0,
+    "spread": 6640.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T16:00:24.040587",
+    "price_jpy": 11026347.0,
+    "spread": 7871.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T17:00:26.400455",
+    "price_jpy": 11087688.0,
+    "spread": 10120.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T18:00:26.126176",
+    "price_jpy": 11157868.0,
+    "spread": 8399.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T19:00:27.104134",
+    "price_jpy": 11218835.0,
+    "spread": 2251.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T20:00:27.191235",
+    "price_jpy": 11171812.0,
+    "spread": 6691.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T21:00:29.223012",
+    "price_jpy": 11156169.0,
+    "spread": 4988.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T22:00:26.355018",
+    "price_jpy": 11138557.0,
+    "spread": 6548.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-10T23:00:29.035316",
+    "price_jpy": 11043634.0,
+    "spread": 4528.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T00:00:24.400781",
+    "price_jpy": 11280460.0,
+    "spread": 2717.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T01:00:28.949059",
+    "price_jpy": 11249401.0,
+    "spread": 6569.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T02:00:29.463101",
+    "price_jpy": 11229099.0,
+    "spread": 4557.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T03:00:30.184715",
+    "price_jpy": 11176348.0,
+    "spread": 6971.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T04:00:28.869285",
+    "price_jpy": 11060424.0,
+    "spread": 4634.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T05:00:28.588902",
+    "price_jpy": 11071872.0,
+    "spread": 9061.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T06:00:28.193604",
+    "price_jpy": 11111767.0,
+    "spread": 5842.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T07:00:30.597504",
+    "price_jpy": 11045301.0,
+    "spread": 6370.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T08:00:28.462423",
+    "price_jpy": 11040261.0,
+    "spread": 4648.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T09:00:28.823375",
+    "price_jpy": 11067406.0,
+    "spread": 5722.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T09:00:29.277012",
+    "price_jpy": 11067406.0,
+    "spread": 5722.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T10:00:28.630553",
+    "price_jpy": 11094407.0,
+    "spread": 4681.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T11:00:26.957661",
+    "price_jpy": 11110678.0,
+    "spread": 1742.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T12:00:27.319167",
+    "price_jpy": 11059746.0,
+    "spread": 3901.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T13:00:28.889527",
+    "price_jpy": 11019146.0,
+    "spread": 5507.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T14:00:29.168528",
+    "price_jpy": 11114138.0,
+    "spread": 6007.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T15:00:25.718473",
+    "price_jpy": 11010951.0,
+    "spread": 6466.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "SELL",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T16:00:28.545838",
+    "price_jpy": 11068404.0,
+    "spread": 4462.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T17:00:26.483531",
+    "price_jpy": 11035556.0,
+    "spread": 4479.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T18:00:27.507477",
+    "price_jpy": 11043243.0,
+    "spread": 6515.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T19:00:27.750341",
+    "price_jpy": 11017965.0,
+    "spread": 5007.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T20:00:27.553619",
+    "price_jpy": 11035874.0,
+    "spread": 4861.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T21:00:28.678415",
+    "price_jpy": 10973663.0,
+    "spread": 3357.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T22:00:28.936096",
+    "price_jpy": 11003386.0,
+    "spread": 6223.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-11T23:00:23.611734",
+    "price_jpy": 11138371.0,
+    "spread": 8247.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T00:00:24.477765",
+    "price_jpy": 11211535.0,
+    "spread": 9768.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T01:00:26.895794",
+    "price_jpy": 11168339.0,
+    "spread": 6114.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T02:00:29.326309",
+    "price_jpy": 11224144.0,
+    "spread": 5127.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T03:00:27.188668",
+    "price_jpy": 11260902.0,
+    "spread": 9909.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T04:00:26.975165",
+    "price_jpy": 11235096.0,
+    "spread": 6792.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T05:00:28.022223",
+    "price_jpy": 11232044.0,
+    "spread": 6740.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T06:00:29.442917",
+    "price_jpy": 11252631.0,
+    "spread": 8806.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T07:00:26.640184",
+    "price_jpy": 11241137.0,
+    "spread": 7243.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T08:00:29.150658",
+    "price_jpy": 11209076.0,
+    "spread": 8863.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T09:00:28.931054",
+    "price_jpy": 11177390.0,
+    "spread": 6012.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T09:00:29.282797",
+    "price_jpy": 11177390.0,
+    "spread": 6012.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T10:00:28.838042",
+    "price_jpy": 11176921.0,
+    "spread": 4895.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T11:00:29.859747",
+    "price_jpy": 11110338.0,
+    "spread": 7011.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T12:00:25.321431",
+    "price_jpy": 11034405.0,
+    "spread": 5890.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T13:00:27.594310",
+    "price_jpy": 11062818.0,
+    "spread": 7001.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T14:00:27.220320",
+    "price_jpy": 11054679.0,
+    "spread": 2714.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T15:00:26.202729",
+    "price_jpy": 11075407.0,
+    "spread": 3612.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T16:00:28.224683",
+    "price_jpy": 11059794.0,
+    "spread": 4515.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T17:00:29.704620",
+    "price_jpy": 11103632.0,
+    "spread": 3654.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T18:00:28.611979",
+    "price_jpy": 11115935.0,
+    "spread": 6361.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T19:00:26.853881",
+    "price_jpy": 11122122.0,
+    "spread": 3848.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T20:00:29.791173",
+    "price_jpy": 11185298.0,
+    "spread": 6049.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T21:00:29.621206",
+    "price_jpy": 11193851.0,
+    "spread": 3694.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T22:00:26.634563",
+    "price_jpy": 11194602.0,
+    "spread": 7894.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-12T23:00:26.456744",
+    "price_jpy": 11121183.0,
+    "spread": 5805.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T00:00:24.122244",
+    "price_jpy": 11090600.0,
+    "spread": 4349.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T01:00:26.927248",
+    "price_jpy": 11206423.0,
+    "spread": 5009.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T02:00:26.137283",
+    "price_jpy": 11209801.0,
+    "spread": 9480.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T03:00:29.378786",
+    "price_jpy": 11203130.0,
+    "spread": 10002.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T04:00:26.042136",
+    "price_jpy": 11137578.0,
+    "spread": 9553.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T05:00:25.567774",
+    "price_jpy": 11232302.0,
+    "spread": 9286.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T06:00:27.042219",
+    "price_jpy": 11193202.0,
+    "spread": 7254.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T07:00:28.650510",
+    "price_jpy": 11212062.0,
+    "spread": 8487.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T08:00:27.707553",
+    "price_jpy": 11183897.0,
+    "spread": 9158.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T09:00:26.773019",
+    "price_jpy": 11236499.0,
+    "spread": 5892.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T09:00:27.251672",
+    "price_jpy": 11236499.0,
+    "spread": 5892.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T10:00:27.483420",
+    "price_jpy": 11385000.0,
+    "spread": 6756.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T11:00:28.015403",
+    "price_jpy": 11416433.0,
+    "spread": 6352.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T12:00:25.351022",
+    "price_jpy": 11337432.0,
+    "spread": 5712.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T13:00:28.073160",
+    "price_jpy": 11384974.0,
+    "spread": 9160.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T14:00:28.103256",
+    "price_jpy": 11396286.0,
+    "spread": 5127.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T15:00:27.577323",
+    "price_jpy": 11419844.0,
+    "spread": 8006.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T16:00:27.811584",
+    "price_jpy": 11389461.0,
+    "spread": 8487.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T17:00:27.328865",
+    "price_jpy": 11433820.0,
+    "spread": 3652.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  },
+  {
+    "timestamp": "2026-03-13T18:00:26.300188",
+    "price_jpy": 11461444.0,
+    "spread": 9477.0,
+    "signals": {
+      "vol_div": "NEUTRAL",
+      "bb_rsi": "NEUTRAL",
+      "sma": "BUY",
+      "mom_pb": "NEUTRAL"
+    },
+    "position_btc": 0.0,
+    "entry_price": 0.0,
+    "capital_jpy": 1000000,
+    "position_value_jpy": 0,
+    "total_value_jpy": 1000000,
+    "unrealized_pnl_jpy": 0,
+    "realized_pnl_jpy": 0,
+    "total_trades": 0,
+    "winning_trades": 0
+  }
+]

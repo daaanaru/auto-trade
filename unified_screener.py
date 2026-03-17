@@ -646,10 +646,34 @@ def main():
     if args.save or args.json_output:
         save_results(all_data)
 
-    # 通知（BUYシグナルがあれば）
+    # 通知（ファンダOKのBUYシグナルのみ。ファンダNGは通知しない）
     try:
+        from market_fundamental import get_market_fundamental_score
         from notifier import notify_scan_summary
-        notify_scan_summary(all_data)
+
+        # ファンダフィルター: ペーパートレーダーと同じ条件でBUYを絞る
+        # ロング条件: ファンダスコア >= 0.1
+        filtered_data = []
+        for d in all_data:
+            filtered_results = []
+            for r in d["results"]:
+                if r["signal"] == "BUY":
+                    funda = get_market_fundamental_score(r["code"], d["market"])
+                    if funda["score"] >= 0.1:
+                        filtered_results.append(r)
+                    else:
+                        print(f"  [NOTIFY] ファンダNG除外: {r['name']}({r['code']}) スコア: {funda['score']:+.2f}")
+                elif r["signal"] == "SELL":
+                    filtered_results.append(r)
+                else:
+                    filtered_results.append(r)
+            filtered_market = {**d, "results": filtered_results, "summary": {
+                **d["summary"],
+                "buy": sum(1 for r in filtered_results if r["signal"] == "BUY"),
+            }}
+            filtered_data.append(filtered_market)
+
+        notify_scan_summary(filtered_data)
     except Exception as e:
         print(f"  [NOTIFY] 通知スキップ: {e}")
 

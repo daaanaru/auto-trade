@@ -137,17 +137,17 @@ def notify_portfolio_update(total_value: float, total_return_pct: float,
                             position_count: int, cash: float):
     """ポートフォリオ日次更新通知。"""
     emoji = "📈" if total_return_pct >= 0 else "📉"
-    deadline = datetime(2026, 3, 30)
+    deadline = datetime(2026, 4, 12)
     remaining = (deadline - datetime.now()).days
 
     send_discord_embed(
         title=f"{emoji} 日次ポートフォリオレポート",
-        description=f"残り{remaining}日（期限: 3/30）",
+        description=f"残り{remaining}日（期限: 4/12）",
         color=0x3498DB,  # 青
         fields=[
             {"name": "総資産", "value": f"{total_value:,.0f} JPY", "inline": True},
             {"name": "収益率", "value": f"{total_return_pct:+.1f}%", "inline": True},
-            {"name": "ポジション", "value": f"{position_count}/5", "inline": True},
+            {"name": "ポジション", "value": f"{position_count}/50", "inline": True},
             {"name": "現金", "value": f"{cash:,.0f} JPY", "inline": True},
         ],
     )

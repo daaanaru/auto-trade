@@ -106,6 +106,11 @@ def record_ab(price: float, signals: dict, config: dict):
     launchdのcrypto-monitorとcrypto-full-reportが同時刻に走ると
     155ms差で二重記録される問題への対策。
     """
+    # A/Bテスト結論済み: Ollama不要（2026-03-13）。enabled=falseならスキップ
+    ollama_cfg = config.get("ollama", {})
+    if not ollama_cfg.get("enabled", True):
+        return {"a_signal_only": "SKIP", "b_with_llm": "SKIP", "agree": True}
+
     log = load_ab_log()
 
     # 重複チェック: 前回記録から60秒以内ならスキップ
