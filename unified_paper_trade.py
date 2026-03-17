@@ -20,6 +20,14 @@ cron設定例（毎日7:00に全市場巡回）:
     0 7 * * * cd /path/to/auto-trade && python3 unified_paper_trade.py >> logs/unified-paper-trade.log 2>&1
 """
 
+# urllib3 v2 + LibreSSL環境でのNotOpenSSLWarning抑制（launchdエラーログ肥大化防止）
+import warnings
+try:
+    from urllib3.exceptions import NotOpenSSLWarning
+    warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+except ImportError:
+    pass
+
 import argparse
 import json
 import os
@@ -54,13 +62,13 @@ DAILY_REPORT_FILE = os.path.join(BASE_DIR, "daily_report.md")
 INITIAL_CAPITAL_USD = 2000.0
 INITIAL_CAPITAL_JPY = 300000.0  # 約$2000（検証用）
 
-# リスク管理ルール
-MAX_POSITION_PCT = 0.04        # 1銘柄あたりポートフォリオの4%（50枠分散）
+# リスク管理ルール（3/18 攻め転換: 現金を遊ばせず取引機会を最大化）
+MAX_POSITION_PCT = 0.08        # 1銘柄あたりポートフォリオの8%（旧4%: 投入額が小さすぎた）
 MAX_POSITIONS = 50             # 同時保有最大50ポジション（5市場 x 10枠）
-MAX_POSITIONS_PER_MARKET = 10  # 1市場あたり最大10ポジション
+MAX_POSITIONS_PER_MARKET = 15  # 1市場あたり最大15ポジション（旧10: 枠が足りず機会損失）
 COMMISSION_RATE = 0.001        # 手数料0.1%
 DEFAULT_LEVERAGE = 2           # デフォルトのレバレッジ倍率（購買力 = 現金 x この倍率）
-CASH_RESERVE_PCT = 0.10        # 現金保留率10%（総資産の10%を現金として常に確保）
+CASH_RESERVE_PCT = 0.03        # 現金保留率3%（旧10%: 30万円で3万円遊ばせる意味なし）
 FORCE_EXIT_DAYS = 7            # 7日保有で強制決済（塩漬け防止）
 
 # --- ATRベース動的SL/TP（ハイブリッド方式） ---
@@ -721,9 +729,9 @@ def check_stop_loss_take_profit(portfolio: dict) -> list:
                 "pnl_pct": pnl_pct, "shares": pos["shares"],
             })
 
-        # 4. 第1段階利確（ATRベース動的TP1で1/2利確）
+        # 4. 第1段階利確（ATRベース動的TP1で1/3利確。残り2/3を伸ばす）
         elif tp_stage == 0 and pnl_pct >= eff_tp1:
-            shares_to_sell = pos["shares"] / 2
+            shares_to_sell = pos["shares"] / 3
             actions.append({
                 "action": "TAKE_PROFIT_1",
                 "code": pos["code"], "name": pos["name"], "side": side,
@@ -1177,7 +1185,7 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
             # BUYシグナル → ロング候補
             if signal == 1:
                 fundamental = get_market_fundamental_score(code, market)
-                if fundamental["score"] >= 0.1:  # 閾値0.1: 浮動小数点丸め誤差(-0.0等)を排除し、意味ある優位性を要求
+                if fundamental["score"] >= 0.0:  # 閾値0.0: ファンダがマイナスでなければエントリー可（旧0.1: 機会損失）
                     buy_candidates.append({
                         "code": code,
                         "name": name,
@@ -1631,6 +1639,8 @@ def main():
     parser.add_argument("--json", action="store_true", help="JSON出力")
     parser.add_argument("--monitor", action="store_true",
                         help="保有ポジションの損切り/利確チェックのみ（新規スキャンなし）")
+    parser.add_argument("--monitor-loop", type=int, default=0, metavar="SEC",
+                        help="常駐モニターモード: 指定秒ごとにSL/TPチェックをループ実行（例: --monitor-loop 15）")
     args = parser.parse_args()
 
     # リセット
@@ -1660,24 +1670,41 @@ def main():
 
     # メイン: スキャン＆トレード
     # モニターモード: 損切り/利確チェックのみ
-    if args.monitor:
-        print(f"[MONITOR] 保有ポジションのSL/TPチェック...")
-        actions = check_stop_loss_take_profit(portfolio)
-        for action in actions:
-            portfolio = execute_sell(
-                portfolio, action["code"], action["current_price"],
-                action["shares"], action["action"]
-            )
-            if "_tp_stage_after" in action:
-                for p in portfolio["positions"]:
-                    if p["code"] == action["code"]:
-                        p["tp_stage"] = action["_tp_stage_after"]
-                        break
-        if not actions:
-            print("  損切り・利確対象なし")
-        save_portfolio(portfolio)
-        record_portfolio_snapshot(portfolio)
-        print_summary(portfolio)
+    if args.monitor or args.monitor_loop > 0:
+        interval = args.monitor_loop
+        loop = interval > 0
+        iteration = 0
+        while True:
+            iteration += 1
+            portfolio = load_portfolio()  # ループ時は毎回最新を読む
+            now_str = datetime.now().strftime("%H:%M:%S")
+            label = f"[MONITOR #{iteration} {now_str}]" if loop else "[MONITOR]"
+            print(f"{label} SL/TPチェック... ({len(portfolio['positions'])}ポジション)")
+            actions = check_stop_loss_take_profit(portfolio)
+            for action in actions:
+                portfolio = execute_sell(
+                    portfolio, action["code"], action["current_price"],
+                    action["shares"], action["action"]
+                )
+                if "_tp_stage_after" in action:
+                    for p in portfolio["positions"]:
+                        if p["code"] == action["code"]:
+                            p["tp_stage"] = action["_tp_stage_after"]
+                            break
+            if not actions:
+                print(f"  対象なし")
+            save_portfolio(portfolio)
+            if iteration == 1 or (iteration % 20 == 0):
+                # 初回と20回ごとにサマリー表示（ログ肥大化防止）
+                record_portfolio_snapshot(portfolio)
+                print_summary(portfolio)
+            if not loop:
+                break
+            try:
+                time.sleep(interval)
+            except KeyboardInterrupt:
+                print(f"\n[MONITOR] 停止しました（{iteration}回実行）")
+                break
         return
 
     markets = [args.market] if args.market else ["jp", "us", "btc", "gold", "fx"]

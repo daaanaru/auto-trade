@@ -17,6 +17,14 @@ cron設定例（毎朝8:50 JST）:
     50 8 * * 1-5 cd /path/to/auto-trade && python3 signal_monitor.py --watchlist >> signal_log.txt 2>&1
 """
 
+# urllib3 v2 + LibreSSL環境でのNotOpenSSLWarning抑制（launchdエラーログ肥大化防止）
+import warnings
+try:
+    from urllib3.exceptions import NotOpenSSLWarning
+    warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+except ImportError:
+    pass
+
 import argparse
 import json
 import os

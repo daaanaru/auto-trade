@@ -27,6 +27,14 @@ cron設定例（毎朝6:00に全市場スキャン）:
     0 6 * * * cd /path/to/auto-trade && python3 unified_screener.py --json >> logs/unified-screener.log 2>&1
 """
 
+# urllib3 v2 + LibreSSL環境でのNotOpenSSLWarning抑制（launchdエラーログ肥大化防止）
+import warnings
+try:
+    from urllib3.exceptions import NotOpenSSLWarning
+    warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+except ImportError:
+    pass
+
 import argparse
 import json
 import os
@@ -659,7 +667,7 @@ def main():
             for r in d["results"]:
                 if r["signal"] == "BUY":
                     funda = get_market_fundamental_score(r["code"], d["market"])
-                    if funda["score"] >= 0.1:
+                    if funda["score"] >= 0.0:
                         filtered_results.append(r)
                     else:
                         print(f"  [NOTIFY] ファンダNG除外: {r['name']}({r['code']}) スコア: {funda['score']:+.2f}")
