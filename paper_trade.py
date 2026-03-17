@@ -23,6 +23,14 @@ cronで毎日実行:
   0 9 * * * cd /path/to/auto-trade && python3 paper_trade.py >> paper_trade_cron.log 2>&1
 """
 
+# urllib3 v2 + LibreSSL環境でのNotOpenSSLWarning抑制（launchdエラーログ肥大化防止）
+import warnings
+try:
+    from urllib3.exceptions import NotOpenSSLWarning
+    warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+except ImportError:
+    pass
+
 import argparse
 import json
 import sys

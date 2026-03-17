@@ -7,6 +7,14 @@ BacktestEngine: AI生成戦略のバックテストエンジン
 - DataFetcher: YFinance / CCXT からOHLCVデータを取得
 """
 
+# urllib3 v2 + LibreSSL環境でのNotOpenSSLWarning抑制（launchdエラーログ肥大化防止）
+import warnings
+try:
+    from urllib3.exceptions import NotOpenSSLWarning
+    warnings.filterwarnings("ignore", category=NotOpenSSLWarning)
+except ImportError:
+    pass
+
 import numpy as np
 import pandas as pd
 import yfinance as yf
