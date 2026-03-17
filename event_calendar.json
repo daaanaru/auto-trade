@@ -1,0 +1,6 @@
+{
+  "events": [
+    {"date": "2026-03-19", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc"]},
+    {"date": "2026-03-21", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]}
+  ]
+}

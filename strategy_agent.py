@@ -324,18 +324,45 @@ class StrategyAgent:
         - BaseStrategyを継承しているかチェック
         - インスタンス化できるかチェック
         """
-        # 危険なキーワードチェック
-        dangerous_patterns = [
-            "os.system", "subprocess", "eval(", "exec(",
-            "__import__", "open(", "shutil", "socket"
-        ]
-        for pattern in dangerous_patterns:
-            if pattern in code:
-                return {
-                    "success": False,
-                    "error": f"セキュリティチェック: 危険なパターンを検出 '{pattern}'",
-                    "strategy_class": None
-                }
+        # ホワイトリスト方式: 許可されたモジュールのみimport可能
+        _ALLOWED_MODULES = {
+            "numpy", "np", "pandas", "pd", "math", "statistics",
+            "dataclasses", "typing", "enum", "collections",
+            "datetime", "decimal", "functools", "itertools",
+        }
+        try:
+            tree = ast.parse(code)
+            for node in ast.walk(tree):
+                # import文のチェック
+                if isinstance(node, ast.Import):
+                    for alias in node.names:
+                        module_root = alias.name.split(".")[0]
+                        if module_root not in _ALLOWED_MODULES:
+                            return {
+                                "success": False,
+                                "error": f"セキュリティチェック: 許可されていないimport '{alias.name}'（許可: {', '.join(sorted(_ALLOWED_MODULES))}）",
+                                "strategy_class": None
+                            }
+                elif isinstance(node, ast.ImportFrom):
+                    if node.module:
+                        module_root = node.module.split(".")[0]
+                        if module_root not in _ALLOWED_MODULES:
+                            return {
+                                "success": False,
+                                "error": f"セキュリティチェック: 許可されていないfrom import '{node.module}'（許可: {', '.join(sorted(_ALLOWED_MODULES))}）",
+                                "strategy_class": None
+                            }
+                # eval/exec/compile/__import__の直接呼び出しを禁止
+                elif isinstance(node, ast.Call):
+                    func = node.func
+                    if isinstance(func, ast.Name) and func.id in ("eval", "exec", "compile", "__import__", "getattr", "setattr"):
+                        return {
+                            "success": False,
+                            "error": f"セキュリティチェック: 禁止関数 '{func.id}()' の呼び出しを検出",
+                            "strategy_class": None
+                        }
+        except SyntaxError:
+            pass  # 次の構文チェックで捕捉される
 
         # 構文チェック
         try:

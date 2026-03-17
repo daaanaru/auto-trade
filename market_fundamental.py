@@ -167,11 +167,11 @@ def get_stock_score(symbol: str) -> dict:
                 score -= 0.1
                 reasons.append(f"PBR割高({pb:.1f})")
 
-        # 配当利回り
+        # 配当利回り（yfinanceは小数値で返す: 0.0207 = 2.07%）
         div_yield = info.get("dividendYield")
-        if div_yield and div_yield > 3.0:
+        if div_yield and div_yield > 0.03:
             score += 0.2
-            reasons.append(f"高配当({div_yield:.2f}%)")
+            reasons.append(f"高配当({div_yield*100:.2f}%)")
 
         # 売上成長率
         rev_growth = info.get("revenueGrowth")
@@ -209,7 +209,7 @@ def get_stock_score(symbol: str) -> dict:
             "data": {
                 "pe": pe,
                 "pb": pb,
-                "div_yield": f"{div_yield:.1f}%" if div_yield else None,
+                "div_yield": f"{div_yield*100:.1f}%" if div_yield else None,
                 "rev_growth": f"{rev_growth*100:.0f}%" if rev_growth else None,
                 "market_cap": market_cap,
             },

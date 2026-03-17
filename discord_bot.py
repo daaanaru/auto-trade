@@ -63,15 +63,29 @@ CLAUDE_ENV = {
 }
 
 
+# ホワイトリスト: この関数に渡してよいコマンドの先頭パターン。
+# 新規追加時は火付盗賊改（セキュリティ担当）の確認を経ること。
+_ALLOWED_CMD_PREFIXES = (
+    "(for f in ~/minecraft-server",   # taisho死亡数カウント
+    "ps aux | grep",                  # プロセス確認
+    "grep",                           # ログ検索
+    "launchctl list",                 # launchdジョブ一覧
+    "uptime",                         # 稼働時間
+)
+
+
 def run_command(cmd: str, timeout: int = 30) -> str:
     """シェルコマンドを実行して出力を返す。
 
-    セキュリティ注意（火付盗賊改 2026-03-12）:
-    shell=True を使用している。呼び出し元は全てハードコード文字列のみ。
-    ユーザー入力や外部データを cmd に渡すことは絶対に禁止。
-    パイプ（|）を多用するためshell=Trueを維持するが、
-    新規コマンド追加時はインジェクションリスクを必ず検討すること。
+    セキュリティ対策（火付盗賊改 2026-03-12, 強化 2026-03-16）:
+    shell=True を使用。パイプ多用のため維持するが、以下の多層防御を実施:
+    1. ホワイトリスト方式: _ALLOWED_CMD_PREFIXES に前方一致しないコマンドは拒否
+    2. ユーザー入力・外部データを cmd に渡すことは絶対に禁止
+    3. 新規コマンド追加時はホワイトリストへの登録が必須
     """
+    if not any(cmd.strip().startswith(prefix) for prefix in _ALLOWED_CMD_PREFIXES):
+        logger.error("run_command: 許可されていないコマンド: %s", cmd[:80])
+        return "(許可されていないコマンドです)"
     try:
         result = subprocess.run(
             cmd, shell=True, capture_output=True, text=True, timeout=timeout,
@@ -131,7 +145,7 @@ def get_dashboard() -> str:
             f"**$200ペーパートレード**",
             f"初期資金: ¥{initial:,.0f} / レバレッジ: {leverage}倍",
             f"現金: ¥{cash:,.0f}",
-            f"ポジション数: {len(positions)}/{5}",
+            f"ポジション数: {len(positions)}/50",
             "",
         ]
         for pos in positions:

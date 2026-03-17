@@ -22,9 +22,11 @@
     "data_interval": "1d"
   },
   "ollama": {
+    "enabled": false,
     "model": "qwen2.5:7b",
     "base_url": "http://localhost:11434",
-    "timeout_seconds": 120
+    "timeout_seconds": 120,
+    "_note": "A/Bテスト結論済み(2026-03-13): Ollama不要。A群48% vs B群30%"
   },
   "graduation_criteria": {
     "min_days": 14,

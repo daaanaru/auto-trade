@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="30">
+  <title>投資部ダッシュボード</title>
+  <style>
+    /* ===== リセット & ベース ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --border:    #2a2d3a;
+      --text:      #e2e8f0;
+      --muted:     #718096;
+      --green:     #48bb78;
+      --red:       #fc8181;
+      --yellow:    #f6ad55;
+      --blue:      #63b3ed;
+      --purple:    #b794f4;
+      --accent:    #4299e1;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'SF Pro Display', 'Hiragino Sans', 'Meiryo', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 16px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+
+    /* ===== ヘッダー ===== */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { font-size: 20px; font-weight: 700; color: var(--text); }
+    header .meta { font-size: 12px; color: var(--muted); text-align: right; }
+    header .meta .refresh-note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    /* ===== グリッド ===== */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .grid-4 { grid-template-columns: 1fr; } }
+
+    /* ===== カード ===== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    /* ===== KPI カード ===== */
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .kpi-value { font-size: 22px; font-weight: 700; }
+    .kpi-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .neu { color: var(--text); }
+
+    /* ===== テーブル ===== */
+    .table-wrapper { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+
+    /* ===== バッジ ===== */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-long   { background: rgba(72,187,120,0.15); color: var(--green); border: 1px solid rgba(72,187,120,0.3); }
+    .badge-short  { background: rgba(252,129,129,0.15); color: var(--red);   border: 1px solid rgba(252,129,129,0.3); }
+    .badge-buy    { background: rgba(72,187,120,0.15); color: var(--green); border: 1px solid rgba(72,187,120,0.3); }
+    .badge-sell   { background: rgba(252,129,129,0.15); color: var(--red);   border: 1px solid rgba(252,129,129,0.3); }
+    .badge-jp     { background: rgba(99,179,237,0.12); color: var(--blue);   border: 1px solid rgba(99,179,237,0.25); }
+    .badge-us     { background: rgba(183,148,244,0.12); color: var(--purple); border: 1px solid rgba(183,148,244,0.25); }
+    .badge-btc    { background: rgba(246,173,85,0.12); color: var(--yellow); border: 1px solid rgba(246,173,85,0.25); }
+    .badge-live   { background: rgba(72,187,120,0.1); color: var(--green); font-size: 9px; }
+    .badge-entry  { background: rgba(113,128,150,0.1); color: var(--muted); font-size: 9px; }
+
+    /* ===== アラート行 ===== */
+    .row-danger td { background: rgba(252,129,129,0.05); }
+
+    /* ===== セクション ===== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-header h2 { font-size: 15px; font-weight: 600; }
+    .section-header .count {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--border);
+      border-radius: 10px;
+      padding: 2px 8px;
+    }
+
+    /* ===== 履歴グラフ（簡易スパークライン） ===== */
+    .sparkline-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 50px;
+    }
+    .spark-bar {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      min-height: 2px;
+      transition: opacity 0.2s;
+    }
+    .spark-bar:hover { opacity: 0.7; }
+
+    /* ===== 空状態 ===== */
+    .empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ===== フッター ===== */
+    footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ===== アラートカード ===== */
+    .alert-card {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border-left: 4px solid;
+    }
+    .alert-danger  { background: rgba(252,129,129,0.08); border-color: var(--red); }
+    .alert-warning { background: rgba(246,173,85,0.08);  border-color: var(--yellow); }
+    .alert-info    { background: rgba(99,179,237,0.08);  border-color: var(--blue); }
+    .alert-ok      { background: rgba(72,187,120,0.08);  border-color: var(--green); }
+    .alert-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+    .alert-detail { font-size: 12px; color: var(--muted); }
+
+    /* ===== 戦略カード ===== */
+    .strat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .strat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .strat-name { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .strat-meta { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .strat-pnl { font-size: 20px; font-weight: 700; }
+
+    /* ===== タブ ===== */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ===== SL 近接プログレスバー ===== */
+    .sl-bar-wrap { display: flex; align-items: center; gap: 6px; }
+    .sl-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      flex: 1;
+      overflow: hidden;
+    }
+    .sl-bar-inner {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+
+    /* ===== ナビゲーション ===== */
+    .nav-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      padding: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .nav-link {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-link:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+    .nav-link.active {
+      background: var(--accent);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== ナビゲーション ===== -->
+<nav class="nav-bar">
+  <a href="/" class="nav-link active">トップ</a>
+  <a href="/strategies" class="nav-link">戦略解説</a>
+  <a href="/analysis" class="nav-link">分析</a>
+</nav>
+
+<!-- ===== ヘッダー ===== -->
+<header>
+  <h1>投資部ダッシュボード</h1>
+  <div class="meta">
+    <div>最終更新: {{ now }}</div>
+    <div class="refresh-note">30秒ごとに自動更新</div>
+    {% if summary %}
+    <div style="margin-top:4px; font-size:11px;">USD/JPY: <strong>{{ summary.usdjpy }}</strong></div>
+    {% endif %}
+  </div>
+</header>
+
+{% if summary %}
+
+<!-- ===== KPI サマリー ===== -->
+<div class="grid-4">
+  <div class="kpi-card">
+    <div class="kpi-label">総資産</div>
+    <div class="kpi-value">¥{{ "{:,.0f}".format(summary.total_value_jpy) }}</div>
+    <div class="kpi-sub">初期: ¥{{ "{:,.0f}".format(summary.initial_jpy) }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">トータルリターン</div>
+    <div class="kpi-value {% if summary.total_return_pct >= 0 %}pos{% else %}neg{% endif %}">
+      {% if summary.total_return_pct >= 0 %}+{% endif %}{{ summary.total_return_pct }}%
+    </div>
+    <div class="kpi-sub">
+      含み: {% if summary.unrealized_pnl_jpy >= 0 %}+{% endif %}¥{{ "{:,.0f}".format(summary.unrealized_pnl_jpy) }}
+    </div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">ポジション数 / 現金</div>
+    <div class="kpi-value">{{ summary.position_count }}本</div>
+    <div class="kpi-sub">現金: ¥{{ "{:,.0f}".format(summary.cash_jpy) }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">勝率（確定済み）</div>
+    <div class="kpi-value {% if summary.win_rate_pct >= 50 %}pos{% elif summary.total_trades > 0 %}neg{% else %}neu{% endif %}">
+      {% if summary.total_trades > 0 %}{{ summary.win_rate_pct }}%{% else %}--{% endif %}
+    </div>
+    <div class="kpi-sub">
+      {{ summary.winning_trades }}勝 {{ summary.losing_trades }}敗 ({{ summary.total_trades }}取引)
+    </div>
+  </div>
+</div>
+
+<!-- ===== 課題・アラート ===== -->
+{% if issues %}
+<div class="card">
+  <div class="section-header">
+    <h2>課題・アラート</h2>
+    <span class="count">{{ issues | length }}件</span>
+  </div>
+  {% for issue in issues %}
+  <div class="alert-card alert-{{ issue.level }}">
+    <div class="alert-title">{{ issue.title }}</div>
+    <div class="alert-detail">{{ issue.detail }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ===== 戦略別サマリー ===== -->
+{% if strategy_summary %}
+<div class="card">
+  <div class="section-header">
+    <h2>戦略別パフォーマンス</h2>
+    <span class="count">{{ strategy_summary | length }}戦略</span>
+  </div>
+  <div class="strat-grid">
+    {% for s in strategy_summary %}
+    <div class="strat-card">
+      <div class="strat-name">{{ s.strategy }}</div>
+      <div class="strat-meta">
+        <span>{{ s.count }}ポジション (L:{{ s.long }} / S:{{ s.short }})</span>
+        <span>{{ s.markets | join(', ') }}</span>
+      </div>
+      <div class="strat-pnl {% if s.total_pnl_jpy >= 0 %}pos{% else %}neg{% endif %}">
+        {% if s.total_pnl_jpy >= 0 %}+{% endif %}¥{{ "{:,.0f}".format(s.total_pnl_jpy) }}
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-top:6px;">
+        平均: {% if s.avg_pnl_pct >= 0 %}+{% endif %}{{ s.avg_pnl_pct }}%
+        &nbsp;|&nbsp;
+        最良: <span class="pos">+{{ s.best_pnl_pct }}%</span>
+        &nbsp;|&nbsp;
+        最悪: <span class="neg">{{ s.worst_pnl_pct }}%</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- ===== ポジション一覧 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>保有ポジション</h2>
+    <span class="count">{{ summary.positions | length }}件</span>
+  </div>
+  {% if summary.positions %}
+  <!-- 戦略フィルターボタン -->
+  <div style="margin-bottom:12px; display:flex; gap:4px; flex-wrap:wrap;">
+    <button class="tab-btn active" onclick="filterPositions('all')">全て ({{ summary.positions | length }})</button>
+    {% for s in strategy_summary %}
+    <button class="tab-btn" onclick="filterPositions('{{ s.strategy }}')">{{ s.strategy }} ({{ s.count }})</button>
+    {% endfor %}
+  </div>
+  <div class="table-wrapper">
+    <table id="positions-table">
+      <thead>
+        <tr>
+          <th>銘柄</th>
+          <th>方向</th>
+          <th>市場</th>
+          <th>エントリー</th>
+          <th>現在価格</th>
+          <th>損益%</th>
+          <th>損益(JPY)</th>
+          <th>SLまで</th>
+          <th>保有日</th>
+          <th>戦略</th>
+          <th>ファンダ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in summary.positions | sort(attribute='pnl_pct') %}
+        <tr class="{% if p.sl_distance_pct < 0.5 %}row-danger{% endif %}">
+          <td>
+            <strong>{{ p.code }}</strong>
+            <div style="font-size:11px; color:var(--muted);">{{ p.name }}</div>
+          </td>
+          <td>
+            <span class="badge badge-{{ p.side }}">{{ p.side }}</span>
+          </td>
+          <td>
+            <span class="badge badge-{{ p.market }}">{{ p.market }}</span>
+          </td>
+          <td style="font-size:12px;">{{ "{:,.2f}".format(p.entry_price) }}</td>
+          <td>
+            {{ "{:,.2f}".format(p.current_price) }}
+            <span class="badge badge-{{ p.price_source }}" style="margin-left:3px;">
+              {{ p.price_source }}
+            </span>
+          </td>
+          <td class="{% if p.pnl_pct >= 0 %}pos{% else %}neg{% endif %}" style="font-weight:600;">
+            {% if p.pnl_pct >= 0 %}+{% endif %}{{ p.pnl_pct }}%
+          </td>
+          <td class="{% if p.pnl_jpy >= 0 %}pos{% else %}neg{% endif %}">
+            {% if p.pnl_jpy >= 0 %}+{% endif %}¥{{ "{:,.0f}".format(p.pnl_jpy) }}
+          </td>
+          <td>
+            {# SL まで余裕があるほど緑、なくなるほど赤 #}
+            {% set sl_pct = [p.sl_distance_pct, 0] | max %}
+            {% set sl_color = "var(--green)" if sl_pct > 2 else ("var(--yellow)" if sl_pct > 1 else "var(--red)") %}
+            <div class="sl-bar-wrap">
+              <span class="{% if p.sl_distance_pct < 1 %}neg{% elif p.sl_distance_pct < 2 %}{% else %}pos{% endif %}" style="font-size:12px; min-width:38px;">
+                {% if p.sl_distance_pct >= 0 %}+{% endif %}{{ p.sl_distance_pct }}%
+              </span>
+              <div class="sl-bar">
+                <div class="sl-bar-inner" style="width:{{ [sl_pct / 6 * 100, 100] | min }}%; background:{{ sl_color }};"></div>
+              </div>
+            </div>
+          </td>
+          <td style="color:{% if p.days_held >= 6 %}var(--red){% elif p.days_held >= 4 %}var(--yellow){% else %}var(--muted){% endif %}; font-size:12px;">
+            {{ p.days_held }}日
+          </td>
+          <td style="font-size:11px; color:var(--muted);">{{ p.strategy }}</td>
+          <td>
+            <span style="font-size:11px; color:{% if p.fundamental_score > 0 %}var(--green){% elif p.fundamental_score < 0 %}var(--red){% else %}var(--muted){% endif %};">
+              {{ p.fundamental_score }}
+            </span>
+            <div style="font-size:10px; color:var(--muted); max-width:120px; white-space:normal;">{{ p.fundamental_reason }}</div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">保有ポジションなし</div>
+  {% endif %}
+</div>
+
+{% else %}
+<div class="card">
+  <div class="empty">ポートフォリオデータを読み込めませんでした。<br>paper_portfolio.json が存在するか確認してください。</div>
+</div>
+{% endif %}
+
+<!-- ===== シグナル一覧 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>本日のシグナル</h2>
+    <span class="count">
+      BUY: {{ signals.buy | length }} / SELL: {{ signals.sell | length }}
+    </span>
+  </div>
+  <div style="font-size:11px; color:var(--muted); margin-bottom:12px;">
+    スクリーナー更新: {{ signals.timestamp }}
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+    <!-- BUY シグナル -->
+    <div>
+      <div class="card-title" style="color:var(--green);">BUY シグナル</div>
+      {% if signals.buy %}
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>銘柄</th>
+              <th>市場</th>
+              <th>価格</th>
+              <th>騰落率</th>
+              <th>スコア</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in signals.buy %}
+            <tr>
+              <td>
+                <strong>{{ s.code }}</strong>
+                <div style="font-size:10px; color:var(--muted);">{{ s.name }}</div>
+              </td>
+              <td><span class="badge" style="font-size:9px;">{{ s.market }}</span></td>
+              <td style="font-size:12px;">{{ "{:,.2f}".format(s.price) }}</td>
+              <td class="{% if s.change_pct >= 0 %}pos{% else %}neg{% endif %}" style="font-size:12px;">
+                {% if s.change_pct >= 0 %}+{% endif %}{{ "%.2f"|format(s.change_pct) }}%
+              </td>
+              <td style="color:var(--yellow); font-weight:600;">{{ s.score }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty" style="padding:16px;">BUYシグナルなし</div>
+      {% endif %}
+    </div>
+
+    <!-- SELL シグナル -->
+    <div>
+      <div class="card-title" style="color:var(--red);">SELL シグナル</div>
+      {% if signals.sell %}
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>銘柄</th>
+              <th>市場</th>
+              <th>価格</th>
+              <th>騰落率</th>
+              <th>スコア</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in signals.sell %}
+            <tr>
+              <td>
+                <strong>{{ s.code }}</strong>
+                <div style="font-size:10px; color:var(--muted);">{{ s.name }}</div>
+              </td>
+              <td><span class="badge" style="font-size:9px;">{{ s.market }}</span></td>
+              <td style="font-size:12px;">{{ "{:,.2f}".format(s.price) }}</td>
+              <td class="{% if s.change_pct >= 0 %}pos{% else %}neg{% endif %}" style="font-size:12px;">
+                {% if s.change_pct >= 0 %}+{% endif %}{{ "%.2f"|format(s.change_pct) }}%
+              </td>
+              <td style="color:var(--yellow); font-weight:600;">{{ s.score }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty" style="padding:16px;">SELLシグナルなし</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ===== 資産推移 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>資産推移（直近 {{ history | length }} 件）</h2>
+  </div>
+  {% if history %}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>日時</th>
+          <th>総資産(JPY)</th>
+          <th>リターン%</th>
+          <th>含み損益(JPY)</th>
+          <th>確定損益(JPY)</th>
+          <th>ポジション数</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in history | reverse %}
+        <tr>
+          <td style="font-size:11px; color:var(--muted);">
+            {{ h.timestamp[:16].replace("T", " ") }}
+          </td>
+          <td style="font-weight:600;">¥{{ "{:,.0f}".format(h.total_value_jpy) }}</td>
+          <td class="{% if h.total_return_pct >= 0 %}pos{% else %}neg{% endif %}">
+            {% if h.total_return_pct >= 0 %}+{% endif %}{{ "%.2f"|format(h.total_return_pct) }}%
+          </td>
+          <td class="{% if h.unrealized_pnl_jpy >= 0 %}pos{% else %}neg{% endif %}">
+            {% if h.unrealized_pnl_jpy >= 0 %}+{% endif %}¥{{ "{:,.0f}".format(h.unrealized_pnl_jpy) }}
+          </td>
+          <td class="{% if h.realized_pnl_jpy >= 0 %}pos{% else %}neg{% endif %}">
+            {% if h.realized_pnl_jpy >= 0 %}+{% endif %}¥{{ "{:,.0f}".format(h.realized_pnl_jpy) }}
+          </td>
+          <td style="color:var(--muted);">{{ h.position_count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">資産推移データなし</div>
+  {% endif %}
+</div>
+
+<!-- ===== 取引履歴 ===== -->
+<div class="card">
+  <div class="section-header">
+    <h2>取引履歴（決済済み）</h2>
+    <span class="count">{{ trade_history | length }}件</span>
+  </div>
+  {% if trade_history %}
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>日時</th>
+          <th>銘柄</th>
+          <th>方向</th>
+          <th>戦略</th>
+          <th>エントリー</th>
+          <th>決済</th>
+          <th>損益%</th>
+          <th>損益(JPY)</th>
+          <th>理由</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in trade_history | reverse %}
+        <tr>
+          <td style="font-size:11px; color:var(--muted);">{{ t.get('exit_date', t.get('date', '-'))[:16] }}</td>
+          <td><strong>{{ t.get('code', '-') }}</strong></td>
+          <td><span class="badge badge-{{ t.get('side', 'long') }}">{{ t.get('side', 'long') }}</span></td>
+          <td style="font-size:11px; color:var(--muted);">{{ t.get('strategy', '-') }}</td>
+          <td style="font-size:12px;">{{ "{:,.2f}".format(t.get('entry_price', 0)) }}</td>
+          <td style="font-size:12px;">{{ "{:,.2f}".format(t.get('exit_price', 0)) }}</td>
+          <td class="{% if t.get('pnl_pct', 0) >= 0 %}pos{% else %}neg{% endif %}" style="font-weight:600;">
+            {% if t.get('pnl_pct', 0) >= 0 %}+{% endif %}{{ "%.2f"|format(t.get('pnl_pct', 0)) }}%
+          </td>
+          <td class="{% if t.get('pnl_jpy', 0) >= 0 %}pos{% else %}neg{% endif %}">
+            {% if t.get('pnl_jpy', 0) >= 0 %}+{% endif %}¥{{ "{:,.0f}".format(t.get('pnl_jpy', 0)) }}
+          </td>
+          <td style="font-size:11px; color:var(--muted);">{{ t.get('exit_reason', '-') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">まだ決済された取引がありません</div>
+  {% endif %}
+</div>
+
+<!-- ===== APIリンク ===== -->
+<div class="card" style="padding:12px 16px;">
+  <div class="card-title">API エンドポイント</div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:12px;">
+    <a href="/api/portfolio" target="_blank">/api/portfolio</a>
+    <a href="/api/signals"   target="_blank">/api/signals</a>
+    <a href="/api/history"   target="_blank">/api/history</a>
+    <a href="/api/strategies" target="_blank">/api/strategies</a>
+    <a href="/api/issues"    target="_blank">/api/issues</a>
+    <a href="/api/trades"    target="_blank">/api/trades</a>
+  </div>
+</div>
+
+<script>
+function filterPositions(strategy) {
+  const table = document.getElementById('positions-table');
+  if (!table) return;
+  const rows = table.querySelectorAll('tbody tr');
+  rows.forEach(row => {
+    const stratCell = row.cells[9]; // 戦略列（0-indexed）
+    if (!stratCell) return;
+    const text = stratCell.textContent.trim();
+    row.style.display = (strategy === 'all' || text === strategy) ? '' : 'none';
+  });
+  // ボタンのactive状態更新
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent.includes(strategy === 'all' ? '全て' : strategy)) {
+      btn.classList.add('active');
+    }
+  });
+}
+</script>
+
+<footer>
+  DaNARU 投資部ダッシュボード &mdash; ペーパートレード監視システム &mdash; port 8090
+</footer>
+
+</body>
+</html>
