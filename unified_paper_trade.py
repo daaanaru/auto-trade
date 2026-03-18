@@ -146,13 +146,19 @@ def price_to_jpy(price: float, market: str, fx_rate: float = None,
         return price * fx_rate
     return price  # JPY建て銘柄はそのまま
 
-# 市場→戦略マッピング
+# 市場→戦略マッピング（リスト形式: 1市場に複数戦略を割り当て可能）
 MARKET_STRATEGIES = {
     "jp": {"class": MonthlyMomentumStrategy, "param_key": "monthly", "period": "3mo"},
     "us": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
     "btc": {"class": VolumeDivergenceStrategy, "param_key": "vol_div", "period": "1y"},
     "gold": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
     "fx": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
+}
+
+# 追加戦略マッピング: メイン戦略に加えて並走させる戦略
+# 日本株: MonthlyMomentum(月初のみ) + BB+RSI(常時) の2本立て
+EXTRA_STRATEGIES = {
+    "jp": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
 }
 
 # スキャン対象（動的構築: jp=fullmarket_scan_results上位、us=us_stock_tickers全50銘柄）
@@ -1292,6 +1298,73 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
                     "strategy": "volscale_sma",
                 })
                 print(f"  LONG候補(VolScale): {name}({code}) @ {current_price:,.2f} | ファンダフィルター不適用")
+
+            time.sleep(0.3)
+
+    # Step 2c: 追加戦略スキャン（EXTRA_STRATEGIES: 日本株BB+RSI等）
+    for market, extra_config in EXTRA_STRATEGIES.items():
+        if market not in markets:
+            continue
+        tickers = SCAN_TICKERS.get(market, [])
+        extra_params = params.get(extra_config["param_key"], {})
+        extra_strategy = extra_config["class"](params=extra_params)
+        print(f"\n[Step 2c] 追加スキャン: {market.upper()} × {extra_config['param_key']} ({len(tickers)}銘柄)...")
+
+        for ticker in tickers:
+            code = ticker["code"]
+            name = ticker["name"]
+
+            if any(p["code"] == code for p in portfolio["positions"]):
+                continue
+            # 既にメインスキャンで候補に入っていればスキップ
+            if any(c["code"] == code for c in buy_candidates + short_candidates):
+                continue
+            if is_in_cooldown(code):
+                continue
+
+            data = fetch_data(code, period=extra_config["period"])
+            if data is None:
+                continue
+
+            try:
+                signals = extra_strategy.generate_signals(data)
+                signal = int(signals.iloc[-1])
+            except Exception:
+                continue
+
+            current_price = float(data["close"].iloc[-1].item())
+
+            if signal == 1:
+                fundamental = get_market_fundamental_score(code, market)
+                if fundamental["score"] >= 0.0:
+                    buy_candidates.append({
+                        "code": code, "name": name, "market": market,
+                        "price": current_price, "signal": signal,
+                        "fundamental": fundamental,
+                        "strategy": extra_config["param_key"],
+                    })
+                    print(f"  LONG候補(追加): {name}({code}) @ {current_price:,.2f} | ファンダ: {fundamental['score']:+.1f}")
+
+            elif signal == -1:
+                fundamental = get_market_fundamental_score(code, market)
+                if fundamental["score"] < 0:
+                    if market == "jp":
+                        market_cap = fundamental.get("data", {}).get("market_cap")
+                        if market_cap is None or market_cap < 50e9:
+                            continue
+                        if len(data) >= 200:
+                            sma200 = float(data["close"].rolling(200).mean().iloc[-1])
+                            if current_price > sma200:
+                                continue
+                        else:
+                            continue
+                    short_candidates.append({
+                        "code": code, "name": name, "market": market,
+                        "price": current_price, "signal": signal,
+                        "fundamental": fundamental,
+                        "strategy": extra_config["param_key"],
+                    })
+                    print(f"  SHORT候補(追加): {name}({code}) @ {current_price:,.2f} | ファンダ: {fundamental['score']:+.1f}")
 
             time.sleep(0.3)
 
