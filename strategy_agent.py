@@ -19,8 +19,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-# プロジェクトルートをパスに追加
-PROJECT_ROOT = Path(__file__).parent.parent
+# プロジェクトルート = auto-trade/ 自身（生成物をリポ内に保持する）
+PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 
@@ -352,15 +352,34 @@ class StrategyAgent:
                                 "error": f"セキュリティチェック: 許可されていないfrom import '{node.module}'（許可: {', '.join(sorted(_ALLOWED_MODULES))}）",
                                 "strategy_class": None
                             }
-                # eval/exec/compile/__import__の直接呼び出しを禁止
+                # 危険な組み込み関数の直接呼び出しを禁止
                 elif isinstance(node, ast.Call):
+                    _BANNED_FUNCTIONS = {
+                        "eval", "exec", "compile", "__import__",
+                        "getattr", "setattr", "delattr",
+                        "open", "input", "breakpoint",
+                        "globals", "locals", "vars",
+                    }
                     func = node.func
-                    if isinstance(func, ast.Name) and func.id in ("eval", "exec", "compile", "__import__", "getattr", "setattr"):
+                    if isinstance(func, ast.Name) and func.id in _BANNED_FUNCTIONS:
                         return {
                             "success": False,
                             "error": f"セキュリティチェック: 禁止関数 '{func.id}()' の呼び出しを検出",
                             "strategy_class": None
                         }
+                    # os.system(), os.remove() 等のメソッド呼び出しを検出
+                    # ※ os/subprocess はimportホワイトリストでもブロック済み（二重防御）
+                    if isinstance(func, ast.Attribute):
+                        _BANNED_METHODS = {
+                            "system", "popen", "check_output",
+                            "Popen", "remove", "rmdir", "unlink",
+                        }
+                        if func.attr in _BANNED_METHODS:
+                            return {
+                                "success": False,
+                                "error": f"セキュリティチェック: 禁止メソッド '.{func.attr}()' の呼び出しを検出",
+                                "strategy_class": None
+                            }
         except SyntaxError:
             pass  # 次の構文チェックで捕捉される
 
@@ -384,6 +403,15 @@ class StrategyAgent:
 
             spec = importlib.util.spec_from_file_location("generated_strategy", tmp_path)
             module = importlib.util.module_from_spec(spec)
+            # builtinsを制限して危険な関数へのアクセスを遮断（ASTチェックの二重防御）
+            # __import__はimport文の動作に必要なため残す（ASTホワイトリストで安全性担保）
+            import builtins as _builtins
+            safe_builtins = {k: v for k, v in vars(_builtins).items()
+                            if k not in ("open", "exec", "eval", "compile",
+                                         "input", "breakpoint",
+                                         "globals", "locals", "vars",
+                                         "getattr", "setattr", "delattr")}
+            module.__builtins__ = safe_builtins
             sys.modules["generated_strategy"] = module
             spec.loader.exec_module(module)
 

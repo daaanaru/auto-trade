@@ -363,7 +363,14 @@ def print_summary(state: dict, current_price: float = None, price_source: str = 
         position_value = abs(state["position"]) * current_price
         unrealized = direction * (current_price - state["entry_price"]) * abs(state["position"])
 
-    total_value = capital + position_value
+    # 総資産 = 現金 + ポジション清算価値（証拠金 + 含み損益）
+    # ショートでは position_value（=現在価格×数量）ではなく、
+    # 決済時に返ってくる金額（エントリー価格×数量 + 含み損益）を使う
+    if state["position"] != 0:
+        position_liquidation_value = abs(state["position"]) * state["entry_price"] + unrealized
+    else:
+        position_liquidation_value = 0.0
+    total_value = capital + position_liquidation_value
     total_return = ((total_value / initial) - 1) * 100
 
     print(f"  Initial Capital  : {initial:>14,.0f} JPY")
