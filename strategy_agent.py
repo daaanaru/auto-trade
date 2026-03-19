@@ -404,13 +404,28 @@ class StrategyAgent:
             spec = importlib.util.spec_from_file_location("generated_strategy", tmp_path)
             module = importlib.util.module_from_spec(spec)
             # builtinsを制限して危険な関数へのアクセスを遮断（ASTチェックの二重防御）
-            # __import__はimport文の動作に必要なため残す（ASTホワイトリストで安全性担保）
             import builtins as _builtins
             safe_builtins = {k: v for k, v in vars(_builtins).items()
                             if k not in ("open", "exec", "eval", "compile",
                                          "input", "breakpoint",
                                          "globals", "locals", "vars",
-                                         "getattr", "setattr", "delattr")}
+                                         "getattr", "setattr", "delattr",
+                                         "__import__")}
+            # __import__はホワイトリスト付きラッパーに差し替え
+            # __builtins__["__import__"](...) 経由のAST回避を防ぐ
+            _real_import = _builtins.__import__
+            _IMPORT_WHITELIST = {
+                "numpy", "pandas", "math", "statistics",
+                "dataclasses", "typing", "enum", "collections",
+                "datetime", "decimal", "functools", "itertools",
+                "plugins",  # BaseStrategy読み込み用
+            }
+            def _safe_import(name, *args, **kwargs):
+                root = name.split(".")[0]
+                if root not in _IMPORT_WHITELIST:
+                    raise ImportError(f"セキュリティ: '{name}' のimportは許可されていません")
+                return _real_import(name, *args, **kwargs)
+            safe_builtins["__import__"] = _safe_import
             module.__builtins__ = safe_builtins
             sys.modules["generated_strategy"] = module
             spec.loader.exec_module(module)

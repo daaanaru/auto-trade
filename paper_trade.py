@@ -294,6 +294,13 @@ def execute_paper_trade(state: dict, signal: int, price: float, price_source: st
 
     # --- エントリー判定 ---
     if signal != 0 and state["position"] == 0:
+        # スポット口座ではショート禁止（live_trade.pyと評価条件を統一）
+        # ペーパーでショートを許可すると、liveで再現不能な成績が混ざる
+        if signal == -1:
+            print(f"  [BLOCKED] ショートエントリーは禁止（live環境と統一）")
+            save_trade_log(trade_log)
+            return state
+
         risk_pct = config["risk_per_trade"]
         risk_capital = state["capital"] * risk_pct
         position_size = risk_capital / price  # BTC数量
