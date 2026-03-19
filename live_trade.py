@@ -183,19 +183,20 @@ class ExchangeClient:
             },
         }
 
-    def place_market_order(self, side: str, amount: float, price: float) -> dict:
+    def place_market_order(self, side: str, amount: float, price: float, is_close: bool = False) -> dict:
         """成行注文を出す。
 
         Args:
             side: "buy" or "sell"
             amount: BTC数量
             price: 参考価格（金額チェック用）
+            is_close: True=決済注文（金額上限チェックをスキップ）
 
         Returns:
             注文結果の辞書
         """
         order_jpy = price * amount
-        if order_jpy > self.max_order_jpy:
+        if not is_close and order_jpy > self.max_order_jpy:
             return {
                 "status": "rejected",
                 "reason": f"注文金額 ¥{order_jpy:,.0f} が上限 ¥{self.max_order_jpy:,} を超えています",
@@ -280,8 +281,10 @@ class ExchangeClient:
 # ==============================================================
 
 DEFAULT_CONFIG = {
-    "symbol": "BTC/USDT",
-    "exchange": "bybit",
+    # シグナル取得と発注を同じ取引所・同じペアで統一
+    # ExchangeClient側のLIVE_TRADE_SYMBOL/LIVE_TRADE_EXCHANGEと一致させること
+    "symbol": os.getenv("LIVE_TRADE_SYMBOL", "BTC/JPY"),
+    "exchange": os.getenv("LIVE_TRADE_EXCHANGE", "bitflyer"),
     "interval": "1d",
     "lookback_days": 120,
     "initial_capital_jpy": 10000,  # 初期投入額（円）
@@ -293,7 +296,18 @@ DEFAULT_CONFIG = {
 def load_state() -> dict:
     if STATE_FILE.exists():
         with open(STATE_FILE, "r") as f:
-            return json.load(f)
+            state = json.load(f)
+        # 環境変数とJSONのconfig不整合を自動修正（旧BTC/USDT→新BTC/JPY等）
+        current_symbol = DEFAULT_CONFIG["symbol"]
+        current_exchange = DEFAULT_CONFIG["exchange"]
+        if state.get("config", {}).get("symbol") != current_symbol or \
+           state.get("config", {}).get("exchange") != current_exchange:
+            old_sym = state.get("config", {}).get("symbol", "?")
+            old_ex = state.get("config", {}).get("exchange", "?")
+            print(f"  [MIGRATE] config更新: {old_ex}/{old_sym} → {current_exchange}/{current_symbol}")
+            state["config"]["symbol"] = current_symbol
+            state["config"]["exchange"] = current_exchange
+        return state
     return create_initial_state()
 
 
@@ -420,9 +434,9 @@ def execute_live_trade(state: dict, signal: int, client: ExchangeClient) -> dict
             position_size = abs(state["position"])
             direction = 1 if state["position"] > 0 else -1
 
-            # 決済注文
+            # 決済注文（金額上限チェックをスキップ）
             close_side = "sell" if direction == 1 else "buy"
-            result = client.place_market_order(close_side, position_size, current_price)
+            result = client.place_market_order(close_side, position_size, current_price, is_close=True)
 
             if result["status"] == "rejected":
                 print(f"  [REJECTED] {result['reason']}")
@@ -464,6 +478,12 @@ def execute_live_trade(state: dict, signal: int, client: ExchangeClient) -> dict
 
     # --- エントリー判定 ---
     if signal != 0 and state["position"] == 0:
+        # スポット口座ではショート（空売り）禁止
+        # margin/futures口座を設定するまでロングのみ許可
+        if signal == -1:
+            print("  [BLOCKED] スポット口座でのショートエントリーは禁止されています")
+            return state
+
         risk_capital = state["capital_jpy"] * 0.05
         position_size = risk_capital / current_price
 
@@ -528,7 +548,7 @@ def close_all_positions(state: dict, client: ExchangeClient) -> dict:
 
     print(f"  [EMERGENCY CLOSE] {'LONG' if direction == 1 else 'SHORT'} {position_size:.8f} BTC @ ¥{current_price:,.0f}")
 
-    result = client.place_market_order(close_side, position_size, current_price)
+    result = client.place_market_order(close_side, position_size, current_price, is_close=True)
 
     if result["status"] == "rejected":
         print(f"  [REJECTED] {result['reason']}")
