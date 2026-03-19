@@ -482,6 +482,9 @@ def execute_live_trade(state: dict, signal: int, client: ExchangeClient) -> dict
         # margin/futures口座を設定するまでロングのみ許可
         if signal == -1:
             print("  [BLOCKED] スポット口座でのショートエントリーは禁止されています")
+            state["current_signal"] = signal
+            state["last_updated"] = datetime.now().isoformat()
+            save_trade_log(trade_log)
             return state
 
         risk_capital = state["capital_jpy"] * 0.05
