@@ -1,0 +1,71 @@
+name: バックテスト自動実行
+
+on:
+  push:
+    paths:
+      - 'strategies/**'
+      - 'engine.py'
+      - 'optimize.py'
+      - 'optimized_params.json'
+  workflow_dispatch:
+    inputs:
+      strategy:
+        description: '戦略名（sma/rsi/bb_rsi/monthly/vol_div/mom_pb/order_block/all）'
+        required: true
+        default: 'all'
+      ticker:
+        description: 'ティッカー（例: 6758.T, AAPL）'
+        required: false
+        default: '6758.T'
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python環境セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 依存パッケージインストール
+        run: pip install -r requirements.txt
+
+      - name: 全戦略バックテスト
+        if: github.event_name == 'push' || github.event.inputs.strategy == 'all'
+        run: |
+          echo "=== 全戦略バックテスト ==="
+          python3 optimize.py --trials 50 --walk-forward 2>&1 | tee backtest_results.txt
+          echo "EXIT_CODE=$?" >> $GITHUB_ENV
+
+      - name: 単一戦略バックテスト
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.strategy != 'all'
+        run: |
+          echo "=== ${{ github.event.inputs.strategy }} バックテスト ==="
+          python3 optimize.py \
+            --strategy ${{ github.event.inputs.strategy }} \
+            --trials 50 \
+            --walk-forward \
+            2>&1 | tee backtest_results.txt
+
+      - name: 結果をアーティファクトに保存
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backtest-results-${{ github.sha }}
+          path: |
+            backtest_results.txt
+            optimized_params.json
+          retention-days: 30
+
+      - name: WF検証結果サマリー
+        if: always()
+        run: |
+          echo "## バックテスト結果" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -50 backtest_results.txt >> $GITHUB_STEP_SUMMARY || echo "結果なし" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
