@@ -1156,6 +1156,18 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
     except ImportError:
         event_filter = None
 
+    # レジーム判定（CRISIS時はロング新規エントリーを抑制）
+    regime_str = "UNKNOWN"
+    try:
+        from regime_detector import RegimeDetector
+        regime_result = RegimeDetector().detect()
+        regime_str = regime_result.regime
+        print(f"\n[レジーム] {regime_result}")
+        if regime_result.regime == "CRISIS":
+            print(f"  ⚠ CRISISレジーム: ロング新規エントリーを抑制（VolScaleのみ許可）")
+    except Exception:
+        pass
+
     for market in markets:
         if market not in MARKET_STRATEGIES:
             continue
@@ -1209,6 +1221,10 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
             # BUYシグナル → ロング候補
             if signal == 1:
+                # CRISISレジーム: ロング新規をブロック（VolScaleは別ステップで処理）
+                if regime_str == "CRISIS":
+                    print(f"  CRISIS抑制(LONG): {name}({code})")
+                    continue
                 fundamental = get_market_fundamental_score(code, market)
                 if fundamental["score"] >= 0.0:  # 閾値0.0: ファンダがマイナスでなければエントリー可（旧0.1: 機会損失）
                     buy_candidates.append({
@@ -1320,17 +1336,35 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
             time.sleep(0.3)
 
-    # Step 2b2: VolScale SMA 米国株スキャン（NVDA/AMZN WF合格 3/20検証済み）
+    # Step 2b2: VolScale SMA 米国株+日本株スキャン（WF合格銘柄 3/20検証済み）
     # 根拠: research/20260320_strategy_backtest_results.md, engine.py warmup修正後の再検証
-    if "us" in markets and not (event_filter and event_filter.should_block_entry("us", now)):
-        _VOLSCALE_US_TICKERS = [
+    _VOLSCALE_EXTRA = {
+        "us": [
             {"code": "NVDA", "name": "NVIDIA Corp"},
             {"code": "AMZN", "name": "Amazon.com Inc"},
-        ]
-        volscale_us = VolScaleSMAStrategy()
-        print(f"\n[Step 2b2] VolScale SMA スキャン: 米国株 ({len(_VOLSCALE_US_TICKERS)}銘柄, ロングオンリー)...")
+        ],
+        "jp": [
+            {"code": "8058.T", "name": "三菱商事"},
+            {"code": "9020.T", "name": "JR東日本"},
+            {"code": "5108.T", "name": "ブリヂストン"},
+            {"code": "8306.T", "name": "三菱UFJ"},
+            {"code": "7269.T", "name": "スバル"},
+            {"code": "2914.T", "name": "JT"},
+            {"code": "8035.T", "name": "東京エレクトロン"},
+            {"code": "7267.T", "name": "ホンダ"},
+        ],
+    }
+    for vs_market, vs_tickers in _VOLSCALE_EXTRA.items():
+        if vs_market not in markets:
+            continue
+        if event_filter and event_filter.should_block_entry(vs_market, now):
+            blocking = event_filter.get_blocking_event(vs_market, now)
+            print(f"\n[Step 2b2] VolScale {vs_market.upper()}: イベント前エントリー禁止 ({blocking['name'] if blocking else ''})")
+            continue
+        volscale_extra = VolScaleSMAStrategy()
+        print(f"\n[Step 2b2] VolScale SMA スキャン: {vs_market.upper()} ({len(vs_tickers)}銘柄, ロングオンリー)...")
 
-        for ticker in _VOLSCALE_US_TICKERS:
+        for ticker in vs_tickers:
             code = ticker["code"]
             name = ticker["name"]
 
@@ -1345,7 +1379,7 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
                 continue
 
             try:
-                signals = volscale_us.generate_signals(data)
+                signals = volscale_extra.generate_signals(data)
                 signal = int(signals.iloc[-1])
             except Exception:
                 continue
@@ -1360,7 +1394,7 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
                 buy_candidates.append({
                     "code": code,
                     "name": name,
-                    "market": "us",
+                    "market": vs_market,
                     "price": current_price,
                     "signal": signal,
                     "fundamental": {"score": 1.0, "reason": "VolScale: ファンダフィルター不適用"},
