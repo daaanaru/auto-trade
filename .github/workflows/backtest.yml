@@ -44,10 +44,17 @@ jobs:
 
       - name: 単一戦略バックテスト
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.strategy != 'all'
+        env:
+          STRATEGY_NAME: ${{ github.event.inputs.strategy }}
         run: |
-          echo "=== ${{ github.event.inputs.strategy }} バックテスト ==="
+          # 入力値をホワイトリストで検証（コマンドインジェクション対策）
+          if ! echo "$STRATEGY_NAME" | grep -qE '^(sma|rsi|bb_rsi|monthly|vol_div|mom_pb|order_block)$'; then
+            echo "ERROR: 不正な戦略名 '$STRATEGY_NAME'"
+            exit 1
+          fi
+          echo "=== $STRATEGY_NAME バックテスト ==="
           python3 optimize.py \
-            --strategy ${{ github.event.inputs.strategy }} \
+            --strategy "$STRATEGY_NAME" \
             --trials 50 \
             --walk-forward \
             2>&1 | tee backtest_results.txt
