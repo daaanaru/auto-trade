@@ -116,11 +116,17 @@ class BacktestEngine:
         data: pd.DataFrame,
         train_months: int = 12,
         test_months: int = 3,
+        warmup_days: int = 0,
         verbose: bool = True,
     ) -> list[BacktestResult]:
         """
         ウォークフォワード検証（過学習防止）
         train_monthsで学習、test_monthsで検証を時系列でローリング
+
+        Args:
+            warmup_days: テスト期間の前に含めるウォームアップ日数。
+                         VolScale(ref_w=180)等の長期指標戦略では200程度を指定。
+                         ウォームアップ込みでシグナル生成し、テスト期間のみ成績計算。
         """
         results = []
         start = data.index[0]
@@ -131,12 +137,38 @@ class BacktestEngine:
 
         while current + pd.DateOffset(months=test_months) <= end:
             test_end = current + pd.DateOffset(months=test_months)
-            test_data = data[current:test_end]
+
+            if warmup_days > 0:
+                warmup_start = current - pd.DateOffset(days=warmup_days)
+                test_data = data[warmup_start:test_end]
+            else:
+                test_data = data[current:test_end]
 
             if verbose:
-                print(f"\n🔄 ウォークフォワード Fold {fold}: {current.date()} ～ {test_end.date()}")
+                wu = f" (warmup={warmup_days}d)" if warmup_days > 0 else ""
+                print(f"\n🔄 ウォークフォワード Fold {fold}: {current.date()} ～ {test_end.date()}{wu} [{len(test_data)}行]")
 
-            result = self.run(strategy, test_data, verbose=False)
+            full_result = self.run(strategy, test_data, verbose=False)
+
+            if warmup_days > 0 and full_result.equity_curve is not None:
+                test_eq = full_result.equity_curve[current:]
+                if len(test_eq) > 1:
+                    test_ret = test_eq.pct_change().dropna()
+                    result = BacktestResult(
+                        annual_return=self._calc_annual_return(test_ret),
+                        sharpe_ratio=self._calc_sharpe(test_ret),
+                        max_drawdown=self._calc_max_drawdown(test_eq),
+                        win_rate=full_result.win_rate,
+                        total_trades=full_result.total_trades,
+                        period=f"{current.date()} ～ {test_end.date()}",
+                        equity_curve=test_eq,
+                        trade_log=full_result.trade_log,
+                    )
+                else:
+                    result = full_result
+            else:
+                result = full_result
+
             results.append(result)
 
             current = test_end
@@ -145,7 +177,8 @@ class BacktestEngine:
         if verbose and results:
             avg_return = np.mean([r.annual_return for r in results])
             avg_sharpe = np.mean([r.sharpe_ratio for r in results])
-            print(f"\n📊 ウォークフォワード集計 ({len(results)}フォールド)")
+            trades_total = sum(r.total_trades for r in results)
+            print(f"\n📊 ウォークフォワード集計 ({len(results)}フォールド, 計{trades_total}取引)")
             print(f"   平均年率リターン: {avg_return:+.1f}%")
             print(f"   平均シャープレシオ: {avg_sharpe:.2f}")
 
