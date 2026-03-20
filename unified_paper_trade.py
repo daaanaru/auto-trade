@@ -30,6 +30,8 @@ except ImportError:
 
 import argparse
 import json
+import logging
+import logging.handlers
 import os
 import sys
 import time
@@ -1079,14 +1081,16 @@ def execute_sell(portfolio: dict, code: str, price: float, shares: float,
         "reason": reason,
     })
 
-    # 通知
+    # 通知（損切りと大きい利確のみ。小さいTP1等は通知しない）
     try:
         if side == "short":
             pnl_pct = (pos["entry_price"] - price) / pos["entry_price"] * 100
         else:
             pnl_pct = (price - pos["entry_price"]) / pos["entry_price"] * 100
-        from notifier import notify_sell_signal
-        notify_sell_signal(code, pos["name"], price, net_pnl, pnl_pct, reason)
+        # 通知条件: 損切り(SL) or 損益500円以上 or 強制決済
+        if abs(net_pnl) >= 500 or "STOP_LOSS" in reason or "FORCE" in reason:
+            from notifier import notify_sell_signal
+            notify_sell_signal(code, pos["name"], price, net_pnl, pnl_pct, reason)
     except Exception:
         pass
 
@@ -1145,8 +1149,23 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
     buy_candidates = []    # ロングエントリー候補
     short_candidates = []  # ショートエントリー候補
 
+    # イベントフィルター初期化（FOMC/CPI/雇用統計の24時間前は新規エントリー禁止）
+    try:
+        from event_filter import EventFilter
+        event_filter = EventFilter()
+    except ImportError:
+        event_filter = None
+
     for market in markets:
         if market not in MARKET_STRATEGIES:
+            continue
+
+        # イベントフィルター: 重要経済イベント前は新規エントリー禁止
+        if event_filter and event_filter.should_block_entry(market, now):
+            blocking = event_filter.get_blocking_event(market, now)
+            ev_name = blocking["name"] if blocking else "不明"
+            ev_resume = blocking["resume_time"] if blocking else "不明"
+            print(f"\n[Step 2] {market.upper()}: イベント前エントリー禁止 ({ev_name}, 解禁: {ev_resume})")
             continue
 
         # ペーパートレードは日足終値シミュレーション → 閉場フィルター不要
@@ -1298,6 +1317,56 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
                     "strategy": "volscale_sma",
                 })
                 print(f"  LONG候補(VolScale): {name}({code}) @ {current_price:,.2f} | ファンダフィルター不適用")
+
+            time.sleep(0.3)
+
+    # Step 2b2: VolScale SMA 米国株スキャン（NVDA/AMZN WF合格 3/20検証済み）
+    # 根拠: research/20260320_strategy_backtest_results.md, engine.py warmup修正後の再検証
+    if "us" in markets and not (event_filter and event_filter.should_block_entry("us", now)):
+        _VOLSCALE_US_TICKERS = [
+            {"code": "NVDA", "name": "NVIDIA Corp"},
+            {"code": "AMZN", "name": "Amazon.com Inc"},
+        ]
+        volscale_us = VolScaleSMAStrategy()
+        print(f"\n[Step 2b2] VolScale SMA スキャン: 米国株 ({len(_VOLSCALE_US_TICKERS)}銘柄, ロングオンリー)...")
+
+        for ticker in _VOLSCALE_US_TICKERS:
+            code = ticker["code"]
+            name = ticker["name"]
+
+            if any(p["code"] == code for p in portfolio["positions"]):
+                continue
+            if is_in_cooldown(code):
+                print(f"  クールダウン中: {name}({code})")
+                continue
+
+            data = fetch_data(code, period="1y")
+            if data is None:
+                continue
+
+            try:
+                signals = volscale_us.generate_signals(data)
+                signal = int(signals.iloc[-1])
+            except Exception:
+                continue
+
+            current_price = float(data["close"].iloc[-1].item())
+
+            if signal == 1:
+                if any(c["code"] == code for c in buy_candidates):
+                    print(f"  VolScale BUY（bb_rsiと重複、スキップ）: {name}({code})")
+                    continue
+
+                buy_candidates.append({
+                    "code": code,
+                    "name": name,
+                    "market": "us",
+                    "price": current_price,
+                    "signal": signal,
+                    "fundamental": {"score": 1.0, "reason": "VolScale: ファンダフィルター不適用"},
+                    "strategy": "volscale_sma",
+                })
+                print(f"  LONG候補(VolScale): {name}({code}) @ {current_price:,.2f}")
 
             time.sleep(0.3)
 
@@ -1792,16 +1861,18 @@ def main():
     # 日次レポートも自動生成
     generate_daily_report(portfolio)
 
-    # Discord日次通知
-    try:
-        val = calc_portfolio_value(portfolio)
-        from notifier import notify_portfolio_update
-        notify_portfolio_update(
-            val["total_value_jpy"], val["total_return_pct"],
-            val["position_count"], val["cash_jpy"]
-        )
-    except Exception:
-        pass
+    # Discord日次通知（朝9時台と夜21時台のみ。30分ごとに飛ばさない）
+    current_hour = datetime.now().hour
+    if current_hour in (9, 21):
+        try:
+            val = calc_portfolio_value(portfolio)
+            from notifier import notify_portfolio_update
+            notify_portfolio_update(
+                val["total_value_jpy"], val["total_return_pct"],
+                val["position_count"], val["cash_jpy"]
+            )
+        except Exception:
+            pass
 
     # 期限チェック
     deadline = datetime(2026, 4, 12)

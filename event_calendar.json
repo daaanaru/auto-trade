@@ -1,6 +1,49 @@
 {
   "events": [
-    {"date": "2026-03-19", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc"]},
-    {"date": "2026-03-21", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]}
-  ]
+    {"date": "2026-01-29", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-03-19", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-05-06", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-06-17", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-07-29", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-09-16", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-11-04", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-12-16", "name": "FOMC金利決定", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+
+    {"date": "2026-01-10", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-02-06", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-03-06", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-04-03", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-05-08", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-06-05", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-07-02", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-08-07", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-09-04", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-10-02", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-11-06", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-12-04", "name": "米雇用統計", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+
+    {"date": "2026-01-14", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-02-11", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-03-11", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-04-14", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-05-12", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-06-10", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-07-14", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-08-12", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-09-15", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-10-13", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-11-10", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+    {"date": "2026-12-10", "name": "米CPI", "impact": "high", "markets": ["us", "fx", "btc", "gold"]},
+
+    {"date": "2026-01-16", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-03-21", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-04-28", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-06-16", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-07-16", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-09-17", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-10-29", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]},
+    {"date": "2026-12-18", "name": "日銀金融政策決定会合", "impact": "high", "markets": ["jp", "fx"]}
+  ],
+  "_note": "highインパクトイベントの24時間前から新規エントリー禁止。イベント後12時間で解禁。",
+  "_updated": "2026-03-20"
 }
