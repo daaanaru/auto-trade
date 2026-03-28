@@ -1,0 +1,12 @@
+{
+  "initial_capital_jpy": 100000.0,
+  "cash_jpy": 100000.0,
+  "leverage": 10,
+  "positions": [],
+  "total_realized_pnl": 0.0,
+  "total_trades": 0,
+  "wins": 0,
+  "losses": 0,
+  "created_at": "2026-03-29T01:08:26.648533",
+  "updated_at": "2026-03-29T01:08:38.649568"
+}

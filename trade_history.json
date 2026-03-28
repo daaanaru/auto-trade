@@ -3125,6 +3125,18 @@
       "side": "short",
       "market": "btc",
       "name": "モナコイン"
+    },
+    {
+      "timestamp": "2026-03-29T00:35:08.236388",
+      "symbol": "ETH-JPY",
+      "action": "BUY",
+      "price": 325043.21875,
+      "shares": 0.053552,
+      "pnl": null,
+      "strategy": "volscale_sma",
+      "side": "long",
+      "market": "btc",
+      "name": "イーサリアム"
     }
   ]
 }

@@ -152,18 +152,19 @@ def price_to_jpy(price: float, market: str, fx_rate: float = None,
 # 市場→戦略マッピング（リスト形式: 1市場に複数戦略を割り当て可能）
 # 2026-03-26: BB_RSI米国株ロング新規エントリー停止（上様承認 2026-03-21-001）
 # 理由: 勝率45.5%、損益-7,592円、全損失の60%超。既存ポジションは7日ルールで順次決済
+# 2026-03-29: BB_RSI全市場の新規エントリー停止（71件決済で-6,864円の最大損失源。既存LOW 1件は自然決済）
 MARKET_STRATEGIES = {
     "jp": {"class": MonthlyMomentumStrategy, "param_key": "monthly", "period": "3mo"},
     # "us": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},  # 停止(2026-03-26)
     "btc": {"class": VolumeDivergenceStrategy, "param_key": "vol_div", "period": "1y"},
-    "gold": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
-    "fx": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
+    # "gold": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},  # 停止(2026-03-29)
+    # "fx": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},  # 停止(2026-03-29)
 }
 
 # 追加戦略マッピング: メイン戦略に加えて並走させる戦略
 # 日本株: MonthlyMomentum(月初のみ) + BB+RSI(常時) の2本立て
 EXTRA_STRATEGIES = {
-    "jp": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
+    # "jp": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},  # 停止(2026-03-29)
 }
 
 # スキャン対象（動的構築: jp=fullmarket_scan_results上位、us=us_stock_tickers全50銘柄）
@@ -1492,6 +1493,32 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
                     print(f"  SHORT候補(追加): {name}({code}) @ {current_price:,.2f} | ファンダ: {fundamental['score']:+.1f}")
 
             time.sleep(0.3)
+
+    # Step 2d: Dexter式エントリー検証（Validation Agent）
+    # テクニカル+ファンダの整合性、集中リスク、タイミングリスクをLLMで自己検証
+    all_entry_candidates = buy_candidates + short_candidates
+    if all_entry_candidates and not dry_run:
+        try:
+            from entry_validator import validate_entries
+            print(f"\n[Step 2d] Dexter式エントリー検証 ({len(all_entry_candidates)}候補)...")
+            validated = validate_entries(
+                all_entry_candidates, portfolio, regime=regime_str
+            )
+            # 検証結果で候補を更新（PASS判定のみ残す）
+            validated_codes = {c["code"] for c in validated}
+            buy_candidates = [c for c in buy_candidates if c["code"] in validated_codes]
+            short_candidates = [c for c in short_candidates if c["code"] in validated_codes]
+        except ImportError:
+            print(f"\n[Step 2d] entry_validator.py 未検出、検証スキップ")
+        except Exception as e:
+            print(f"\n[Step 2d] 検証エラー({e})、全候補をPASSとして続行")
+    elif all_entry_candidates and dry_run:
+        try:
+            from entry_validator import validate_entries
+            print(f"\n[Step 2d] Dexter式エントリー検証 (DRY RUN, {len(all_entry_candidates)}候補)...")
+            validate_entries(all_entry_candidates, portfolio, regime=regime_str, dry_run=True)
+        except Exception:
+            pass
 
     # Step 3: 保有銘柄のシグナルチェック（クローズ判断）
     print(f"\n[Step 3] 保有銘柄のクローズシグナルチェック...")
