@@ -66,6 +66,7 @@ INITIAL_CAPITAL_JPY = 300000.0  # 約$2000（検証用）
 
 # リスク管理ルール（3/18 攻め転換: 現金を遊ばせず取引機会を最大化）
 MAX_POSITION_PCT = 0.08        # 1銘柄あたりポートフォリオの8%（旧4%: 投入額が小さすぎた）
+VOLSCALE_POSITION_PCT = 0.06   # VolScale専用: 6%（3/26上様承認 旧4%→黒字戦略に資金集中）
 MAX_POSITIONS = 50             # 同時保有最大50ポジション（5市場 x 10枠）
 MAX_POSITIONS_PER_MARKET = 15  # 1市場あたり最大15ポジション（旧10: 枠が足りず機会損失）
 COMMISSION_RATE = 0.001        # 手数料0.1%
@@ -104,7 +105,7 @@ def get_usdjpy_rate() -> float:
             close_series = data["Close"]
             if isinstance(close_series, pd.DataFrame):
                 close_series = close_series.iloc[:, 0]
-            rate = float(close_series.iloc[-1])
+            rate = float(close_series.iloc[-1].item() if hasattr(close_series.iloc[-1], 'item') else close_series.iloc[-1])
             if 100 < rate < 200:  # 妥当性チェック
                 return rate
     except Exception:
@@ -149,9 +150,11 @@ def price_to_jpy(price: float, market: str, fx_rate: float = None,
     return price  # JPY建て銘柄はそのまま
 
 # 市場→戦略マッピング（リスト形式: 1市場に複数戦略を割り当て可能）
+# 2026-03-26: BB_RSI米国株ロング新規エントリー停止（上様承認 2026-03-21-001）
+# 理由: 勝率45.5%、損益-7,592円、全損失の60%超。既存ポジションは7日ルールで順次決済
 MARKET_STRATEGIES = {
     "jp": {"class": MonthlyMomentumStrategy, "param_key": "monthly", "period": "3mo"},
-    "us": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
+    # "us": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},  # 停止(2026-03-26)
     "btc": {"class": VolumeDivergenceStrategy, "param_key": "vol_div", "period": "1y"},
     "gold": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
     "fx": {"class": BBRSIComboStrategy, "param_key": "bb_rsi", "period": "3mo"},
@@ -795,7 +798,9 @@ def execute_buy(portfolio: dict, code: str, name: str, market: str,
         _calc_unrealized_pnl(p, fx_rate) for p in portfolio["positions"]
     )
     total_value = portfolio["initial_capital_jpy"] + portfolio["total_realized_pnl"] + unrealized
-    max_invest = total_value * MAX_POSITION_PCT
+    # VolScale戦略は専用の大きめポジションサイズ（3/26上様承認 2026-03-21-003）
+    position_pct = VOLSCALE_POSITION_PCT if strategy == "volscale_sma" else MAX_POSITION_PCT
+    max_invest = total_value * position_pct
 
     # 既にポジションがある場合はスキップ（同一銘柄のロング+ショート同時保有禁止）
     if any(p["code"] == code for p in portfolio["positions"]):
@@ -899,7 +904,8 @@ def execute_short(portfolio: dict, code: str, name: str, market: str,
         _calc_unrealized_pnl(p, fx_rate) for p in portfolio["positions"]
     )
     total_value = portfolio["initial_capital_jpy"] + portfolio["total_realized_pnl"] + unrealized
-    max_invest = total_value * MAX_POSITION_PCT
+    position_pct = VOLSCALE_POSITION_PCT if strategy == "volscale_sma" else MAX_POSITION_PCT
+    max_invest = total_value * position_pct
 
     # 既にポジションがある場合はスキップ（同一銘柄のロング+ショート同時保有禁止）
     if any(p["code"] == code for p in portfolio["positions"]):
@@ -1156,15 +1162,18 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
     except ImportError:
         event_filter = None
 
-    # レジーム判定（CRISIS時はロング新規エントリーを抑制）
+    # レジーム判定（CRISIS/CAUTION時はロング新規エントリーを抑制）
     regime_str = "UNKNOWN"
+    regime_result = None
     try:
         from regime_detector import RegimeDetector
         regime_result = RegimeDetector().detect()
         regime_str = regime_result.regime
         print(f"\n[レジーム] {regime_result}")
         if regime_result.regime == "CRISIS":
-            print(f"  ⚠ CRISISレジーム: ロング新規エントリーを抑制（VolScaleのみ許可）")
+            print(f"  ⚠ CRISISレジーム: 新規エントリーを全面抑制")
+        elif regime_result.regime == "CAUTION":
+            print(f"  ⚠ CAUTIONレジーム: ロング新規を抑制（ショートは許可）")
     except Exception:
         pass
 
@@ -1221,9 +1230,9 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
 
             # BUYシグナル → ロング候補
             if signal == 1:
-                # CRISISレジーム: ロング新規をブロック（VolScaleは別ステップで処理）
-                if regime_str == "CRISIS":
-                    print(f"  CRISIS抑制(LONG): {name}({code})")
+                # CRISIS/CAUTIONレジーム: ロング新規をブロック（VolScaleは別ステップで処理）
+                if regime_str in ("CRISIS", "CAUTION"):
+                    print(f"  {regime_str}抑制(LONG): {name}({code})")
                     continue
                 fundamental = get_market_fundamental_score(code, market)
                 if fundamental["score"] >= 0.0:  # 閾値0.0: ファンダがマイナスでなければエントリー可（旧0.1: 機会損失）
@@ -1243,8 +1252,18 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
             # SELLシグナル → ショート候補
             elif signal == -1:
                 fundamental = get_market_fundamental_score(code, market)
-                # ショート条件: テクニカルSELL + ファンダスコア < 0（業績が悪い銘柄を空売り）
-                if fundamental["score"] < 0:
+                # ショート条件: ファンダスコア<0 OR (VIX高止まり時にファンダスコア<0.3かつbb_rsi以外)
+                vix_value = regime_result.vix if regime_result else 0
+                vix_sma5 = regime_result.vix_sma5 if regime_result else 0
+                vix_sma5_above_25 = (vix_sma5 or 0) >= 25
+                short_by_funda = fundamental["score"] < 0
+                short_by_vix = (
+                    (vix_value or 0) >= 25
+                    and vix_sma5_above_25
+                    and fundamental["score"] < 0.3
+                    and config["param_key"] != "bb_rsi"
+                )
+                if short_by_funda or short_by_vix:
                     # 日本株ショート: 時価総額500億円未満の小型株はギャップリスクが高いためブロック
                     # データ欠損(None)もブロック（不明な銘柄は小型株の可能性が高い）
                     if market == "jp":
@@ -1275,7 +1294,10 @@ def scan_and_trade(portfolio: dict, markets: list, dry_run: bool = False) -> dic
                         "fundamental": fundamental,
                         "strategy": config["param_key"],
                     })
-                    print(f"  SHORT候補: {name}({code}) @ {current_price:,.2f} | ファンダ: {fundamental['score']:+.1f} ({fundamental['reason']})")
+                    if short_by_vix and not short_by_funda:
+                        print(f"  SHORT候補(VIX緩和): {name}({code}) @ {current_price:,.2f} | VIX:{vix_value:.1f} ファンダ:{fundamental['score']:+.1f}")
+                    else:
+                        print(f"  SHORT候補: {name}({code}) @ {current_price:,.2f} | ファンダ: {fundamental['score']:+.1f} ({fundamental['reason']})")
                 else:
                     print(f"  ファンダNG(SHORT): {name}({code}) | スコア: {fundamental['score']:+.1f} ({fundamental['reason']})")
 
