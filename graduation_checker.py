@@ -88,8 +88,10 @@ def check_min_days(perf_log: list, required: int) -> dict:
 
 def check_win_rate(positions: dict, required: float) -> dict:
     """勝率チェック。最低20回以上の取引が必要。（5回では統計的に無意味、20回で±20%の信頼区間）"""
-    total = positions.get("total_trades", 0)
-    wins = positions.get("winning_trades", 0)
+    # closed_tradesから正確に集計（カウンタフィールドはFORCE_CLOSE_ALL等で更新漏れあり）
+    closed_trades = positions.get("closed_trades", [])
+    total = len(closed_trades)
+    wins = sum(1 for t in closed_trades if t.get("net_pnl_jpy", 0) > 0)
     min_trades = 20  # 最低取引回数（統計的信頼性のため20回必要）
 
     if total < min_trades:
@@ -271,18 +273,30 @@ def check_backtest_deviation(perf_log: list, positions: dict,
     bt_sharpe = sum(bt_sharpes) / len(bt_sharpes)
 
     # 乖離率計算
-    if bt_sharpe == 0:
-        deviation = abs(paper_sharpe) * 100  # BT=0なら絶対値で判定
+    # |bt_sharpe| < 0.3 のとき比率ベースだと分母爆発（数千%の異常値）になるので
+    # Sharpe差の絶対値にフォールバックする
+    sharpe_diff = abs(paper_sharpe - bt_sharpe)
+    if abs(bt_sharpe) < 0.3:
+        # BT Sharpe が0付近 → 比率計算が無意味。Sharpe差で判定
+        # 差が1.0以上なら有意な乖離とみなす
+        deviation_display = f"Sharpe差 {sharpe_diff:.2f} (Paper:{paper_sharpe:.2f} vs BT:{bt_sharpe:.2f})"
+        passed = sharpe_diff < 1.0
+        return {
+            "name": "BT乖離",
+            "required": f"Sharpe差1.0未満 (BT≈0のため絶対値判定)",
+            "actual": deviation_display,
+            "value": sharpe_diff,
+            "passed": passed,
+        }
     else:
-        deviation = abs((paper_sharpe - bt_sharpe) / bt_sharpe) * 100
-
-    return {
-        "name": "BT乖離",
-        "required": f"+-{max_deviation}%以内",
-        "actual": f"{deviation:.1f}% (Paper:{paper_sharpe:.2f} vs BT:{bt_sharpe:.2f})",
-        "value": deviation,
-        "passed": deviation <= max_deviation,
-    }
+        deviation = sharpe_diff / abs(bt_sharpe) * 100
+        return {
+            "name": "BT乖離",
+            "required": f"+-{max_deviation}%以内",
+            "actual": f"{deviation:.1f}% (Paper:{paper_sharpe:.2f} vs BT:{bt_sharpe:.2f})",
+            "value": deviation,
+            "passed": deviation <= max_deviation,
+        }
 
 
 # ==============================================================
@@ -310,10 +324,14 @@ def run_graduation_check(config: dict) -> dict:
     all_passed = all(c["passed"] for c in checks)
     passed_count = sum(1 for c in checks if c["passed"])
 
-    # 追加の統計情報
-    total_trades = positions.get("total_trades", 0)
-    capital = positions.get("initial_capital_jpy", positions.get("capital", config["paper_trade"]["initial_capital_jpy"]))
-    total_pnl = positions.get("total_realized_pnl", positions.get("total_pnl", 0))
+    # 追加の統計情報（closed_tradesから正確に集計）
+    closed_trades_all = positions.get("closed_trades", [])
+    total_trades = len(closed_trades_all)
+    # 初期資本: ポートフォリオ実績値 → config のフォールバック
+    # crypto_config.json の paper_trade.initial_capital_jpy は旧BTC単体用(30,000)なので
+    # 統合ペーパートレード(300,000)の実績と齟齬が出る。ポートフォリオ側を優先する
+    capital = positions.get("initial_capital_jpy", config["paper_trade"]["initial_capital_jpy"])
+    total_pnl = sum(t.get("net_pnl_jpy", 0) for t in closed_trades_all)
 
     return {
         "timestamp": datetime.now().isoformat(),
@@ -326,8 +344,7 @@ def run_graduation_check(config: dict) -> dict:
             "total_trades": total_trades,
             "capital_jpy": capital,
             "total_pnl_jpy": total_pnl,
-            "roi_pct": (total_pnl / config["paper_trade"]["initial_capital_jpy"] * 100)
-                       if total_pnl else 0.0,
+            "roi_pct": (total_pnl / capital * 100) if (total_pnl and capital) else 0.0,
         },
     }
 

@@ -38,7 +38,7 @@ def _get_macro_data() -> dict:
     # 取得対象: (キー名, ティッカー, 期間, 取得する値のリスト)
     targets = [
         {
-            "ticker": "DX=F",
+            "ticker": "DX-Y.NYB",  # DX=F(先物)はdelisted。DXY連動ETNに変更
             "period": "3mo",
             "extract": lambda df: _extract_dxy(df),
         },
@@ -156,6 +156,9 @@ def get_stock_score(symbol: str) -> dict:
             elif pe > 40:
                 score -= 0.2
                 reasons.append(f"PER高い({pe:.1f})")
+            elif pe > 25:
+                score -= 0.15
+                reasons.append(f"PERやや高({pe:.1f})")
 
         # PBR（株価純資産倍率）
         pb = info.get("priceToBook")
@@ -166,6 +169,9 @@ def get_stock_score(symbol: str) -> dict:
             elif pb > 5:
                 score -= 0.1
                 reasons.append(f"PBR割高({pb:.1f})")
+            elif pb > 3:
+                score -= 0.1
+                reasons.append(f"PBRやや割高({pb:.1f})")
 
         # 配当利回り（yfinanceは小数値で返す: 0.0207 = 2.07%）
         div_yield = info.get("dividendYield")
@@ -195,8 +201,8 @@ def get_stock_score(symbol: str) -> dict:
         if fifty_two_high and current_price:
             ratio = current_price / fifty_two_high
             if ratio > 0.95:
-                score -= 0.1
-                reasons.append("52週高値圏")
+                score -= 0.2
+                reasons.append(f"52週高値圏({ratio:.0%})")
             elif ratio < 0.7:
                 score += 0.1
                 reasons.append("52週安値圏")

@@ -7,6 +7,7 @@ venv/
 
 # Runtime data (personal trading logs)
 logs/
+trade_history.json
 paper_positions.json
 paper_trade_log.json
 paper_portfolio.json

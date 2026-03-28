@@ -1,14 +1,14 @@
 """
 crypto_monitor.py — 仮想通貨自律監視エージェント
 
-ローカルLLM（Ollama qwen2.5:7b）を使った仮想通貨の自律監視システム。
+仮想通貨の自律監視システム。
 1時間毎にcronで実行し、以下を自動的に行う:
 
 1. bitFlyer公開APIでBTC/JPY価格取得
 2. 全戦略のシグナル判定
 3. ペーパーポジション管理（paper_positions.json経由）
 4. パフォーマンス記録（performance_log.json）
-5. Ollama LLMに分析依頼 → 日次レポート生成
+5. 日次サマリーレポート生成
 
 卒業条件（実弾投入推奨の閾値）:
   - ペーパートレード期間: 最低2週間
@@ -19,7 +19,7 @@ crypto_monitor.py — 仮想通貨自律監視エージェント
 
 使い方:
   python crypto_monitor.py              # 通常実行（シグナル判定+ペーパートレード+記録）
-  python crypto_monitor.py --report     # LLM日次レポート生成
+  python crypto_monitor.py --report     # 日次レポート生成
   python crypto_monitor.py --status     # 卒業条件チェック
   python crypto_monitor.py --full       # 全工程実行（通常+レポート+卒業チェック）
 
@@ -43,7 +43,6 @@ except ImportError:
 import argparse
 import json
 import sys
-import requests
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Union
@@ -71,10 +70,17 @@ def load_config() -> dict:
 
 
 def load_json(path: Path) -> dict | list:
+    default = {} if path.suffix == ".json" else []
     if path.exists():
-        with open(path, "r") as f:
-            return json.load(f)
-    return {} if path.suffix == ".json" else []
+        try:
+            with open(path, "r") as f:
+                content = f.read().strip()
+                if not content:
+                    return default
+                return json.loads(content)
+        except json.JSONDecodeError:
+            return default
+    return default
 
 
 def save_json(path: Path, data):
@@ -282,45 +288,17 @@ def check_graduation(config: dict, positions: dict) -> dict:
 
 
 # ==============================================================
-# Ollama LLM 分析
+# 日次サマリー生成（静的データレポート）
 # ==============================================================
-
-def query_ollama(prompt: str, config: dict) -> str:
-    """OllamaのAPIにプロンプトを送り、応答を返す。"""
-    ollama_config = config["ollama"]
-    url = f"{ollama_config['base_url']}/api/generate"
-
-    try:
-        resp = requests.post(
-            url,
-            json={
-                "model": ollama_config["model"],
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "temperature": 0.3,
-                    "num_predict": 1024,
-                },
-            },
-            timeout=ollama_config["timeout_seconds"],
-        )
-        resp.raise_for_status()
-        return resp.json().get("response", "")
-    except requests.exceptions.ConnectionError:
-        return "[ERROR] Ollama API接続失敗。Ollamaが起動しているか確認してください。"
-    except Exception as e:
-        return f"[ERROR] Ollama API呼び出し失敗: {e}"
-
 
 def generate_daily_report(config: dict, price_data: dict, signals: dict,
                           positions: dict, graduation: dict) -> str:
-    """LLMに日次分析レポートを生成させる。"""
-    # コンテキスト構築
+    """日次サマリーレポートを生成する（データのみ、LLM不使用）。"""
     trade_log = load_json(TRADE_LOG_FILE)
     recent_trades = trade_log[-5:] if isinstance(trade_log, list) else []
 
     perf_log = load_json(PERFORMANCE_LOG_FILE)
-    recent_perf = perf_log[-24:] if isinstance(perf_log, list) else []  # 直近24レコード
+    recent_perf = perf_log[-24:] if isinstance(perf_log, list) else []
 
     price_str = f"{price_data['price']:,.0f} JPY" if price_data else "取得失敗"
     spread_str = f"{price_data['spread']:,.0f} JPY" if price_data and price_data.get('spread') else "N/A"
@@ -345,7 +323,6 @@ def generate_daily_report(config: dict, price_data: dict, signals: dict,
         for k, v in graduation.get("checks", {}).items()
     ])
 
-    # 直近の価格推移
     price_history = ""
     if recent_perf:
         for r in recent_perf[-6:]:
@@ -354,42 +331,38 @@ def generate_daily_report(config: dict, price_data: dict, signals: dict,
             if p:
                 price_history += f"  {ts}: {p:,.0f} JPY\n"
 
-    prompt = f"""あなたは仮想通貨トレーディングの分析AIです。以下のデータを分析し、日次レポートを日本語で作成してください。
+    recent_trades_str = ""
+    if recent_trades:
+        for t in recent_trades[-3:]:
+            ts = str(t.get("timestamp", ""))[:16]
+            action = t.get("action", "?")
+            pnl = t.get("pnl", 0)
+            recent_trades_str += f"  {ts}: {action} (PnL: {pnl:+,.0f} JPY)\n"
+    else:
+        recent_trades_str = "  なし\n"
 
-## 現在の市場データ
-- BTC/JPY現在価格: {price_str}
+    report = f"""## 市場データ
+- BTC/JPY: {price_str}
 - スプレッド: {spread_str}
 
 ## 直近の価格推移
 {price_history}
-
-## 戦略シグナル（Optuna最適化済み）
+## 戦略シグナル
 {signals_str}
 
 ## ポジション状況
-- 現在ポジション: {pos_str}
+- 現在: {pos_str}
 - 累計損益: {positions.get('total_pnl', 0):+,.0f} JPY
-- 総トレード数: {total_trades}回（勝率: {win_rate}）
+- トレード数: {total_trades}回（勝率: {win_rate}）
 
-## 卒業条件チェック（実弾投入推奨の閾値）
-- 総合判定: {grad_str}
+## 卒業条件: {grad_str}
 {grad_details}
 
-## 直近のトレード履歴
-{json.dumps(recent_trades[-3:], indent=2, ensure_ascii=False) if recent_trades else "なし"}
+## 直近トレード
+{recent_trades_str}"""
 
-以下の構成でレポートを作成してください:
-1. 市場状況の要約（2-3行）
-2. 戦略パフォーマンスの評価（シグナルの一致/不一致に注目）
-3. リスク評価（ドローダウン、スプレッド変動）
-4. 卒業条件の進捗と課題
-5. 次のアクション提案（1-2行）
-
-簡潔に、数値を交えて記述してください。"""
-
-    print("  [Ollama] Generating daily report...")
-    response = query_ollama(prompt, config)
-    return response
+    print("  Generating daily summary report...")
+    return report
 
 
 def save_daily_report(report_text: str, price_data: dict, signals: dict,
@@ -398,7 +371,7 @@ def save_daily_report(report_text: str, price_data: dict, signals: dict,
     now = datetime.now()
     header = f"""# Crypto Daily Report — {now.strftime('%Y-%m-%d %H:%M')}
 
-**Generated by**: Ollama qwen2.5:7b (local LLM)
+**Generated by**: crypto_monitor.py (data summary)
 **Strategy**: Volume Divergence (Optuna optimized)
 **Symbol**: BTC/JPY
 
@@ -417,7 +390,7 @@ def save_daily_report(report_text: str, price_data: dict, signals: dict,
 
 ---
 
-## LLM Analysis
+## Analysis
 
 {report_text}
 
@@ -535,15 +508,6 @@ def run_monitor(config: dict, run_paper_trade: bool = True):
         record = record_performance(btc_price, btc_signals, positions)
         print(f"  Total value: {record['total_value_jpy']:,.0f} JPY | PnL: {record['realized_pnl_jpy']:+,.0f}")
 
-    # === LLM A/Bテスト記録（BTC/JPYのみ） ===
-    if btc_price:
-        try:
-            from llm_ab_tracker import record_ab
-            ab_entry = record_ab(btc_price["price"], btc_signals, config)
-            print(f"  [A/B] signal={ab_entry['a_signal_only']} llm={ab_entry['b_with_llm']} agree={ab_entry['agree']}")
-        except Exception as e:
-            print(f"  [A/B] tracking skipped: {e}")
-
     # === 全銘柄のサマリー出力 ===
     print(f"\n{'='*55}")
     print(f"  仮想通貨サマリー ({len(all_price_data)}/{len(symbols)}銘柄)")
@@ -567,7 +531,7 @@ def run_monitor(config: dict, run_paper_trade: bool = True):
 
 def run_report(config: dict, price_data: dict = None, signals: dict = None, positions: dict = None):
     """LLM日次レポートを生成する。"""
-    print("\n[Report] Generating LLM daily report...")
+    print("\n[Report] Generating daily report...")
 
     if not price_data:
         price_data = fetch_live_price(config)
@@ -581,7 +545,7 @@ def run_report(config: dict, price_data: dict = None, signals: dict = None, posi
     report_text = generate_daily_report(config, price_data, signals, positions, graduation)
     save_daily_report(report_text, price_data, signals, positions, graduation)
 
-    print("\n--- LLM Report Preview ---")
+    print("\n--- Report Preview ---")
     # 最初の500文字だけ表示
     preview = report_text[:500]
     print(preview)

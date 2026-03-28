@@ -218,27 +218,34 @@ def gather_paper_trade() -> dict:
         total_value = latest.get("total_value_jpy", initial_capital)
         unrealized_pnl = latest.get("unrealized_pnl_jpy", 0)
 
+    # closed_tradesから正確に集計（カウンタフィールドはFORCE_CLOSE_ALL等で
+    # 更新漏れが起きるため、実データから毎回計算する）
+    closed_trades = portfolio.get("closed_trades", [])
+    actual_total = len(closed_trades)
+    actual_wins = sum(1 for t in closed_trades if t.get("net_pnl_jpy", 0) > 0)
+    actual_losses = sum(1 for t in closed_trades if t.get("net_pnl_jpy", 0) < 0)
+    actual_pnl = sum(t.get("net_pnl_jpy", 0) for t in closed_trades)
+
     result = {
         "available": True,
         "capital": initial_capital,
         "cash_jpy": cash,
         "total_value": total_value,
         "position_count": len(positions),
-        "total_pnl": realized_pnl,
+        "total_pnl": actual_pnl,
         "unrealized_pnl": unrealized_pnl,
-        "realized_pnl": realized_pnl,
-        "total_trades": portfolio.get("total_trades", 0),
-        "winning_trades": portfolio.get("winning_trades", 0),
-        "losing_trades": portfolio.get("losing_trades", 0),
+        "realized_pnl": actual_pnl,
+        "total_trades": actual_total,
+        "winning_trades": actual_wins,
+        "losing_trades": actual_losses,
         "leverage": portfolio.get("leverage", 2),
         "last_updated": portfolio.get("last_updated", "---"),
         "created_at": portfolio.get("created_at", "---"),
     }
 
     # 勝率
-    total = result["total_trades"]
-    if total > 0:
-        result["win_rate"] = round(result["winning_trades"] / total * 100, 1)
+    if actual_total > 0:
+        result["win_rate"] = round(actual_wins / actual_total * 100, 1)
     else:
         result["win_rate"] = 0.0
 

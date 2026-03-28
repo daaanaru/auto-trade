@@ -46,9 +46,10 @@ import yfinance as yf
 @dataclass
 class RegimeResult:
     """レジーム判定結果"""
-    regime: str           # "TREND" | "RANGE" | "CRISIS"
+    regime: str           # "TREND" | "RANGE" | "CRISIS" | "CAUTION"
     confidence: float     # 0.0〜1.0
     vix: Optional[float] = None
+    vix_sma5: Optional[float] = None       # VIX 5日SMA
     dxy: Optional[float] = None
     dxy_sma20: Optional[float] = None
     dxy_deviation: Optional[float] = None  # DXY SMA20乖離率(%)
@@ -61,6 +62,7 @@ class RegimeResult:
 
 # レジーム閾値
 VIX_CRISIS_THRESHOLD = 28.0     # VIX 28超 → CRISIS
+VIX_CAUTION_THRESHOLD = 25.0    # VIX 25-28 → CAUTION（ロング抑制、ショート許可）
 VIX_ELEVATED_THRESHOLD = 22.0   # VIX 22超 → CRISIS候補（他条件と複合）
 DXY_TREND_DEVIATION = 1.5       # DXY SMA20乖離 ±1.5%超 → 通貨トレンド
 ADX_TREND_THRESHOLD = 25.0      # ADX 25超 → 個別銘柄トレンド
@@ -98,6 +100,11 @@ class RegimeDetector:
 
                     if ticker == "^VIX":
                         data["vix"] = float(df["Close"].iloc[-1])
+                        sma5 = df["Close"].rolling(5).mean()
+                        if not sma5.isna().iloc[-1]:
+                            data["vix_sma5"] = float(sma5.iloc[-1])
+                        else:
+                            data["vix_sma5"] = data["vix"]
                     elif ticker == "DX-Y.NYB":
                         data["dxy"] = float(df["Close"].iloc[-1])
                         sma20 = df["Close"].rolling(20).mean()
@@ -122,6 +129,7 @@ class RegimeDetector:
         macro = self._fetch_macro()
 
         vix = macro.get("vix")
+        vix_sma5 = macro.get("vix_sma5")
         dxy = macro.get("dxy")
         dxy_sma20 = macro.get("dxy_sma20")
 
@@ -138,13 +146,16 @@ class RegimeDetector:
             dxy_deviation = (dxy - dxy_sma20) / dxy_sma20 * 100
 
         reasons = []
-        scores = {"TREND": 0.0, "RANGE": 0.0, "CRISIS": 0.0}
+        scores = {"TREND": 0.0, "RANGE": 0.0, "CAUTION": 0.0, "CRISIS": 0.0}
 
         # --- VIX判定 ---
         if vix is not None:
             if vix >= VIX_CRISIS_THRESHOLD:
                 scores["CRISIS"] += 0.6
                 reasons.append(f"VIX={vix:.1f}(危機水準{VIX_CRISIS_THRESHOLD}超)")
+            elif vix >= VIX_CAUTION_THRESHOLD:
+                scores["CAUTION"] += 0.5
+                reasons.append(f"VIX={vix:.1f}(注意水準{VIX_CAUTION_THRESHOLD}-{VIX_CRISIS_THRESHOLD})")
             elif vix >= VIX_ELEVATED_THRESHOLD:
                 scores["CRISIS"] += 0.3
                 scores["TREND"] += 0.1
@@ -171,6 +182,7 @@ class RegimeDetector:
             regime=regime,
             confidence=confidence,
             vix=vix,
+            vix_sma5=vix_sma5,
             dxy=dxy,
             dxy_sma20=dxy_sma20,
             dxy_deviation=dxy_deviation,
@@ -238,6 +250,10 @@ class RegimeDetector:
             # 危機時: VolScale（ボラ適応型）のみ。bb_rsi/monthlyは新規エントリー抑制
             return ["volscale_sma"]
 
+        if regime == "CAUTION":
+            # 注意時: ロング新規抑制（VolScaleのみ許可）、ショートは許可
+            return ["volscale_sma"]
+
         if regime == "TREND":
             # トレンド時: トレンドフォロー系を優先
             return ["monthly", "sma_crossover", "volscale_sma"]
@@ -246,8 +262,8 @@ class RegimeDetector:
         return ["bb_rsi", "volscale_sma"]
 
     def should_suppress_entry(self, regime: str) -> bool:
-        """CRISISレジームでの新規エントリー抑制判定。"""
-        return regime == "CRISIS"
+        """CRISIS/CAUTIONレジームでのロング新規エントリー抑制判定。"""
+        return regime in ("CRISIS", "CAUTION")
 
 
 # === CLI: 単体実行で現在のレジームを表示 ===

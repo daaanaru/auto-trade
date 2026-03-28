@@ -442,13 +442,17 @@ def format_price(price: float, code: str) -> str:
 
 def print_market_results(market_data: dict):
     """1市場の結果をテーブル表示する。"""
-    config = MARKET_CONFIG[market_data["market"]]
-    strategy_name = config["strategy_class"].__name__
+    config = MARKET_CONFIG.get(market_data["market"])
+    if config:
+        strategy_name = config["strategy_class"].__name__
+    else:
+        # LLM統合など外部シグナルソースの場合
+        strategy_name = market_data.get("strategy", "External")
     results = market_data["results"]
     summary = market_data["summary"]
 
     print(f"\n{'━'*70}")
-    print(f"  {market_data['market_name']} ({strategy_name})")
+    print(f"  {market_data.get('market_name', market_data['market'])} ({strategy_name})")
     print(f"  BUY: {summary['buy']}  SELL: {summary['sell']}  NEUTRAL: {summary['neutral']}  ERROR: {summary['error']}")
     print(f"{'━'*70}")
 
@@ -517,6 +521,94 @@ def save_results(all_data: list):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     print(f"  結果保存: {path}")
+
+
+# ==============================================================
+# LLMシグナル読み込み（llm-trade-bot統合）
+# ==============================================================
+
+# LLMシグナルJSONのデフォルトパス（strategy_bridge.pyの出力先）
+LLM_SIGNALS_DIR = os.path.join(os.path.dirname(BASE_DIR), "llm-trade-bot")
+LLM_SIGNALS_DEFAULT = os.path.join(LLM_SIGNALS_DIR, "signals.json")
+
+# LLMシグナルの有効期限（秒）。古すぎるシグナルは無視する
+LLM_SIGNALS_MAX_AGE_SECONDS = 86400  # 24時間
+
+
+def load_llm_signals(
+    signals_path: str = LLM_SIGNALS_DEFAULT,
+    max_age_seconds: int = LLM_SIGNALS_MAX_AGE_SECONDS,
+) -> list:
+    """llm-trade-bot/strategy_bridge.pyが出力したシグナルJSONを読み込む。
+
+    ファイルが存在しない、空、パースエラー、有効期限切れの場合は
+    空リストを返し、既存処理に一切影響を与えない（フォールバック安全設計）。
+
+    Returns:
+        list: auto-tradeの all_data に追加可能な market dict のリスト
+              （strategy_bridge.pyの出力における "markets" 配列と同じ形式）
+    """
+    if not os.path.exists(signals_path):
+        return []
+
+    try:
+        with open(signals_path, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+            if not content:
+                return []
+            data = json.loads(content)
+    except (json.JSONDecodeError, OSError):
+        print(f"  [LLM統合] シグナルファイル読み込みエラー: {signals_path}")
+        return []
+
+    # rejected（Sharpeフィルター不合格）なら無視
+    if data.get("rejected", False):
+        reason = data.get("reject_reason", "不明")
+        print(f"  [LLM統合] シグナル却下済み: {reason}")
+        return []
+
+    # タイムスタンプの有効期限チェック
+    timestamp_str = data.get("timestamp", "")
+    if timestamp_str and max_age_seconds > 0:
+        try:
+            signal_time = datetime.fromisoformat(timestamp_str)
+            age = (datetime.now() - signal_time).total_seconds()
+            if age > max_age_seconds:
+                print(f"  [LLM統合] シグナル期限切れ（{age/3600:.1f}時間前）: {signals_path}")
+                return []
+        except (ValueError, TypeError):
+            pass  # パースできないタイムスタンプは期限チェックをスキップ
+
+    # markets配列を抽出
+    markets = data.get("markets", [])
+    if not isinstance(markets, list):
+        return []
+
+    # 各marketエントリの最低限の形式検証
+    valid_markets = []
+    for m in markets:
+        if not isinstance(m, dict):
+            continue
+        if "market" not in m or "results" not in m:
+            continue
+        # summary が無ければ results から再計算
+        if "summary" not in m:
+            results = m.get("results", [])
+            m["summary"] = {
+                "total": len(results),
+                "buy": sum(1 for r in results if r.get("signal") == "BUY"),
+                "sell": sum(1 for r in results if r.get("signal") == "SELL"),
+                "neutral": sum(1 for r in results if r.get("signal") == "NEUTRAL"),
+                "error": sum(1 for r in results if r.get("signal") == "ERROR"),
+            }
+        valid_markets.append(m)
+
+    if valid_markets:
+        source = data.get("source", "llm-trade-bot")
+        total_signals = sum(m["summary"].get("buy", 0) + m["summary"].get("sell", 0) for m in valid_markets)
+        print(f"  [LLM統合] {len(valid_markets)}市場・{total_signals}件のシグナルを読み込み (source: {source})")
+
+    return valid_markets
 
 
 # ==============================================================
@@ -640,6 +732,11 @@ def main():
         all_data.append(market_data)
         print(f" 完了 (BUY: {market_data['summary']['buy']})")
 
+    # LLMシグナル統合（ファイルが無ければスキップ、既存処理に影響なし）
+    llm_markets = load_llm_signals()
+    if llm_markets:
+        all_data.extend(llm_markets)
+
     # 出力
     if args.json_output:
         output = {
@@ -654,36 +751,8 @@ def main():
     if args.save or args.json_output:
         save_results(all_data)
 
-    # 通知（ファンダOKのBUYシグナルのみ。ファンダNGは通知しない）
-    try:
-        from market_fundamental import get_market_fundamental_score
-        from notifier import notify_scan_summary
-
-        # ファンダフィルター: ペーパートレーダーと同じ条件でBUYを絞る
-        # ロング条件: ファンダスコア >= 0.1
-        filtered_data = []
-        for d in all_data:
-            filtered_results = []
-            for r in d["results"]:
-                if r["signal"] == "BUY":
-                    funda = get_market_fundamental_score(r["code"], d["market"])
-                    if funda["score"] >= 0.0:
-                        filtered_results.append(r)
-                    else:
-                        print(f"  [NOTIFY] ファンダNG除外: {r['name']}({r['code']}) スコア: {funda['score']:+.2f}")
-                elif r["signal"] == "SELL":
-                    filtered_results.append(r)
-                else:
-                    filtered_results.append(r)
-            filtered_market = {**d, "results": filtered_results, "summary": {
-                **d["summary"],
-                "buy": sum(1 for r in filtered_results if r["signal"] == "BUY"),
-            }}
-            filtered_data.append(filtered_market)
-
-        notify_scan_summary(filtered_data)
-    except Exception as e:
-        print(f"  [NOTIFY] 通知スキップ: {e}")
+    # スクリーナー通知は停止（エントリー時の通知で十分。30分ごとのシグナル通知は騒がしすぎる）
+    # エントリーされたらunified_paper_trade.pyのexecute_buy/execute_shortから通知される
 
 
 if __name__ == "__main__":

@@ -1,12 +1,9 @@
 """
-llm_ab_tracker.py — LLM分析の有無によるA/Bテスト記録
+llm_ab_tracker.py — LLM A/Bテスト記録（結論済み・Ollama廃止）
 
-毎時のcrypto_monitor実行時に:
-1. シグナルのみの判断（A群: no-LLM）を記録
-2. LLMに判断を聞いて（B群: with-LLM）を記録
-3. 実際の価格変動と比較して、どちらが正確だったか追跡
-
-実トレードには一切影響しない。純粋な検証用。
+A/Bテスト結論（2026-03-13）: シグナルのみ(A群48%)がLLM(B群30%)を上回った。
+Ollamaは2026-03-24に廃止。このファイルはレポート閲覧用に残存。
+record_ab()は常にSKIPを返す。
 """
 
 from __future__ import annotations
@@ -14,8 +11,6 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-
-import requests
 
 PROJECT_ROOT = Path(__file__).parent
 AB_LOG_FILE = PROJECT_ROOT / "llm_ab_log.json"
@@ -52,51 +47,8 @@ def get_signal_only_verdict(signals: dict) -> str:
 
 
 def get_llm_verdict(price: float, signals: dict, config: dict) -> str:
-    """OllamaのLLMに判断を聞く。BUY/SELL/HOLDのみ返させる。
-
-    v3: テクニカル指標サマリーを渡す（価格+変動率+各戦略の判断）。
-    v2は価格の絶対値のみで判断不能だった（HOLD連発問題）。
-    v1はシグナルをそのまま渡して追従するだけだった（100%一致問題）。
-    v3はシグナルの「ラベル」ではなく「戦略名と判断理由」を渡し、LLMに独自の総合判断をさせる。
-    """
-    # 各戦略の判断をサマリー化（ラベルだけでなく戦略名も渡す）
-    signal_lines = []
-    for strategy_name, sig in signals.items():
-        label = sig["label"] if isinstance(sig, dict) else sig
-        signal_lines.append(f"  - {strategy_name}: {label}")
-    signal_summary = "\n".join(signal_lines) if signal_lines else "  (no signals)"
-
-    prompt = f"""You are a crypto trading analyst. Given the market data below, respond with EXACTLY one word: BUY, SELL, or HOLD.
-
-BTC/JPY price: {price:,.0f}
-Technical strategy signals (4 independent strategies):
-{signal_summary}
-
-Based on the consensus (or lack thereof) among these strategies and the current price, give your independent verdict. If strategies conflict, weigh them and decide. Your verdict (one word only):"""
-
-    ollama_config = config.get("ollama", {})
-    url = f"{ollama_config.get('base_url', 'http://localhost:11434')}/api/generate"
-
-    try:
-        resp = requests.post(
-            url,
-            json={
-                "model": ollama_config.get("model", "qwen2.5:7b"),
-                "prompt": prompt,
-                "stream": False,
-                "options": {"temperature": 0.1, "num_predict": 10},
-            },
-            timeout=30,
-        )
-        resp.raise_for_status()
-        raw = resp.json().get("response", "").strip().upper()
-        # 最初の有効な判断語を抽出
-        for word in raw.split():
-            if word in ("BUY", "SELL", "HOLD"):
-                return word
-        return "HOLD"  # パース失敗時のフォールバック
-    except Exception:
-        return "ERROR"
+    """Ollama廃止済み（2026-03-24）。常にSKIPを返す。"""
+    return "SKIP"
 
 
 def record_ab(price: float, signals: dict, config: dict):
@@ -106,10 +58,8 @@ def record_ab(price: float, signals: dict, config: dict):
     launchdのcrypto-monitorとcrypto-full-reportが同時刻に走ると
     155ms差で二重記録される問題への対策。
     """
-    # A/Bテスト結論済み: Ollama不要（2026-03-13）。enabled=falseならスキップ
-    ollama_cfg = config.get("ollama", {})
-    if not ollama_cfg.get("enabled", True):
-        return {"a_signal_only": "SKIP", "b_with_llm": "SKIP", "agree": True}
+    # A/Bテスト結論済み（2026-03-13）、Ollama廃止（2026-03-24）。常にスキップ
+    return {"a_signal_only": "SKIP", "b_with_llm": "SKIP", "agree": True}
 
     log = load_ab_log()
 
@@ -190,7 +140,7 @@ def generate_ab_report() -> str:
 
 """
     if b_rate > a_rate + 5:
-        report += "**結論: LLMがシグナルを上回っている。Ollama維持の価値あり。**"
+        report += "**結論: LLMがシグナルを上回っている。**"
     elif a_rate > b_rate + 5:
         report += "**結論: シグナルのみの方が優秀。LLMを外してメモリ節約を推奨。**"
     else:

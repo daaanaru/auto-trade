@@ -425,11 +425,11 @@ def print_summary(state: dict, current_price: float = None, price_source: str = 
             ts = t["timestamp"][:16]
             if t["action"] == "ENTRY":
                 price_val = t.get("price_jpy", 0)
-                print(f"  {ts} | ENTRY {t['direction']:5} @ {price_val:>12,.0f} JPY")
+                print(f"  {ts} | ENTRY {t.get('direction', 'LONG'):5} @ {price_val:>12,.0f} JPY")
             else:
                 pnl = t.get("net_pnl_jpy", 0)
                 exit_p = t.get("exit_price", 0)
-                print(f"  {ts} | CLOSE {t['direction']:5} @ {exit_p:>12,.0f} JPY  PnL: {pnl:>+10,.0f}")
+                print(f"  {ts} | CLOSE {t.get('direction', 'LONG'):5} @ {exit_p:>12,.0f} JPY  PnL: {pnl:>+10,.0f}")
         print()
 
 
