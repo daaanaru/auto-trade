@@ -1,0 +1,30 @@
+[
+  {
+    "action": "ENTRY_SHORT",
+    "symbol_key": "ETH",
+    "code": "ETH-JPY",
+    "name": "イーサリアム",
+    "side": "short",
+    "price": 2003.41,
+    "shares": 4.991489510384794,
+    "invest_jpy": 10000.0,
+    "margin_jpy": 1000.0,
+    "sl_pct": -0.003,
+    "tp_pct": 0.006,
+    "timestamp": "2026-03-29T15:23:59.069040"
+  },
+  {
+    "action": "ENTRY_SHORT",
+    "symbol_key": "BTC",
+    "code": "BTC-JPY",
+    "name": "ビットコイン",
+    "side": "short",
+    "price": 66663.7,
+    "shares": 0.15000667529705072,
+    "invest_jpy": 10000.0,
+    "margin_jpy": 1000.0,
+    "sl_pct": -0.003,
+    "tp_pct": 0.006,
+    "timestamp": "2026-03-29T15:29:08.410069"
+  }
+]

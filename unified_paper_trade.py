@@ -339,14 +339,20 @@ def fetch_data(symbol: str, period: str = "3mo", min_rows: int = 30,
     for attempt in range(max_retries):
         try:
             df = yf.download(symbol, period=period, interval=interval, progress=False)
-            if df.empty:
+            if df is None or df.empty:
                 if attempt < max_retries - 1:
                     time.sleep(2 ** (attempt + 1))
                     continue
                 return None
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = df.columns.droplevel(1)
-            df = df[["Open", "High", "Low", "Close", "Volume"]].copy()
+            needed = ["Open", "High", "Low", "Close", "Volume"]
+            if not all(c in df.columns for c in needed):
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** (attempt + 1))
+                    continue
+                return None
+            df = df[needed].copy()
             df.columns = ["open", "high", "low", "close", "volume"]
             df = df.dropna()
             if len(df) < min_rows:

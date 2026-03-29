@@ -344,7 +344,7 @@ def run_graduation_check(config: dict) -> dict:
             "total_trades": total_trades,
             "capital_jpy": capital,
             "total_pnl_jpy": total_pnl,
-            "roi_pct": (total_pnl / capital * 100) if (total_pnl and capital) else 0.0,
+            "roi_pct": (total_pnl / capital * 100) if (total_pnl is not None and capital) else 0.0,
         },
     }
 

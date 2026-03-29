@@ -3137,6 +3137,46 @@
       "side": "long",
       "market": "btc",
       "name": "イーサリアム"
+    },
+    {
+      "timestamp": "2026-03-29T08:34:04.987769",
+      "symbol": "ETH-JPY",
+      "action": "CLOSE",
+      "price": 319952.53125,
+      "shares": 0.053552,
+      "pnl": -289.75,
+      "strategy": "volscale_sma",
+      "side": "long",
+      "market": "btc",
+      "name": "イーサリアム",
+      "entry_price": 325043.21875,
+      "reason": "VOLSCALE_EXIT"
+    },
+    {
+      "timestamp": "2026-03-29T12:30:57.692465",
+      "symbol": "ETH-JPY",
+      "action": "BUY",
+      "price": 322565.3125,
+      "shares": 0.053853,
+      "pnl": null,
+      "strategy": "volscale_sma",
+      "side": "long",
+      "market": "btc",
+      "name": "イーサリアム"
+    },
+    {
+      "timestamp": "2026-03-29T14:30:53.278603",
+      "symbol": "ETH-JPY",
+      "action": "CLOSE",
+      "price": 320288.625,
+      "shares": 0.053853,
+      "pnl": -139.85,
+      "strategy": "volscale_sma",
+      "side": "long",
+      "market": "btc",
+      "name": "イーサリアム",
+      "entry_price": 322565.3125,
+      "reason": "VOLSCALE_EXIT"
     }
   ]
 }
