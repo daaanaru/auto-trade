@@ -1,8 +1,7 @@
 """
 crypto_monitor.py — 仮想通貨自律監視エージェント
 
-仮想通貨の自律監視システム。
-1時間毎にcronで実行し、以下を自動的に行う:
+仮想通貨の自律監視システム。launchdで毎時実行。
 
 1. bitFlyer公開APIでBTC/JPY価格取得
 2. 全戦略のシグナル判定
@@ -10,24 +9,11 @@ crypto_monitor.py — 仮想通貨自律監視エージェント
 4. パフォーマンス記録（performance_log.json）
 5. 日次サマリーレポート生成
 
-卒業条件（実弾投入推奨の閾値）:
-  - ペーパートレード期間: 最低2週間
-  - 勝率: 40%以上
-  - ローリングSharpe: 0.5以上
-  - 最大DD: -15%以内
-  - バックテスト結果との乖離: +-20%以内
-
 使い方:
   python crypto_monitor.py              # 通常実行（シグナル判定+ペーパートレード+記録）
   python crypto_monitor.py --report     # 日次レポート生成
   python crypto_monitor.py --status     # 卒業条件チェック
   python crypto_monitor.py --full       # 全工程実行（通常+レポート+卒業チェック）
-
-cron設定例:
-  # 毎時0分に監視実行
-  0 * * * * cd /path/to/auto-trade && python3 crypto_monitor.py >> crypto_monitor.log 2>&1
-  # 毎日9時にフルレポート
-  0 9 * * * cd /path/to/auto-trade && python3 crypto_monitor.py --full >> crypto_monitor.log 2>&1
 """
 
 from __future__ import annotations
@@ -293,7 +279,7 @@ def check_graduation(config: dict, positions: dict) -> dict:
 
 def generate_daily_report(config: dict, price_data: dict, signals: dict,
                           positions: dict, graduation: dict) -> str:
-    """日次サマリーレポートを生成する（データのみ、LLM不使用）。"""
+    """日次サマリーレポートを生成する（データのみ）。"""
     trade_log = load_json(TRADE_LOG_FILE)
     recent_trades = trade_log[-5:] if isinstance(trade_log, list) else []
 
