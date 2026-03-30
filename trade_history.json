@@ -3177,6 +3177,48 @@
       "name": "イーサリアム",
       "entry_price": 322565.3125,
       "reason": "VOLSCALE_EXIT"
+    },
+    {
+      "timestamp": "2026-03-29T23:45:09.937759",
+      "symbol": "MONA-JPY",
+      "action": "CLOSE",
+      "price": 9.60660171508789,
+      "shares": 771.79931,
+      "pnl": 305.0,
+      "strategy": "vol_div",
+      "side": "short",
+      "market": "btc",
+      "name": "モナコイン",
+      "entry_price": 10.011393547058105,
+      "reason": "TAKE_PROFIT_1"
+    },
+    {
+      "timestamp": "2026-03-30T06:35:54.190135",
+      "symbol": "MONA-JPY",
+      "action": "CLOSE",
+      "price": 9.49563217163086,
+      "shares": 1543.598619,
+      "pnl": 781.47,
+      "strategy": "vol_div",
+      "side": "short",
+      "market": "btc",
+      "name": "モナコイン",
+      "entry_price": 10.011393547058105,
+      "reason": "TRAILING_STOP"
+    },
+    {
+      "timestamp": "2026-03-30T09:19:21.518893",
+      "symbol": "8058.T",
+      "action": "CLOSE",
+      "price": 5523.0,
+      "shares": 3.04089,
+      "pnl": -573.28,
+      "strategy": "volscale_sma",
+      "side": "long",
+      "market": "jp",
+      "name": "三菱商事",
+      "entry_price": 5706.0,
+      "reason": "STOP_LOSS"
     }
   ]
 }

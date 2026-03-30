@@ -1,43 +1,12 @@
 {
   "initial_capital_jpy": 100000.0,
-  "cash_jpy": 97980.0,
+  "cash_jpy": 99495.2219358107,
   "leverage": 10,
-  "positions": [
-    {
-      "symbol_key": "ETH",
-      "code": "ETH-JPY",
-      "name": "イーサリアム",
-      "side": "short",
-      "shares": 4.991489510384794,
-      "entry_price": 2003.41,
-      "entry_date": "2026-03-29T15:23:59.068568",
-      "sl_pct": -0.003,
-      "tp_pct": 0.006,
-      "invest_jpy": 10000.0,
-      "margin_jpy": 1000.0,
-      "high_since_entry": 2003.41,
-      "low_since_entry": 2000.3
-    },
-    {
-      "symbol_key": "BTC",
-      "code": "BTC-JPY",
-      "name": "ビットコイン",
-      "side": "short",
-      "shares": 0.15000667529705072,
-      "entry_price": 66663.7,
-      "entry_date": "2026-03-29T15:29:08.409573",
-      "sl_pct": -0.003,
-      "tp_pct": 0.006,
-      "invest_jpy": 10000.0,
-      "margin_jpy": 1000.0,
-      "high_since_entry": 66663.7,
-      "low_since_entry": 66561.7
-    }
-  ],
-  "total_realized_pnl": 0.0,
-  "total_trades": 0,
-  "wins": 0,
-  "losses": 0,
+  "positions": [],
+  "total_realized_pnl": -324.80257430971903,
+  "total_trades": 9,
+  "wins": 2,
+  "losses": 7,
   "created_at": "2026-03-29T01:08:26.648533",
-  "updated_at": "2026-03-29T16:30:14.784053"
+  "updated_at": "2026-03-30T10:53:15.848988"
 }

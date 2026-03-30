@@ -240,6 +240,7 @@ def check_backtest_deviation(perf_log: list, positions: dict,
         "vol_div": "Volume_Divergence",
         "mom_pb": "Momentum_Pullback",
         "order_block": "Order_Block",
+        "volscale_sma": "VolScale_SMA",
     }
 
     # ポートフォリオの全ポジションから使用戦略を集める
@@ -340,7 +341,7 @@ def run_graduation_check(config: dict) -> dict:
         "total_checks": len(checks),
         "checks": checks,
         "summary": {
-            "strategy": positions.get("strategy", "unknown"),
+            "strategy": ", ".join(sorted({p.get("strategy", "?") for p in positions.get("positions", [])})) or positions.get("strategy", "mixed"),
             "total_trades": total_trades,
             "capital_jpy": capital,
             "total_pnl_jpy": total_pnl,
