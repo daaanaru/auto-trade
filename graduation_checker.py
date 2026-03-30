@@ -194,6 +194,11 @@ def check_backtest_deviation(perf_log: list, positions: dict,
 
     ペーパートレードのSharpeとバックテストのSharpeを比較し、
     乖離が±max_deviation%以内かどうかを判定する。
+
+    注意（バグ防止）:
+    - √252による年率換算は短期（14日未満）では統計的に無意味
+    - 例: 4日間で +0.5%ずつ → Sharpe=∞（std≈0） → 乖離5113%のような異常値
+    - 対策: 14日未満は判定スキップ + 日数ログで将来検出を容易に
     """
     # ペーパートレードのSharpe計算（日次ベース）
     values = _daily_values(perf_log)
@@ -207,7 +212,8 @@ def check_backtest_deviation(perf_log: list, positions: dict,
         }
 
     # 14日未満ガード: Sharpe年率換算(√252)は短期間だと統計的に無意味
-    # 例: 4日間のデータで年率換算→乖離1628%のような異常値が出る
+    # 根拠: 4日間のデータで年率換算→乖離5113%のような異常値が出ていた（過去事例）
+    # 統計的に有意な結果には最低14日間のデータが必要（240リターンサンプル程度）
     if len(values) < 14:
         return {
             "name": "BT乖離",
@@ -218,6 +224,7 @@ def check_backtest_deviation(perf_log: list, positions: dict,
         }
 
     returns = pd.Series(values).pct_change().dropna()
+    # std=0 の場合（日次リターンがほぼ一定）を Sharpe=0 で安全に処理
     paper_sharpe = float((returns.mean() / returns.std()) * np.sqrt(252)) if returns.std() > 0 else 0.0
 
     # バックテスト結果の読み込み
@@ -277,6 +284,18 @@ def check_backtest_deviation(perf_log: list, positions: dict,
     # |bt_sharpe| < 0.3 のとき比率ベースだと分母爆発（数千%の異常値）になるので
     # Sharpe差の絶対値にフォールバックする
     sharpe_diff = abs(paper_sharpe - bt_sharpe)
+
+    # 異常値検出: Paper Sharpe が |50| を超える場合は短期間の √252 異常の可能性
+    # （統計的に Sharpe > 10 は年単位でも稀。< 14日で出ることはあり得ない）
+    if abs(paper_sharpe) > 50:
+        return {
+            "name": "BT乖離",
+            "required": f"+-{max_deviation}%以内",
+            "actual": f"異常値検出: Sharpe={paper_sharpe:.1f} (短期sqrt(252)バグの可能性)",
+            "value": None,
+            "passed": False,
+        }
+
     if abs(bt_sharpe) < 0.3:
         # BT Sharpe が0付近 → 比率計算が無意味。Sharpe差で判定
         # 差が1.0以上なら有意な乖離とみなす
