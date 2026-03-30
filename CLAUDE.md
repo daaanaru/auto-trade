@@ -126,8 +126,11 @@
 2. **jquants-crawler修正（上様確認要）** — .env 12行目のXMLタグ削除で復旧。**11日間**日本株スクリーニング停止中
 3. **卒業期限延長の上申（上様判断要）** — Sharpe -3.25→要0.5+。残13日では数学的に達成困難。期限延長(→4/26) or 条件緩和の判断が必要
 4. **VolScale評価承認（上様承認待ち13日目）** — bb_rsi停止+日本株枠拡大(2→5件)。根拠: 2週間評価レポート(3/29 02:42)
-5. **graduation_checker ROIバグ修正** — BT乖離5113%。卒業判定に直接影響する根本問題
+5. ~~**graduation_checker ROIバグ修正**~~ — ✅完了（3/30 12:01）BT乖離5113%→Sharpe差3.11に正常化。異常値検出ガード+14日未満ガード強化
 6. **scalper.py launchd有効化（上様操作要）** — plist作成・syntax check合格済み（3/30）
+
+## 修正履歴（3/30 12:01）
+- **graduation_checker ROIバグ修正**: Paper Sharpe |50|超の異常値検出ガード追加。修正前BT乖離5113%→修正後Sharpe差3.11（正常値）。卒業判定が正しく機能するように
 
 ## 修正履歴（3/30 07:??）
 - **scalper.py launchd plist作成検証完了**: com.danaru.scalper.plist設定確認・syntax check実施。StartInterval=300秒（5分）でスキャルピング対応
