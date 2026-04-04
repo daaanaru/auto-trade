@@ -32,6 +32,37 @@ MIN_CANDIDATES_FOR_VALIDATION = 0
 CLAUDE_TIMEOUT = 120
 
 
+def _fail_safe_reject(candidates: list, reason: str):
+    """LLM検証が失敗した際に、全候補をshadow logに記録する。
+    ログ書き込み失敗でもクラッシュしない。"""
+    try:
+        shadow_log_file = os.path.join(BASE_DIR, "validation_shadow_log.json")
+        entry = {
+            "timestamp": datetime.now().isoformat(),
+            "reason": reason,
+            "rejected_candidates": [
+                {"code": c.get("code"), "name": c.get("name"), "market": c.get("market"),
+                 "strategy": c.get("strategy"), "price": c.get("price")}
+                for c in candidates
+            ],
+        }
+        log = []
+        if os.path.exists(shadow_log_file):
+            try:
+                with open(shadow_log_file, "r") as f:
+                    log = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                log = []
+        log.append(entry)
+        if len(log) > 200:
+            log = log[-200:]
+        with open(shadow_log_file, "w") as f:
+            json.dump(log, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        # ログ書き込み失敗でもクラッシュさせない
+        logger.warning(f"shadow log書き込み失敗: {e}")
+
+
 def _build_validation_prompt(
     candidates: list,
     portfolio_summary: dict,
@@ -118,7 +149,8 @@ def validate_entries(
 
         # CLAUDE_CODE環境変数を除外（二重起動チェック回避）
         env = {k: v for k, v in os.environ.items() if not k.startswith("CLAUDE")}
-        env["PATH"] = os.environ.get("PATH", "/usr/local/bin:/usr/bin:/bin")
+        # launchd環境はPATHが最小限（/usr/bin:/bin）のため、Homebrew等を明示追加
+        env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:" + os.environ.get("PATH", "/usr/bin:/bin")
 
         result = subprocess.run(
             ["claude", "-p", prompt, "--output-format", "json"],
@@ -134,8 +166,11 @@ def validate_entries(
 
         if result.returncode != 0:
             logger.warning(f"claude -p failed (rc={result.returncode}): {result.stderr[:200]}")
-            print(f"  [Validation] LLM検証失敗、全候補をPASSとして続行")
-            return candidates
+            print(f"  [Validation] LLM検証失敗、全候補をブロック（fail-closed）")
+            _fail_safe_reject(candidates, "LLM実行失敗(rc={})".format(result.returncode))
+            if dry_run:
+                return candidates
+            return []
 
         # claude --output-format json は {"result": "..."} を返す
         try:
@@ -148,9 +183,12 @@ def validate_entries(
         verdicts = _parse_verdicts(response_text)
 
         if not verdicts:
-            logger.warning("検証結果のパースに失敗、全候補をPASSとして続行")
-            print(f"  [Validation] パース失敗、全候補をPASSとして続行")
-            return candidates
+            logger.warning("検証結果のパースに失敗、全候補をブロック（fail-closed）")
+            print(f"  [Validation] パース失敗、全候補をブロック（fail-closed）")
+            _fail_safe_reject(candidates, "LLM応答パース失敗")
+            if dry_run:
+                return candidates
+            return []
 
         # 検証結果をマッピング
         verdict_map = {v["code"]: v for v in verdicts}
@@ -162,13 +200,14 @@ def validate_entries(
             v = verdict_map.get(code)
 
             if v is None:
-                # 検証結果に含まれない候補はPASS扱い
+                # 検証結果に含まれない候補はREJECT（fail-closed）
                 candidate["validation"] = {
-                    "verdict": "PASS",
-                    "confidence": 0.5,
-                    "reason": "検証結果に含まれず（デフォルトPASS）",
+                    "verdict": "REJECT",
+                    "confidence": 0.0,
+                    "reason": "LLM応答に含まれず（fail-closed: デフォルトREJECT）",
                 }
-                passed.append(candidate)
+                rejected.append(candidate)
+                print(f"  [REJECT] {candidate['name']}({code}) | LLM応答に含まれず（fail-closed）")
                 continue
 
             candidate["validation"] = {
@@ -198,17 +237,26 @@ def validate_entries(
         return passed
 
     except subprocess.TimeoutExpired:
-        logger.warning(f"claude -p timeout ({CLAUDE_TIMEOUT}s)、全候補をPASSとして続行")
-        print(f"  [Validation] タイムアウト、全候補をPASSとして続行")
-        return candidates
+        logger.warning(f"claude -p timeout ({CLAUDE_TIMEOUT}s)、全候補をブロック（fail-closed）")
+        print(f"  [Validation] タイムアウト、全候補をブロック（fail-closed）")
+        _fail_safe_reject(candidates, f"タイムアウト({CLAUDE_TIMEOUT}s)")
+        if dry_run:
+            return candidates
+        return []
     except FileNotFoundError:
-        logger.warning("claude CLI が見つかりません。検証スキップ")
-        print(f"  [Validation] claude CLI未検出、全候補をPASSとして続行")
-        return candidates
+        logger.warning("claude CLI が見つかりません、全候補をブロック（fail-closed）")
+        print(f"  [Validation] claude CLI未検出、全候補をブロック（fail-closed）")
+        _fail_safe_reject(candidates, "claude CLI未検出")
+        if dry_run:
+            return candidates
+        return []
     except Exception as e:
-        logger.warning(f"検証中にエラー: {e}。全候補をPASSとして続行")
-        print(f"  [Validation] エラー({e})、全候補をPASSとして続行")
-        return candidates
+        logger.warning(f"検証中にエラー: {e}、全候補をブロック（fail-closed）")
+        print(f"  [Validation] エラー({e})、全候補をブロック（fail-closed）")
+        _fail_safe_reject(candidates, f"例外: {e}")
+        if dry_run:
+            return candidates
+        return []
 
 
 def _parse_verdicts(text: str) -> list:

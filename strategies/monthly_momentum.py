@@ -59,9 +59,16 @@ class MonthlyMomentumStrategy(BaseStrategy):
                 if next_dt.month != dt.month:
                     signals.iloc[i] = -1
 
-        # 最終日は手仕舞い
+        # 最終日の月末手仕舞い（バックテスト用）
+        # ライブ/ペーパートレードでは最終バーが「今日」なので、
+        # 月末かどうかを明示的に判定する（無条件SELLにしない）
         if len(signals) > 0:
-            signals.iloc[-1] = -1
+            last_dt = data.index[-1]
+            # 翌営業日が翌月 or 月の最終5日以内なら手仕舞い
+            import calendar
+            last_day = calendar.monthrange(last_dt.year, last_dt.month)[1]
+            if last_dt.day >= last_day - 4:
+                signals.iloc[-1] = -1
 
         return signals
 

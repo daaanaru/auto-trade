@@ -414,20 +414,30 @@ def check_exit(portfolio: dict) -> list:
             if current_price < pos.get("low_since_entry", entry_price):
                 pos["low_since_entry"] = current_price
 
-        # TP達成
+        # TP達成 — TP価格で約定をシミュレート（有利スリッページも排除し正確なRR計測）
         if pnl_pct >= pos["tp_pct"]:
+            tp_pct_val = pos["tp_pct"]  # 例: 0.006
+            if side == "long":
+                tp_price = entry_price * (1.0 + tp_pct_val)
+            else:
+                tp_price = entry_price * (1.0 - tp_pct_val)
             exits.append({
                 "pos": pos,
-                "current_price": current_price,
-                "pnl_pct": pnl_pct,
+                "current_price": tp_price,
+                "pnl_pct": tp_pct_val,
                 "reason": "TAKE_PROFIT",
             })
-        # SL到達
+        # SL到達 — SL価格で約定をシミュレート（ギャップ時のスリッページを防止）
         elif pnl_pct <= pos["sl_pct"]:
+            sl_pct_val = pos["sl_pct"]  # 例: -0.003
+            if side == "long":
+                sl_price = entry_price * (1.0 + sl_pct_val)
+            else:
+                sl_price = entry_price * (1.0 - sl_pct_val)
             exits.append({
                 "pos": pos,
-                "current_price": current_price,
-                "pnl_pct": pnl_pct,
+                "current_price": sl_price,
+                "pnl_pct": sl_pct_val,
                 "reason": "STOP_LOSS",
             })
 

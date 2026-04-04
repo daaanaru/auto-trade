@@ -123,21 +123,28 @@ def test_validate_empty_candidates():
     assert result == []
 
 
-# --- 7. validate_entries: claude CLI未検出 → 全候補PASS ---
+# --- 7. validate_entries: claude CLI未検出 → 全候補ブロック（fail-closed） ---
 
 def test_validate_claude_not_found():
     with patch("entry_validator.subprocess.run", side_effect=FileNotFoundError("claude not found")):
         result = validate_entries(DUMMY_CANDIDATES, DUMMY_PORTFOLIO)
-    assert len(result) == 2  # 全候補がそのまま返る
+    assert len(result) == 0  # fail-closed: 全候補ブロック
 
 
-# --- 8. validate_entries: タイムアウト → 全候補PASS ---
+def test_validate_claude_not_found_dry_run():
+    """dry_runモードではfail-closedでも全候補を返す"""
+    with patch("entry_validator.subprocess.run", side_effect=FileNotFoundError("claude not found")):
+        result = validate_entries(DUMMY_CANDIDATES, DUMMY_PORTFOLIO, dry_run=True)
+    assert len(result) == 2  # dry_runでは全候補が返る
+
+
+# --- 8. validate_entries: タイムアウト → 全候補ブロック（fail-closed） ---
 
 def test_validate_timeout():
     import subprocess
     with patch("entry_validator.subprocess.run", side_effect=subprocess.TimeoutExpired("claude", 120)):
         result = validate_entries(DUMMY_CANDIDATES, DUMMY_PORTFOLIO)
-    assert len(result) == 2
+    assert len(result) == 0  # fail-closed: 全候補ブロック
 
 
 # --- 9. _save_validation_log: ログ書き込み ---
@@ -178,3 +185,53 @@ def test_validate_rejects_filtered():
     assert len(result) == 1
     assert result[0]["code"] == "8058.T"
     assert result[0]["validation"]["verdict"] == "PASS"
+
+
+# --- 11. validate_entries: verdict_map欠損 → REJECT（fail-closed） ---
+
+def test_validate_verdict_map_missing_code():
+    """LLMが一部の候補しか返さなかった場合、未返却候補はREJECT"""
+    mock_stdout = json.dumps({
+        "result": json.dumps([
+            {"code": "8058.T", "verdict": "PASS", "confidence": 0.8, "reason": "OK"},
+            # BTC-JPY が欠損
+        ])
+    })
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = mock_stdout
+    mock_result.stderr = ""
+
+    with patch("entry_validator.subprocess.run", return_value=mock_result), \
+         patch("entry_validator.VALIDATION_LOG_FILE", "/dev/null"):
+        result = validate_entries(DUMMY_CANDIDATES, DUMMY_PORTFOLIO)
+
+    assert len(result) == 1
+    assert result[0]["code"] == "8058.T"
+
+
+# --- 12. _fail_safe_reject: shadow logが書き込まれる ---
+
+def test_fail_safe_reject_writes_shadow_log(tmp_path):
+    from entry_validator import _fail_safe_reject
+    shadow_log = tmp_path / "validation_shadow_log.json"
+    with patch("entry_validator.BASE_DIR", str(tmp_path)):
+        _fail_safe_reject(DUMMY_CANDIDATES, "テスト用reject")
+    assert shadow_log.exists()
+    data = json.loads(shadow_log.read_text())
+    assert len(data) == 1
+    assert data[0]["reason"] == "テスト用reject"
+    assert len(data[0]["rejected_candidates"]) == 2
+
+
+# --- 13. validate_entries: LLM失敗(returncode!=0) → fail-closed ---
+
+def test_validate_llm_failure_fail_closed():
+    mock_result = MagicMock()
+    mock_result.returncode = 1
+    mock_result.stdout = ""
+    mock_result.stderr = "error"
+
+    with patch("entry_validator.subprocess.run", return_value=mock_result):
+        result = validate_entries(DUMMY_CANDIDATES, DUMMY_PORTFOLIO)
+    assert len(result) == 0
