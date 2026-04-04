@@ -320,6 +320,24 @@ def get_dynamic_sltp(atr_pct: Optional[float]) -> dict:
     }
 
 
+def _yf_download_with_timeout(symbol: str, period: str, interval: str,
+                               timeout: int = 30) -> Optional[pd.DataFrame]:
+    """yf.downloadをスレッドで実行し、timeoutを超えたらNoneを返す。"""
+    from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
+    try:
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(
+                yf.download, symbol, period=period, interval=interval, progress=False
+            )
+            return future.result(timeout=timeout)
+    except FuturesTimeout:
+        print(f"  [TIMEOUT] {symbol}: yf.download {timeout}秒超過。スキップ")
+        return None
+    except Exception as e:
+        print(f"  [ERROR] {symbol}: yf.download例外 {e}")
+        return None
+
+
 def fetch_data(symbol: str, period: str = "3mo", min_rows: int = 30,
                interval: str = "1d", max_retries: int = 3) -> Optional[pd.DataFrame]:
     """yfinanceからデータを取得する。日本株はJQuantsを優先し、失敗時はyfinanceにフォールバック。"""
@@ -338,7 +356,7 @@ def fetch_data(symbol: str, period: str = "3mo", min_rows: int = 30,
 
     for attempt in range(max_retries):
         try:
-            df = yf.download(symbol, period=period, interval=interval, progress=False)
+            df = _yf_download_with_timeout(symbol, period=period, interval=interval, timeout=30)
             if df is None or df.empty:
                 if attempt < max_retries - 1:
                     time.sleep(2 ** (attempt + 1))
@@ -548,9 +566,15 @@ def load_portfolio() -> dict:
             portfolio["leverage"] = DEFAULT_LEVERAGE
 
         # 各ポジションに side がなければ "long" を付与（既存データとの互換）
+        # atr_pctがなければ現在値から遡及計算（旧ポジション互換）
         for pos in portfolio.get("positions", []):
             if "side" not in pos:
                 pos["side"] = "long"
+            if "atr_pct" not in pos:
+                try:
+                    pos["atr_pct"] = calc_atr_pct(pos["code"])
+                except Exception:
+                    pos["atr_pct"] = None
 
         # 決済済みトレードにも side がなければ "long" を付与
         for trade in portfolio.get("closed_trades", []):
@@ -839,6 +863,9 @@ def execute_buy(portfolio: dict, code: str, name: str, market: str,
     shares = invest_amount / price_jpy
     cost = invest_amount * COMMISSION_RATE
 
+    # エントリー時のATR%を計算・保存（動的SL/TPに使用）
+    entry_atr_pct = calc_atr_pct(code)
+
     # 実際に現金から引かれるのは「証拠金」=投資額/レバレッジ + 手数料
     margin = invest_amount / leverage
     portfolio["cash_jpy"] -= (margin + cost)
@@ -853,6 +880,7 @@ def execute_buy(portfolio: dict, code: str, name: str, market: str,
         "side": "long",  # ロングポジション
         "fundamental_score": fundamental.get("score", 0),
         "fundamental_reason": fundamental.get("reason", ""),
+        "atr_pct": entry_atr_pct,
     })
 
     print(f"  [BUY/LONG] {name}({code}) @ {price:,.2f} x {shares:.4f} = {invest_amount:,.0f} JPY (証拠金: {margin:,.0f} JPY, {leverage}x)")
@@ -943,6 +971,9 @@ def execute_short(portfolio: dict, code: str, name: str, market: str,
     shares = invest_amount / price_jpy
     cost = invest_amount * COMMISSION_RATE
 
+    # エントリー時のATR%を計算・保存（動的SL/TPに使用）
+    entry_atr_pct = calc_atr_pct(code)
+
     # ショートの証拠金 = 投資額/レバレッジ（レバレッジで拡大した分の担保）
     margin = invest_amount / leverage
     portfolio["cash_jpy"] -= (margin + cost)
@@ -957,6 +988,7 @@ def execute_short(portfolio: dict, code: str, name: str, market: str,
         "side": "short",  # ショートポジション
         "fundamental_score": fundamental.get("score", 0),
         "fundamental_reason": fundamental.get("reason", ""),
+        "atr_pct": entry_atr_pct,
     })
 
     print(f"  [SHORT] {name}({code}) @ {price:,.2f} x {shares:.4f} = {invest_amount:,.0f} JPY (証拠金: {margin:,.0f} JPY, {leverage}x)")
@@ -1902,6 +1934,8 @@ def main():
     # メイン: スキャン＆トレード
     # モニターモード: 損切り/利確チェックのみ
     if args.monitor or args.monitor_loop > 0:
+        from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
+        MONITOR_TIMEOUT = 120  # 1回のSL/TPチェックの最大秒数（yfinanceハング防止）
         interval = args.monitor_loop
         loop = interval > 0
         iteration = 0
@@ -1911,7 +1945,31 @@ def main():
             now_str = datetime.now().strftime("%H:%M:%S")
             label = f"[MONITOR #{iteration} {now_str}]" if loop else "[MONITOR]"
             print(f"{label} SL/TPチェック... ({len(portfolio['positions'])}ポジション)")
-            actions = check_stop_loss_take_profit(portfolio)
+            # タイムアウト保護: yfinanceがハングしてもループを継続する
+            try:
+                with ThreadPoolExecutor(max_workers=1) as executor:
+                    future = executor.submit(check_stop_loss_take_profit, portfolio)
+                    actions = future.result(timeout=MONITOR_TIMEOUT)
+            except FuturesTimeout:
+                print(f"  [TIMEOUT] SL/TPチェックが{MONITOR_TIMEOUT}秒超過。スキップして次回へ")
+                if not loop:
+                    break
+                try:
+                    time.sleep(interval)
+                except KeyboardInterrupt:
+                    print(f"\n[MONITOR] 停止しました（{iteration}回実行）")
+                    break
+                continue
+            except Exception as e:
+                print(f"  [ERROR] SL/TPチェック中にエラー: {e}。スキップして次回へ")
+                if not loop:
+                    break
+                try:
+                    time.sleep(interval)
+                except KeyboardInterrupt:
+                    print(f"\n[MONITOR] 停止しました（{iteration}回実行）")
+                    break
+                continue
             for action in actions:
                 portfolio = execute_sell(
                     portfolio, action["code"], action["current_price"],

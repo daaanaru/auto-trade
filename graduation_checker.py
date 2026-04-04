@@ -320,6 +320,226 @@ def check_backtest_deviation(perf_log: list, positions: dict,
 
 
 # ==============================================================
+# 戦略別判定ロジック
+# ==============================================================
+
+def collect_strategy_trades(positions: dict) -> dict[str, list]:
+    """closed_trades を strategy ごとに集約する。
+
+    Returns:
+        { "vol_div": [...], "bb_rsi": [...], ... }
+    """
+    trades_by_strategy = {}
+    for trade in positions.get("closed_trades", []):
+        strategy = trade.get("strategy", "unknown")
+        if strategy not in trades_by_strategy:
+            trades_by_strategy[strategy] = []
+        trades_by_strategy[strategy].append(trade)
+    return trades_by_strategy
+
+
+def _strategy_daily_values(trades: list, perf_log: list) -> list[float]:
+    """特定戦略の決済履歴から日別ポートフォリオ値を復元する。
+
+    注: 厳密には「その戦略のみの当日P&L」を計算することに相当。
+    """
+    if not trades:
+        return []
+
+    # 戦略の最初の取引日時から最後の決済日時までのカレンダーを構築
+    trade_dates = set()
+    for t in trades:
+        exit_date = t.get("exit_date", "")
+        if exit_date:
+            date_key = exit_date[:10]
+            trade_dates.add(date_key)
+
+    # perf_log からその日のデータを抽出（ない場合は前日値を踏襲）
+    daily_dict = {}
+    last_value = 0
+    for date_key in sorted(trade_dates):
+        # その日のレコードを perf_log から探す
+        found = False
+        for r in perf_log:
+            if r.get("timestamp", "")[:10] == date_key:
+                # 戦略別の日次P&Lを計算: 「その戦略の累計決済P&L」
+                strategy_pnl = sum(tr.get("net_pnl_jpy", 0) for tr in trades if tr.get("exit_date", "")[:10] <= date_key)
+                daily_dict[date_key] = strategy_pnl
+                last_value = strategy_pnl
+                found = True
+
+        if not found and date_key in [k for k in daily_dict.keys()]:
+            daily_dict[date_key] = last_value
+
+    return [v for _, v in sorted(daily_dict.items())]
+
+
+def check_strategy_win_rate(trades: list, required: float) -> dict:
+    """戦略別の勝率チェック。
+
+    全体判定（20回基準）よりも甘い3回基準を適用。
+    理由: 戦略別フィルタリング時点では複数戦略の混在により
+    単一戦略のサンプルが限定される。統計的に信頼できる下限は3回。
+    """
+    total = len(trades)
+    wins = sum(1 for t in trades if t.get("net_pnl_jpy", 0) > 0)
+    min_trades = 3  # 戦略別は3回以上で評価（全体の20回より緩和）
+
+    if total < min_trades:
+        return {
+            "name": "勝率",
+            "required": f"{required}%以上（最低{min_trades}回取引）",
+            "actual": f"取引不足 ({total}/{min_trades}回)",
+            "value": 0.0,
+            "passed": False,
+        }
+
+    rate = (wins / total * 100)
+    return {
+        "name": "勝率",
+        "required": f"{required}%以上",
+        "actual": f"{rate:.1f}% ({wins}/{total})",
+        "value": rate,
+        "passed": rate >= required,
+    }
+
+
+def check_strategy_rolling_sharpe(trades: list, required: float) -> dict:
+    """戦略別ローリングSharpe計算。決済日ベースの累積P&Lから日次変化を算出。
+
+    少サンプル対応: 決済が3件以上あれば日次変化でSharpe算出。
+    短期データ警告: √252による年率換算は10件未満では統計的に無意味。
+    (例: 4件全勝利だけで Sharpe 29 のような異常値が出る)
+    """
+    if len(trades) < 3:
+        return {
+            "name": "ローリングSharpe",
+            "required": f"{required}以上",
+            "actual": f"データ不足 ({len(trades)}件取引, 最低3件必要)",
+            "value": 0.0,
+            "passed": False,
+        }
+
+    # 決済日ごとにソートし、各決済のP&L（金額）を取得
+    sorted_trades = sorted(trades, key=lambda t: t.get("exit_date", ""))
+    pnl_values = [t.get("net_pnl_jpy", 0) for t in sorted_trades]
+
+    # 初期資本を30万円と仮定して相対リターンに変換
+    initial_capital = 300000
+    cumulative_pnl = 0
+    cumulative_series = [initial_capital]
+    for pnl in pnl_values:
+        cumulative_pnl += pnl
+        cumulative_series.append(initial_capital + cumulative_pnl)
+
+    # 日次リターン率を計算
+    returns = pd.Series(cumulative_series).pct_change().dropna()
+
+    if len(returns) < 2 or returns.std() == 0:
+        sharpe = 0.0
+    else:
+        sharpe = float((returns.mean() / returns.std()) * np.sqrt(252))
+
+    # 短期データへの異常値警告（10件未満）
+    # 理由: √252による年率換算は、高い変動率で過度に大きな値になる
+    # 例: 4件全勝利のみで Sharpe 29 のような異常値
+    if len(trades) < 10 and abs(sharpe) > 5:
+        return {
+            "name": "ローリングSharpe",
+            "required": f"{required}以上",
+            "actual": f"{sharpe:.3f} ⚠️ （少サンプル注意: {len(trades)}件取引、年率換算が過度に大きい）",
+            "value": sharpe,
+            "passed": False,  # 少サンプルの異常値は条件不達として扱う
+        }
+
+    return {
+        "name": "ローリングSharpe",
+        "required": f"{required}以上",
+        "actual": f"{sharpe:.3f}",
+        "value": sharpe,
+        "passed": sharpe >= required,
+    }
+
+
+def check_strategy_max_drawdown(trades: list, limit: float) -> dict:
+    """戦略別の最大ドローダウン。"""
+    if not trades:
+        return {
+            "name": "最大ドローダウン",
+            "required": f"{limit}%以内",
+            "actual": "データなし",
+            "value": 0.0,
+            "passed": False,
+        }
+
+    sorted_trades = sorted(trades, key=lambda t: t.get("exit_date", ""))
+    initial_capital = 300000
+    cumulative_pnl = [0]
+    for t in sorted_trades:
+        cumulative_pnl.append(cumulative_pnl[-1] + t.get("net_pnl_jpy", 0))
+
+    values = [initial_capital + pnl for pnl in cumulative_pnl]
+    max_dd = 0.0
+    peak = values[0]
+    for v in values:
+        if v > peak:
+            peak = v
+        dd = (v - peak) / peak * 100 if peak > 0 else 0.0
+        if dd < max_dd:
+            max_dd = dd
+
+    return {
+        "name": "最大ドローダウン",
+        "required": f"{limit}%以内",
+        "actual": f"{max_dd:.2f}%",
+        "value": max_dd,
+        "passed": max_dd > limit,
+    }
+
+
+def run_strategy_graduation_check(config: dict, positions: dict) -> dict:
+    """戦略別の卒業判定を実行。"""
+    criteria = config["graduation_criteria"]
+    trades_by_strategy = collect_strategy_trades(positions)
+
+    strategy_results = {}
+    for strategy_name, trades in trades_by_strategy.items():
+        checks = [
+            check_strategy_win_rate(trades, criteria["min_win_rate"]),
+            check_strategy_rolling_sharpe(trades, criteria["min_rolling_sharpe"]),
+            check_strategy_max_drawdown(trades, criteria["max_drawdown_pct"]),
+        ]
+
+        all_passed = all(c["passed"] for c in checks)
+        total_pnl = sum(t.get("net_pnl_jpy", 0) for t in trades)
+
+        strategy_results[strategy_name] = {
+            "graduated": all_passed,
+            "checks": checks,
+            "summary": {
+                "total_trades": len(trades),
+                "total_pnl_jpy": total_pnl,
+                "roi_pct": (total_pnl / 300000 * 100),
+            }
+        }
+
+    # 卒業可能な戦略をフィルタ
+    graduated_strategies = [
+        s for s, r in strategy_results.items() if r["graduated"]
+    ]
+
+    return {
+        "strategy_breakdown": strategy_results,
+        "graduated_strategies": graduated_strategies,
+        "recommendation": (
+            f"条件クリア: {', '.join(graduated_strategies)}"
+            if graduated_strategies
+            else "単一戦略での卒業条件クリアなし（複合戦略の詳細分析要）"
+        ),
+    }
+
+
+# ==============================================================
 # 総合判定
 # ==============================================================
 
@@ -353,6 +573,9 @@ def run_graduation_check(config: dict) -> dict:
     capital = positions.get("initial_capital_jpy", config["paper_trade"]["initial_capital_jpy"])
     total_pnl = sum(t.get("net_pnl_jpy", 0) for t in closed_trades_all)
 
+    # 戦略別卒業判定（新規追加）
+    strategy_breakdown = run_strategy_graduation_check(config, positions)
+
     return {
         "timestamp": datetime.now().isoformat(),
         "graduated": all_passed,
@@ -366,6 +589,9 @@ def run_graduation_check(config: dict) -> dict:
             "total_pnl_jpy": total_pnl,
             "roi_pct": (total_pnl / capital * 100) if (total_pnl is not None and capital) else 0.0,
         },
+        "strategy_breakdown": strategy_breakdown["strategy_breakdown"],
+        "graduated_strategies": strategy_breakdown["graduated_strategies"],
+        "recommendation": strategy_breakdown["recommendation"],
     }
 
 
@@ -376,9 +602,9 @@ def run_graduation_check(config: dict) -> dict:
 def print_report(result: dict):
     """卒業判定結果を見やすく表示する。"""
     print()
-    print("=" * 58)
+    print("=" * 70)
     print("  GRADUATION CHECK — ペーパートレード卒業判定")
-    print("=" * 58)
+    print("=" * 70)
 
     summary = result["summary"]
     print(f"  戦略: {summary['strategy']}")
@@ -389,10 +615,10 @@ def print_report(result: dict):
 
     for c in result["checks"]:
         mark = "[PASS]" if c["passed"] else "[FAIL]"
-        print(f"  {mark} {c['name']:<16} 基準: {c['required']:<16} 実績: {c['actual']}")
+        print(f"  {mark} {c['name']:<16} 基準: {c['required']:<20} 実績: {c['actual']}")
 
     print()
-    print("-" * 58)
+    print("-" * 70)
     passed = result["passed_count"]
     total = result["total_checks"]
 
@@ -404,7 +630,58 @@ def print_report(result: dict):
         failed = [c["name"] for c in result["checks"] if not c["passed"]]
         print(f"  未達項目: {', '.join(failed)}")
 
-    print("=" * 58)
+    # 戦略別判定（テーブル形式に改善）
+    print()
+    print("=" * 70)
+    print("  戦略別卒業判定（単独で条件クリアした戦略）")
+    print("=" * 70)
+
+    strategy_breakdown = result.get("strategy_breakdown", {})
+    if strategy_breakdown:
+        # ヘッダー行
+        print()
+        print(f"  {'戦略名':<18} {'状態':^10} {'取引':>4} {'損益':>12} {'ROI':>8} {'勝率':>6}")
+        print("  " + "-" * 66)
+
+        for strategy_name, strategy_result in sorted(strategy_breakdown.items()):
+            status_mark = "✅" if strategy_result["graduated"] else "❌"
+            status_text = "PASSED" if strategy_result["graduated"] else "FAILED"
+            summary = strategy_result["summary"]
+
+            # 勝率を計算
+            checks = strategy_result.get("checks", [])
+            win_rate_check = next((c for c in checks if c["name"] == "勝率"), None)
+            win_rate_str = win_rate_check["actual"].split("(")[0].strip() if win_rate_check else "N/A"
+
+            print(f"  {strategy_name:<18} {status_mark} {status_text:<7} {summary['total_trades']:>4}回 " +
+                  f"{summary['total_pnl_jpy']:>+12.0f} {summary['roi_pct']:>+7.2f}% {win_rate_str:>6}")
+
+        print()
+        print("  詳細判定:")
+        print("  " + "-" * 66)
+        for strategy_name, strategy_result in sorted(strategy_breakdown.items()):
+            print()
+            print(f"  ▼ {strategy_name}")
+            for c in strategy_result.get("checks", []):
+                mark = "✓" if c["passed"] else "✗"
+                print(f"    {mark} {c['name']:<16} {c['required']:<20} → {c['actual']}")
+    else:
+        print("  戦略別データなし")
+
+    print()
+    print("-" * 70)
+    recommendation = result.get("recommendation", "")
+    graduated_strategies = result.get("graduated_strategies", [])
+
+    if graduated_strategies:
+        print(f"  💡 推奨: {recommendation}")
+        print(f"  実弾移行可能な戦略:")
+        for strat in graduated_strategies:
+            print(f"    → {strat}")
+    else:
+        print(f"  💡 {recommendation}")
+
+    print("=" * 70)
     print()
 
 
@@ -473,6 +750,10 @@ def main():
         help="結果をJSON形式で出力"
     )
     parser.add_argument(
+        "--one-line", action="store_true",
+        help="1行サマリーで出力（heartbeat/監視用）"
+    )
+    parser.add_argument(
         "--auto-promote", action="store_true",
         help="卒業条件クリア時に.envのDRY_RUN→falseに変更（確認付き）"
     )
@@ -484,6 +765,21 @@ def main():
     if args.json:
         print(json.dumps(result, indent=2, ensure_ascii=False))
         # 正常終了: 未卒業もエラーではない（launchdがexit=1を異常扱いするため）
+        sys.exit(0)
+
+    if args.one_line:
+        # heartbeat/監視スクリプト向けの1行サマリー
+        s = result["summary"]
+        passed = result["passed_count"]
+        total = result["total_checks"]
+        status = "GRADUATED" if result["graduated"] else "NOT_YET"
+        sharpe_check = next((c for c in result["checks"] if c["name"] == "ローリングSharpe"), None)
+        sharpe_val = sharpe_check["value"] if sharpe_check else 0.0
+        grad_strats = result.get("graduated_strategies", [])
+        grad_str = ",".join(grad_strats) if grad_strats else "none"
+        print(f"[{status}] {passed}/{total} | {s['total_trades']}trades | "
+              f"PnL:{s['total_pnl_jpy']:+,.0f} | ROI:{s['roi_pct']:+.2f}% | "
+              f"Sharpe:{sharpe_val:.3f} | grad:{grad_str}")
         sys.exit(0)
 
     print_report(result)
