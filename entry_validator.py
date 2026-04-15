@@ -29,7 +29,8 @@ VALIDATION_LOG_FILE = os.path.join(BASE_DIR, "validation_log.json")
 MIN_CANDIDATES_FOR_VALIDATION = 0
 
 # claude -p のタイムアウト（秒）
-CLAUDE_TIMEOUT = 120
+# 複雑な候補セット（5市場×複数戦略）の検証に対応。標準60-120秒、最大300秒で余裕持たせる
+CLAUDE_TIMEOUT = 300
 
 
 def _fail_safe_reject(candidates: list, reason: str):
@@ -147,13 +148,14 @@ def validate_entries(
         print(f"  [Validation] LLM検証中... ({len(candidates)}候補)")
         start_time = time.time()
 
-        # CLAUDE_CODE環境変数を除外（二重起動チェック回避）
-        env = {k: v for k, v in os.environ.items() if not k.startswith("CLAUDE")}
+        # CLAUDE関連環境変数を除外（二重起動チェック回避）
+        env = {k: v for k, v in os.environ.items()
+               if not k.startswith("CLAUDE") and k != "CLAUDECODE"}
         # launchd環境はPATHが最小限（/usr/bin:/bin）のため、Homebrew等を明示追加
         env["PATH"] = "/opt/homebrew/bin:/usr/local/bin:" + os.environ.get("PATH", "/usr/bin:/bin")
 
         result = subprocess.run(
-            ["claude", "-p", prompt, "--output-format", "json"],
+            ["claude", "-p", prompt],
             capture_output=True,
             text=True,
             timeout=CLAUDE_TIMEOUT,
@@ -172,12 +174,8 @@ def validate_entries(
                 return candidates
             return []
 
-        # claude --output-format json は {"result": "..."} を返す
-        try:
-            outer = json.loads(result.stdout)
-            response_text = outer.get("result", result.stdout)
-        except (json.JSONDecodeError, AttributeError):
-            response_text = result.stdout
+        # テキスト応答から JSON を抽出
+        response_text = result.stdout
 
         # JSONブロックを抽出
         verdicts = _parse_verdicts(response_text)

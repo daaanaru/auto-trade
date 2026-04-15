@@ -569,5 +569,72 @@ def test_pnl_stdev_single_trade(single_trade):
     assert data['pnl_stdev'] == 0.0
 
 
+# ====== テスト: Sharpe比 ======
+
+def test_sharpe_ratio_with_multiple_trades(sample_trades):
+    """複数トレードがある戦略ではSharpe比が計算される"""
+    by_strategy = strategy_attribution.aggregate_by_strategy(sample_trades)
+
+    # volscale_sma: 100, 200, 500 → avg=266.67, stdev>0 → sharpe != None
+    volscale = by_strategy['volscale_sma']
+    assert volscale['sharpe_ratio'] is not None
+    assert isinstance(volscale['sharpe_ratio'], float)
+    # avg_pnl > 0 かつ stdev > 0 なので正の値
+    assert volscale['sharpe_ratio'] > 0
+
+
+def test_sharpe_ratio_single_trade_is_none(single_trade):
+    """単一トレードではSharpe比がNone（標準偏差0のため）"""
+    by_strategy = strategy_attribution.aggregate_by_strategy(single_trade)
+
+    data = by_strategy['volscale_sma']
+    assert data['sharpe_ratio'] is None
+
+
+def test_sharpe_ratio_negative():
+    """損失が多い戦略ではSharpe比が負"""
+    trades = [
+        create_mock_trade(net_pnl_jpy=-200.0, code='A'),
+        create_mock_trade(net_pnl_jpy=-100.0, code='B'),
+        create_mock_trade(net_pnl_jpy=50.0, code='C'),
+    ]
+    by_strategy = strategy_attribution.aggregate_by_strategy(trades)
+
+    data = by_strategy['volscale_sma']
+    # avg_pnl = (-200 - 100 + 50) / 3 = -83.33 → sharpe < 0
+    assert data['sharpe_ratio'] is not None
+    assert data['sharpe_ratio'] < 0
+
+
+def test_sharpe_ratio_in_json_output(sample_trades):
+    """JSON出力にsharpe_ratioキーが含まれる"""
+    by_strategy = strategy_attribution.aggregate_by_strategy(sample_trades)
+    matrix = strategy_attribution.market_strategy_matrix(sample_trades)
+    momentum = strategy_attribution.momentum_analysis(sample_trades)
+    worst = strategy_attribution.worst_trades(sample_trades)
+
+    result = strategy_attribution.format_json_report(by_strategy, matrix, momentum, worst)
+
+    # volscale_sma には sharpe_ratio が含まれる
+    volscale = result['strategy_summary']['volscale_sma']
+    assert 'sharpe_ratio' in volscale
+    assert volscale['sharpe_ratio'] is not None
+
+    # monthly_momentum（1件のみ）は sharpe_ratio が None
+    monthly = result['strategy_summary']['monthly_momentum']
+    assert 'sharpe_ratio' in monthly
+    assert monthly['sharpe_ratio'] is None
+
+
+def test_sharpe_ratio_equals_avg_over_stdev(sample_trades):
+    """Sharpe比 = avg_pnl / pnl_stdev の数値検証"""
+    by_strategy = strategy_attribution.aggregate_by_strategy(sample_trades)
+
+    # bb_rsi: pnl = [300, -100] → avg=100, stdev=282.84
+    bb_rsi = by_strategy['bb_rsi']
+    expected = bb_rsi['avg_pnl'] / bb_rsi['pnl_stdev']
+    assert abs(bb_rsi['sharpe_ratio'] - expected) < 1e-9
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

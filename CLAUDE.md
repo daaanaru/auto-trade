@@ -15,7 +15,8 @@
 - **マルチマーケット検証完了**: 日本株/米国株/BTC/ゴールド
 - **ウォークフォワード検証完了**: Sony x Monthly Momentum WF Sharpe 1.99（最高評価）
 - **全市場統合スクリーナー稼働中**: 日本株/米国株/BTC/ゴールド/FXを2時間ごとにスキャン（市場時間フィルター付き）
-- **30万円ペーパートレード稼働中（3/13リセット、4/12期限・残11日）**: 5市場対応。**現在5ポジション（ETH/三菱商事/JT/三菱UFJ/BTC）・現金248,259円・累計139件決済(勝率52.5%)**。bb_rsi停止+VolScale枠拡大パッケージは上様承認待ち18日目。最優秀戦略: vol_div（勝率100%、+1,728円）
+- **30万円ペーパートレード稼働中（3/13リセット、4/12期限・残2日）**: 5市場対応。**確定損益-¥10,542・総資産¥289,400（-3.53%）・勝率51.7%（146回）・フラット（0ポジション）**。bb_rsi停止承認待ち27日目。最優秀戦略: vol_div（勝率100%、Sharpe 1.85）。**【上様判断待ち】影綱が「条件付き卒業（vol_div単独）」を推奨（4/10 09:50レポート参照）**
+- **戦略別Sharpe比（4/6追加）**: strategy_attribution.py にSharpe比計算追加。vol_div(1.85)/volscale_sma(-0.08)/bb_rsi(-0.23)/monthly(-0.23)。bb_rsiが損失全体67%の主因確定
 - **VolScale戦略（動的SMA）稼働中（3/15開始、3/16アルトコインWF検証完了）**: ボラ応じたSMA期間伸縮。**新規エントリーはBTC+ETHのみ**（XRP/XLMはWF不合格→既存ポジション自然決済中）。仮想通貨決済8件(+1,205円)の主力源泉。ETH WF Sharpe 0.52（合格）
 - **市場別ファンダメンタル分析（3/13追加）**: 株:PER/PBR, FX:DXY/金利差, BTC:半減期サイクル, Gold:VIX/実質金利
 - **ショート+レバレッジ対応済み（3/10追加）**: SELLシグナル+ファンダスコア<0でショートエントリー、レバレッジ2倍
@@ -23,6 +24,7 @@
 - **自動卒業判定**: graduation_checker.py で毎日9:30に条件チェック
 - **統合ダッシュボード**: dashboard.py で全市場の状況を一覧表示
 - **戦略別パフォーマンス分析（4/1追加）**: strategy_attribution.py で戦略別集計・市場マトリクス・モメンタム比較・最悪TOP5を自動生成（テスト36件全パス）
+- **戦略別アラートシステム（4/6完成）**: strategy_alert.py で4種アラート検出（LOSS_EXCEEDED/SHARPE_LOW/WIN_RATE_DROP/NO_TRADE）。テスト31件全パス。本番稼働中（5件アラート検出）
 - **実弾投入レイヤー準備完了**: bitFlyer ccxt経由（live_trade.py、DRY_RUNデフォルト）
 
 ### 対応市場
@@ -46,6 +48,8 @@
 | **dashboard.py** | **統合ダッシュボード（rich表示）** |
 | **market_fundamental.py** | **市場別ファンダメンタル分析（株:PER/PBR, FX:DXY/金利差, BTC:半減期, Gold:VIX/実質金利）** |
 | **market_hours.py** | **市場時間フィルター（閉場中のスキャン抑制）** |
+| **strategy_alert.py** | **戦略別アラートシステム（4種検出・Markdown/JSON出力・Discord通知対応）** |
+| **pnl_snapshot.py** | **損益スナップショット生成（人間向け/JSON/Markdown）** |
 | engine.py | バックテストエンジン + DataFetcher（YFinance/CCXT） |
 | trade_engine.py | TradeEngine基底クラス（Paper/Live共通インターフェース） |
 | optimize.py | Optunaパラメータ最適化 + ウォークフォワード検証 |
@@ -122,30 +126,81 @@
 - 卒業条件をクリアした戦略で少額実弾投入
 - 5市場×複数戦略のポートフォリオ運用
 
-## 次の一歩（4/4 04:32更新 — 残8日で決着フェーズ）
+## 次の一歩（4/12更新 — 2本柱 GTAA + Turtle 本実装完了）
 
-### CRITICAL — 上様判断待ち（火急度順）
-1. **卒業期限延長判断（4/5期限・明日までに決断必須）** — Sharpe -3.20→要0.5+。残8日で数学的に達成困難。**4/5までに判断が必須**
-   - 選択肢: A)4/26延長（推奨・確率89.6%） B)条件緩和(Sharpe→0.0・78.3%) C)戦略別卒業
-   - 外部要因注記: 中東紛争激化（2026-04-03〜）でBTC/ETH等リスク資産が急落。Extreme Fear。外部ショック期間として延長根拠に加算できる
-2. **bb_rsi停止承認（上様承認待ち23日目・火急）** — 損失の76%がbb_rsi由来。config.json変更の承認要
-3. ~~**jquants-crawler .env修正（上様操作要）**~~ — ✅ **復旧済み（影綱 4/4 13:35確認）**。XMLタグは既に削除済み。jp_fullmarket_scanner.py（yfinance経由）が正常稼働中（本日朝96銘柄検出）
+### 【大転換2 2026-04-12】 攻めの Turtle System 2 も PoC 合格 → 本実装完了
+**GTAA だけでは上様の「攻め」の意向を満たせぬため、攻めの R&D を継続。**
+**100+ variant 検証を経て 55/20 Turtle System 2 が Crypto + Gold で新3原則突破。**
 
-### 経過観察
-4. **position-monitor** — unified-paper-tradeの--monitorモードに統合済み。形式的STALE（実務問題なし）
-5. **scalper.py launchd有効化（上様操作要）** — plist作成・syntax check合格済み（3/30）
+- Turtle PoC: 175取引・勝率54.3%・WF 4/4合格・+$53,803 (LIVE_TRADE_DESIGN.md §21)
+- GTAA + Turtle の2本柱構成で運用する
+- 2本柱の期待値: GTAA CAGR 8% + Turtle CAGR 2% + 低相関でSharpe向上
+- 月35分の代表負担で回る放置構造
 
-### 完了済み
-- ~~graduation-checker復旧~~ — ✅復旧確認（4/1 14:35）
-- ~~graduation_checker ROIバグ修正~~ — ✅完了（3/30）
-- ~~卒業軌道シミュレーター~~ — ✅完了（4/1 01:23）
+### 2本柱 実装成果物 (Phase 3 完了 4/12)
 
-### 現在の損益（4/4 15:49時点）
-- 総資産: ¥288,569 (-3.81%) / ポジション: 2件（三菱商事+JT）
-- 勝率: 51.4%（144件決済）/ 確定損益: -11,645円 / RR比: 0.62
-- ローリングSharpe: -3.20（目標≥0.5 → FAIL） / 最大DD: -6.01%（OK）
-- 卒業期限: 4/12（残り8日）/ レバレッジ: 2倍
-- vol_div: 唯一黒字（+1,728円、4件・サンプル少）/ bb_rsi: -6,971円（損益の60%）
+| 柱 | 戦略 | 実装ファイル | 判定頻度 | launchd |
+|---|---|---|---|---|
+| **守り** | GTAA (Meb Faber) | `gtaa_live.py` + `gtaa_poc.py` | 月1回 | `com.danaru.gtaa-monthly.plist` ✓ |
+| **攻め** | Turtle System 2 (55/20) | `turtle_live.py` + `mtt_4h_trend.py` | 日次 | `com.danaru.turtle-daily.plist` ✓ |
+
+### CRITICAL — Phase 2 上様への依頼 (統合リスト)
+
+Stage 1 開始 (2026-06-01) までに:
+
+1. **米ETF売買口座** — SBI/マネックス/楽天 いずれかで外国株設定を有効化
+2. **暗号通貨口座** — 既存の bitFlyer でOK（追加不要）
+3. **Discord Webhook URL 更新** — 現在 403 Forbidden。新 URL を `.env` or `~/.zshrc` に設定
+4. **launchd 有効化 (4/28頃)**:
+   ```bash
+   cp /Users/mm16/だーなるAIカンパニー/50_ラボ/auto-trade/com.danaru.gtaa-monthly.plist ~/Library/LaunchAgents/
+   cp /Users/mm16/だーなるAIカンパニー/50_ラボ/auto-trade/com.danaru.turtle-daily.plist ~/Library/LaunchAgents/
+   launchctl load ~/Library/LaunchAgents/com.danaru.gtaa-monthly.plist
+   launchctl load ~/Library/LaunchAgents/com.danaru.turtle-daily.plist
+   ```
+5. **入金 (5月末までに)**: 米ETF ¥130K + bitFlyer ¥70K = 合計 **¥200K** (Stage 1 分)
+6. **Stage 0 DRY_RUN 観察** — 5月中は通知と判定ロジックを監視
+
+### Stage 進行計画 (2026年)
+
+| Stage | 期間 | GTAA | Turtle Crypto | Turtle GLD | 合計 |
+|---|---|---|---|---|---|
+| Stage 0 | 5月 | 仮想10K | 仮想7K | 仮想3K | DRY_RUN |
+| **Stage 1** | **6-7月** | **¥100K** | **¥70K** | **¥30K** | **¥200K** |
+| Stage 2 | 8-10月 | ¥300K | ¥200K | ¥100K | ¥600K |
+| Stage 3 | 11月〜 | ¥1,000K | ¥500K | ¥200K | ¥1,700K |
+
+### 完了済み（4/11-12）
+- ✅ 100+ variant 検証 (MTT Attack 4, Variant A, 7 variants runner, 1d sweep, multi-asset)
+- ✅ bb_rsi 完全停止
+- ✅ GTAA (Meb Faber) 5+13 両方合格
+- ✅ Danaru Turtle (55/20 Donchian on Crypto+Gold) 新3原則+WF完全合格
+- ✅ gtaa_live.py + turtle_live.py 本実装
+- ✅ 両 launchd plist 作成・plutil 検証
+- ✅ LIVE_TRADE_DESIGN.md §20-21 本実装章追加
+- ✅ 両スクリプトの DRY_RUN 動作確認
+
+### 旧凍結判断
+- signal-based 短期戦略 (vol_div/volscale/bb_rsi/monthly/etc.) は **引き続き保留**
+- ペーパートレードは **無期限停止** (R&D検証は backtest_live_design.py と gtaa_poc.py と mtt_4h_trend.py が継承)
+- `FREEZE_ASSESSMENT.md` は **凍結未執行**
+- 旧卒業期限4/12は概念的に不要 (GTAA と Turtle は卒業期限無関係)
+
+### 残留課題（優先度低）
+1. position-monitor クラッシュループ — paper停止で優先度低
+2. jquants-crawler 全件失敗継続 — 使用予定なし
+3. bb_rsi — 既に unified_screener.py から除去済
+4. entry_validator LLMパース問題 — 本多智房の edit で改善見込、paper停止で優先度低
+
+### 過去の検証タイムライン (参考)
+- **2026-03-04〜04-11**: ペーパートレード5週間 127取引 -3.93%
+- **2026-04-11**: 既存9戦略 × BTC × 3時間軸 = 24通り全滅、JP native 12銘柄全滅、Pair Trading 4ペア全滅
+- **2026-04-11**: GitHub世界調査・arxiv 2512.12924 発見・GTAA 合格
+- **2026-04-11〜12**: MTT 100+ variants 検証・Turtle 55/20 合格
+- **2026-04-12**: 両柱本実装完了 (本ドキュメント)
+
+## 修正履歴（4/6 20:06）
+- **strategy_alert.py 実装完成**: 4種アラート検出（LOSS_EXCEEDED/SHARPE_LOW/WIN_RATE_DROP/NO_TRADE）。環境変数による動的閾値設定。Discord統合。テスト31件全パス。本番稼働開始（本日5件アラート検出）
 
 ## 修正履歴（3/30 12:01）
 - **graduation_checker ROIバグ修正**: Paper Sharpe |50|超の異常値検出ガード追加。修正前BT乖離5113%→修正後Sharpe差3.11（正常値）。卒業判定が正しく機能するように
