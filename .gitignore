@@ -45,3 +45,8 @@ keys.json
 scalp_portfolio.json
 scalp_trade_log.json
 validation_shadow_log.json
+gtaa_live_log.json
+gtaa_live_state.json
+turtle_live_log.json
+turtle_live_state.json
+daily_investment_review.md

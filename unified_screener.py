@@ -72,15 +72,9 @@ MARKET_CONFIG = {
         "data_period": "3mo",
         "fetch_delay": 0.5,
     },
-    "us": {
-        "name": "米国株",
-        "strategy_key": "bb_rsi",
-        "strategy_class": BBRSIComboStrategy,
-        "tickers_file": "us_stock_tickers.json",
-        "tickers_loader": "ticker_list",  # {"tickers": [...]} 形式
-        "data_period": "3mo",
-        "fetch_delay": 0.3,
-    },
+    # us/gold/fx は bb_rsi 依存のため 2026-04-11 方針転換で停止
+    # (全損失の67%をbb_rsiが占めた。LIVE_TRADE_DESIGN.md §17参照)
+    # 新戦略がR&Dで確定次第、DISABLED_MARKETSから復活させる
     "btc": {
         "name": "仮想通貨",
         "strategy_key": "vol_div",
@@ -97,6 +91,21 @@ MARKET_CONFIG = {
         "data_period": "1y",  # Volume Divergenceは長期データが必要
         "fetch_delay": 0.3,
     },
+}
+
+# 停止中の市場定義（bb_rsi依存のため 2026-04-11 停止）
+# 新戦略がR&Dで確定次第、MARKET_CONFIG に戻す
+DISABLED_MARKETS = {
+    "us": {
+        "name": "米国株",
+        "strategy_key": "bb_rsi",
+        "strategy_class": BBRSIComboStrategy,
+        "tickers_file": "us_stock_tickers.json",
+        "tickers_loader": "ticker_list",
+        "data_period": "3mo",
+        "fetch_delay": 0.3,
+        "disabled_reason": "bb_rsi全損失67%原因。2026-04-11方針転換で停止",
+    },
     "gold": {
         "name": "ゴールド",
         "strategy_key": "bb_rsi",
@@ -109,6 +118,7 @@ MARKET_CONFIG = {
         ],
         "data_period": "3mo",
         "fetch_delay": 0.3,
+        "disabled_reason": "bb_rsi依存。2026-04-11方針転換で停止",
     },
     "fx": {
         "name": "外国為替",
@@ -118,6 +128,7 @@ MARKET_CONFIG = {
         "tickers_loader": "ticker_list",
         "data_period": "3mo",
         "fetch_delay": 0.3,
+        "disabled_reason": "bb_rsi依存。2026-04-11方針転換で停止",
     },
 }
 

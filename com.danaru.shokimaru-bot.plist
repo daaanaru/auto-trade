@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.danaru.shokimaru-bot</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/mm16/だーなるAIカンパニー/50_ラボ/auto-trade/shokimaru_bot.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/mm16/だーなるAIカンパニー/50_ラボ/auto-trade</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/mm16/だーなるAIカンパニー/50_ラボ/auto-trade/logs/shokimaru-bot.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/mm16/だーなるAIカンパニー/50_ラボ/auto-trade/logs/shokimaru-bot_error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/mm16</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist>

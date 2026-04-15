@@ -91,6 +91,12 @@ def aggregate_by_strategy(closed_trades):
         else:
             data['pnl_stdev'] = 0.0
 
+        # Sharpe比（簡易版: avg_pnl / pnl_stdev、stdev=0 または件数1の場合は None）
+        if data['pnl_stdev'] > 0:
+            data['sharpe_ratio'] = data['avg_pnl'] / data['pnl_stdev']
+        else:
+            data['sharpe_ratio'] = None
+
     return by_strategy
 
 
@@ -192,14 +198,15 @@ def format_text_report(by_strategy, matrix, momentum, worst):
     # セクション1: 戦略別集計
     lines.append("【戦略別集計】")
     lines.append("-" * 80)
-    lines.append(f"{'戦略':<20} {'件数':>6} {'勝率':>8} {'平均損益':>12} {'合計損益':>12} {'平均保有時間':>12}")
-    lines.append("-" * 80)
+    lines.append(f"{'戦略':<20} {'件数':>6} {'勝率':>8} {'平均損益':>12} {'合計損益':>12} {'平均保有時間':>12} {'Sharpe':>8}")
+    lines.append("-" * 90)
 
     for strategy in sorted(by_strategy.keys()):
         data = by_strategy[strategy]
+        sharpe_str = f"{data['sharpe_ratio']:>7.2f}" if data['sharpe_ratio'] is not None else "    N/A"
         lines.append(
             f"{strategy:<20} {data['count']:>6} {data['win_rate']:>7.1f}% "
-            f"{data['avg_pnl']:>11.2f}円 {data['total_pnl']:>11.2f}円 {data['avg_holding_hours']:>11.1f}h"
+            f"{data['avg_pnl']:>11.2f}円 {data['total_pnl']:>11.2f}円 {data['avg_holding_hours']:>11.1f}h {sharpe_str}"
         )
 
     lines.append("")
@@ -271,7 +278,8 @@ def format_json_report(by_strategy, matrix, momentum, worst):
             'total_pnl': round(data['total_pnl'], 2),
             'avg_pnl': round(data['avg_pnl'], 2),
             'pnl_stdev': round(data['pnl_stdev'], 2),
-            'avg_holding_hours': round(data['avg_holding_hours'], 2)
+            'avg_holding_hours': round(data['avg_holding_hours'], 2),
+            'sharpe_ratio': round(data['sharpe_ratio'], 3) if data['sharpe_ratio'] is not None else None
         }
 
     # マトリクスの整形
