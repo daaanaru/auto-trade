@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.danaru.discord-bot</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/mm16/danaru_co/50_ラボ/auto-trade/discord_bot.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/mm16/danaru_co</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/mm16/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>/Users/mm16</string>
+        <key>TERM</key>
+        <string>xterm-256color</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/mm16/danaru_co/50_ラボ/auto-trade/logs/discord-bot-stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/mm16/danaru_co/50_ラボ/auto-trade/logs/discord-bot-stderr.log</string>
+
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
+</dict>
+</plist>

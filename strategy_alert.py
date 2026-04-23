@@ -255,7 +255,7 @@ class StrategyAlertSystem:
 
     def send_discord_alert(self) -> bool:
         """Discord に通知（DISCORD_WEBHOOK_URL 環境変数がある場合のみ）"""
-        webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+        webhook_url = os.environ.get('DISCORD_WEBHOOK_URL') or os.environ.get('DISCORD_WEBHOOK_YORIAI')
         if not webhook_url:
             return False
 

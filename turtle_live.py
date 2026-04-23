@@ -298,7 +298,7 @@ def evaluate_asset(asset: dict, state: dict) -> dict:
 # ==============================================================
 
 def send_discord(message: str) -> bool:
-    webhook = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("TURTLE_DISCORD_WEBHOOK")
+    webhook = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("TURTLE_DISCORD_WEBHOOK") or os.getenv("DISCORD_WEBHOOK_YORIAI")
     if not webhook:
         print("  ⚠️ Discord Webhook 未設定")
         return False
