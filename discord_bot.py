@@ -76,12 +76,32 @@ client = discord.Client(intents=intents)
 # launchd環境用のPATH
 CLAUDE_ENV = {
     "HOME": os.path.expanduser("~"),
-    "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "PATH": f"{os.path.expanduser('~')}/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
     "TERM": "xterm-256color",
 }
 
 # コンテキスト履歴上限
 MAX_HISTORY = 20
+
+# claude -p タイムアウト（秒）
+CLAUDE_TIMEOUT = int(os.getenv("CLAUDE_TIMEOUT", "120"))
+
+# Super App APIタイムアウト（秒）
+API_TIMEOUT = int(os.getenv("API_TIMEOUT", "10"))
+
+# Discordメッセージ長上限（2000が公式上限、マージン100）
+MSG_MAX_LEN = 1900
+
+# リスト表示件数
+LIST_DISPLAY_LIMIT = 15
+BOOKS_DISPLAY_LIMIT = 5
+
+# 書記丸チャンネルID（名前ベース判定のすり抜け防止。カンマ区切りで複数指定可）
+# Discord開発者モードでチャンネルを右クリック→「IDをコピー」で取得
+_shokimaru_ids_raw = os.getenv("SHOKIMARU_CHANNEL_IDS", "")
+SHOKIMARU_CHANNEL_IDS: set[int] = {
+    int(x.strip()) for x in _shokimaru_ids_raw.split(",") if x.strip().isdigit()
+}
 
 # インメモリ会話履歴: {thread_or_channel_id: [{"role": "user"|"assistant", "content": "..."}]}
 _history: dict[str, list[dict]] = {}
@@ -106,6 +126,33 @@ _ALLOWED_CMD_PREFIXES = (
 # ユーティリティ
 # =============================================================================
 
+def _extract_json(text: str) -> Optional[dict]:
+    """LLM応答からJSONオブジェクトを抽出する。ネストされたJSONにも対応。"""
+    # まずコードブロック内のJSONを探す
+    code_match = re.search(r'```(?:json)?\s*(\{[\s\S]*?\})\s*```', text)
+    if code_match:
+        try:
+            return json.loads(code_match.group(1))
+        except json.JSONDecodeError:
+            pass
+    # 次に最初の { から対応する } を探す（ネスト対応）
+    start = text.find('{')
+    if start == -1:
+        return None
+    depth = 0
+    for i in range(start, len(text)):
+        if text[i] == '{':
+            depth += 1
+        elif text[i] == '}':
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start:i + 1])
+                except json.JSONDecodeError:
+                    return None
+    return None
+
+
 def run_command(cmd: str, timeout: int = 30) -> str:
     """シェルコマンドを実行して出力を返す。ホワイトリスト方式。"""
     if not any(cmd.strip().startswith(prefix) for prefix in _ALLOWED_CMD_PREFIXES):
@@ -120,7 +167,7 @@ def run_command(cmd: str, timeout: int = 30) -> str:
         return f"(エラー: {e})"
 
 
-def run_claude(prompt: str, timeout: int = 120) -> str:
+def run_claude(prompt: str, timeout: int = CLAUDE_TIMEOUT) -> str:
     """claude -p でプロンプトを実行して結果を返す。stream-json方式でテキストを組み立てる。"""
     env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
     env.update(CLAUDE_ENV)
@@ -148,11 +195,11 @@ def run_claude(prompt: str, timeout: int = 120) -> str:
         output = "".join(texts).strip()
         if result.stderr.strip():
             logger.warning("claude stderr: %s", result.stderr.strip()[:200])
-        if len(output) > 1900:
-            output = output[:1900] + "\n...(省略)"
+        if len(output) > MSG_MAX_LEN:
+            output = output[:MSG_MAX_LEN] + "\n...(省略)"
         return output or "(応答なし)"
     except subprocess.TimeoutExpired:
-        return "(タイムアウト: 120秒超過)"
+        return f"(タイムアウト: {timeout}秒超過)"
     except FileNotFoundError:
         return "(claude コマンドが見つかりません)"
     except Exception as e:
@@ -173,7 +220,7 @@ def _super_app_post(plugin: str, path: str, data: dict) -> Optional[dict]:
             url, data=json.dumps(data).encode("utf-8"),
             headers={"Content-Type": "application/json"}, method="POST",
         )
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:
             return json.loads(resp.read())
     except Exception as e:
         logger.warning("Super App POST失敗 (%s): %s", url, e)
@@ -190,7 +237,7 @@ def _super_app_get(plugin: str, path: str = "") -> Optional[list]:
         url = f"{SUPER_APP_URL}/api/p/{plugin}/{path}".rstrip("/")
     try:
         req = urllib.request.Request(url, method="GET")
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:
             return json.loads(resp.read())
     except Exception as e:
         logger.warning("Super App GET失敗 (%s): %s", url, e)
@@ -206,7 +253,7 @@ def _super_app_patch(plugin: str, path: str, data: dict) -> Optional[dict]:
             url, data=json.dumps(data).encode("utf-8"),
             headers={"Content-Type": "application/json"}, method="PATCH",
         )
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=API_TIMEOUT) as resp:
             return json.loads(resp.read())
     except Exception as e:
         logger.warning("Super App PATCH失敗 (%s): %s", url, e)
@@ -219,7 +266,8 @@ def _super_app_patch(plugin: str, path: str, data: dict) -> Optional[dict]:
 
 def memory_search(query: str, limit: int = 3) -> list[dict]:
     """長期記憶DBからキーワードで過去会話要約を検索する。"""
-    result = _super_app_get("memory", f"search?q={query}&limit={limit}")
+    from urllib.parse import quote
+    result = _super_app_get("memory", f"search?q={quote(query)}&limit={limit}")
     return result if isinstance(result, list) else []
 
 
@@ -228,24 +276,31 @@ def memory_create_conversation(thread_id: str, channel: str) -> Optional[str]:
     result = _super_app_post("memory", "conversations", {
         "thread_id": thread_id, "channel": channel,
     })
-    return result.get("id") if result else None
+    if not result:
+        logger.warning("長期記憶: 会話レコード作成失敗 (thread=%s, channel=%s)", thread_id, channel)
+        return None
+    return result.get("id")
 
 
 def memory_close_conversation(conv_id: str, summary: str, keywords: str):
     """会話をクローズし、要約とキーワードを保存する。"""
-    _super_app_patch("memory", f"conversations/{conv_id}", {
+    result = _super_app_patch("memory", f"conversations/{conv_id}", {
         "status": "closed",
         "summary": summary,
         "keywords": keywords,
         "closed_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
     })
+    if not result:
+        logger.warning("長期記憶: 会話クローズ失敗 (conv_id=%s)", conv_id)
 
 
 def memory_save_message(conv_id: str, role: str, content: str):
     """メッセージを長期記憶DBに保存する。"""
-    _super_app_post("memory", "messages", {
+    result = _super_app_post("memory", "messages", {
         "conversation_id": conv_id, "role": role, "content": content[:2000],
     })
+    if not result:
+        logger.warning("長期記憶: メッセージ保存失敗 (conv_id=%s, role=%s)", conv_id, role)
 
 
 # =============================================================================
@@ -253,10 +308,10 @@ def memory_save_message(conv_id: str, role: str, content: str):
 # =============================================================================
 
 def _get_context_key(message: discord.Message) -> str:
-    """メッセージからコンテキストキーを取得する。スレッド内ならスレッドID、そうでなければチャンネルID。"""
+    """メッセージからコンテキストキーを取得する。スレッド内ならthread_ID、そうでなければch_ID。"""
     if isinstance(message.channel, discord.Thread):
-        return str(message.channel.id)
-    return str(message.channel.id)
+        return f"thread_{message.channel.id}"
+    return f"ch_{message.channel.id}"
 
 
 def _get_history(key: str) -> list[dict]:
@@ -669,23 +724,21 @@ async def handle_wishlist(message: discord.Message, clean: str):
 JSONのみ返してください。"""
 
         result = await asyncio.to_thread(run_claude, extract_prompt, 30)
-        try:
-            match = re.search(r'\{[^}]+\}', result)
-            if match:
-                data = json.loads(match.group())
-                if data.get("type") == "wishlist":
-                    data["source"] = "discord"
-                    resp = await asyncio.to_thread(_super_app_post, "wishlist", "", data)
-                    if resp:
-                        price_str = f" ¥{data.get('price', 0):,}" if data.get("price") else ""
-                        await message.channel.send(f"登録しました: {data.get('name', '?')}{price_str} [{data.get('priority', 'medium')}]")
-                        existing = await asyncio.to_thread(_super_app_get, "wishlist")
-                        if existing and isinstance(existing, list) and len(existing) > 1:
-                            total = sum(item.get("price", 0) for item in existing)
-                            await message.channel.send(f"欲しいものリスト: {len(existing)}件 / 合計 ¥{total:,}")
-                        return
-        except (json.JSONDecodeError, AttributeError):
-            pass
+        data = _extract_json(result)
+        if data and data.get("type") == "wishlist":
+            data["source"] = "discord"
+            resp = await asyncio.to_thread(_super_app_post, "wishlist", "", data)
+            if resp:
+                price_str = f" ¥{data.get('price', 0):,}" if data.get("price") else ""
+                await message.channel.send(f"登録しました: {data.get('name', '?')}{price_str} [{data.get('priority', 'medium')}]")
+                existing = await asyncio.to_thread(_super_app_get, "wishlist")
+                if existing and isinstance(existing, list) and len(existing) > 1:
+                    total = sum(item.get("price", 0) for item in existing)
+                    await message.channel.send(f"欲しいものリスト: {len(existing)}件 / 合計 ¥{total:,}")
+                return
+            else:
+                await message.channel.send("(保存に失敗しました。Super Appが起動しているか確認してください)")
+                return
 
     # 2. リスト表示のみ要求
     list_keywords = ("リスト", "一覧", "見せて", "何件", "全部")
@@ -694,7 +747,7 @@ JSONのみ返してください。"""
         if existing and isinstance(existing, list):
             lines = [f"**欲しいものリスト ({len(existing)}件)**"]
             total = 0
-            for item in existing[:15]:
+            for item in existing[:LIST_DISPLAY_LIMIT]:
                 price = item.get("price", 0)
                 total += price
                 price_str = f"¥{price:,}" if price else "未定"
@@ -714,7 +767,7 @@ JSONのみ返してください。"""
             total += item.get("price", 0)
         wishlist_summary = "\n".join(
             f"- {w.get('name', '?')} ¥{w.get('price', 0):,} [{w.get('priority', '?')}]"
-            for w in existing[:15]
+            for w in existing[:LIST_DISPLAY_LIMIT]
         )
 
     kakeibo_data = await asyncio.to_thread(_super_app_get, "kakeibo")
@@ -848,18 +901,16 @@ async def handle_tsundoku(message: discord.Message, clean: str):
 
 メッセージ: {clean}"""
         result = await asyncio.to_thread(run_claude, extract_prompt, 30)
-        try:
-            match = re.search(r'\{[^}]+\}', result)
-            if match:
-                data = json.loads(match.group())
-                if data.get("type") == "book":
-                    data["source"] = "discord"
-                    resp = await asyncio.to_thread(_super_app_post, "books", "", data)
-                    if resp:
-                        await message.channel.send(f"積読に追加: {data.get('title', '?')}")
-                        return
-        except (json.JSONDecodeError, AttributeError):
-            pass
+        data = _extract_json(result)
+        if data and data.get("type") == "book":
+            data["source"] = "discord"
+            resp = await asyncio.to_thread(_super_app_post, "books", "", data)
+            if resp:
+                await message.channel.send(f"積読に追加: {data.get('title', '?')}")
+                return
+            else:
+                await message.channel.send("(保存に失敗しました。Super Appが起動しているか確認してください)")
+                return
 
     # リスト表示のみ要求
     list_only_keywords = ("リスト", "一覧", "見せて", "何冊")
@@ -924,19 +975,17 @@ async def handle_wantbook(message: discord.Message, clean: str):
 
 メッセージ: {clean}"""
         result = await asyncio.to_thread(run_claude, extract_prompt, 30)
-        try:
-            match = re.search(r'\{[^}]+\}', result)
-            if match:
-                data = json.loads(match.group())
-                if data.get("type") == "book":
-                    data["source"] = "discord"
-                    resp = await asyncio.to_thread(_super_app_post, "books", "", data)
-                    if resp:
-                        price_str = f" ¥{data.get('price', 0):,}" if data.get("price") else ""
-                        await message.channel.send(f"読みたい本に追加: {data.get('title', '?')}{price_str}")
-                        return
-        except (json.JSONDecodeError, AttributeError):
-            pass
+        data = _extract_json(result)
+        if data and data.get("type") == "book":
+            data["source"] = "discord"
+            resp = await asyncio.to_thread(_super_app_post, "books", "", data)
+            if resp:
+                price_str = f" ¥{data.get('price', 0):,}" if data.get("price") else ""
+                await message.channel.send(f"読みたい本に追加: {data.get('title', '?')}{price_str}")
+                return
+            else:
+                await message.channel.send("(保存に失敗しました。Super Appが起動しているか確認してください)")
+                return
 
     # 2. リスト表示のみ要求
     list_keywords = ("リスト", "一覧", "見せて", "何冊", "全部")
@@ -945,7 +994,7 @@ async def handle_wantbook(message: discord.Message, clean: str):
         if books_data and isinstance(books_data, list):
             lines = [f"**読みたい本リスト ({len(books_data)}冊)**"]
             total = sum(b.get("price", 0) for b in books_data)
-            for b in books_data[:15]:
+            for b in books_data[:LIST_DISPLAY_LIMIT]:
                 price = f"¥{b.get('price', 0):,}" if b.get("price") else "未定"
                 lines.append(f"- {b.get('title', '?')} ({price})")
             lines.append(f"\n合計: ¥{total:,}")
@@ -1031,12 +1080,8 @@ def _extract_and_save_kakeibo(content: str) -> Optional[str]:
 JSONのみ返してください。"""
 
     result = run_claude(prompt, 30)
-    try:
-        match = re.search(r'\{[^}]+\}', result)
-        if not match:
-            return None
-        data = json.loads(match.group())
-    except (json.JSONDecodeError, AttributeError):
+    data = _extract_json(result)
+    if not data:
         return None
 
     dtype = data.get("type", "none")
@@ -1077,22 +1122,22 @@ async def _close_and_summarize(ctx_key: str, channel_name: str):
 JSONのみ返してください。"""
 
     result = await asyncio.to_thread(run_claude, summary_prompt, 30)
-    try:
-        match = re.search(r'\{[^}]+\}', result)
-        if match:
-            data = json.loads(match.group())
-            conv_id = await asyncio.to_thread(
-                memory_create_conversation, ctx_key, channel_name
+    data = _extract_json(result)
+    if data:
+        conv_id = await asyncio.to_thread(
+            memory_create_conversation, ctx_key, channel_name
+        )
+        if conv_id:
+            await asyncio.to_thread(
+                memory_close_conversation, conv_id,
+                data.get("summary", ""),
+                data.get("keywords", ""),
             )
-            if conv_id:
-                await asyncio.to_thread(
-                    memory_close_conversation, conv_id,
-                    data.get("summary", ""),
-                    data.get("keywords", ""),
-                )
-                logger.info("会話要約保存: %s (keywords: %s)", conv_id, data.get("keywords", ""))
-    except (json.JSONDecodeError, AttributeError) as e:
-        logger.warning("要約生成失敗: %s", e)
+            logger.info("会話要約保存: %s (keywords: %s)", conv_id, data.get("keywords", ""))
+        else:
+            logger.warning("会話レコード作成失敗: ctx_key=%s", ctx_key)
+    else:
+        logger.warning("要約JSON抽出失敗: result=%s", result[:200])
 
 
 # =============================================================================
@@ -1103,6 +1148,17 @@ JSONのみ返してください。"""
 async def on_ready():
     logger.info("Discord Bot v2 ログイン完了: %s (ID: %s)", client.user, client.user.id)
 
+    # --- 起動時バリデーション ---
+    result = await asyncio.to_thread(_super_app_get, "kakeibo", "?limit=1")
+    if result is None:
+        logger.warning("⚠️ Super App (localhost:3000) に接続できません。データ系機能は無効です")
+    else:
+        logger.info("✅ Super App 接続OK")
+
+    if not SHOKIMARU_CHANNEL_IDS:
+        logger.warning("⚠️ SHOKIMARU_CHANNEL_IDS 未設定。名前方式+安全側フォールバックのみで防衛")
+    else:
+        logger.info("✅ 書記丸防衛ID: %s", SHOKIMARU_CHANNEL_IDS)
 
 
 @client.event
@@ -1114,20 +1170,54 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    # === 書記丸チャンネル最終防衛ライン（あらゆるキャッシュ問題を回避） ===
+    # === 書記丸チャンネル防衛（ID方式 + 名前方式 + 安全側フォールバック） ===
     ch = message.channel
+
+    # ① ID方式: チャンネルID or 親チャンネルIDが書記丸リストに含まれていたら即ブロック
+    if SHOKIMARU_CHANNEL_IDS:
+        _ch_id = ch.id
+        _parent_id = getattr(ch, "parent_id", None)
+        if _ch_id in SHOKIMARU_CHANNEL_IDS or (_parent_id and _parent_id in SHOKIMARU_CHANNEL_IDS):
+            logger.debug("書記丸ブロック(ID): ch=%s parent=%s", _ch_id, _parent_id)
+            return
+
+    # ② 名前方式: チャンネル名・親チャンネル名・カテゴリ名に"書記丸"を含むかチェック
     _names = []
+    _parent_resolved = False  # API fetchまたはキャッシュで親が確定するまでFalse
     if hasattr(ch, "name") and ch.name:
         _names.append(ch.name)
     if hasattr(ch, "parent") and ch.parent and hasattr(ch.parent, "name"):
         _names.append(ch.parent.name)
-    if hasattr(ch, "parent_id") and ch.parent_id:
+        _parent_resolved = True  # キャッシュから親名を取得できた
+
+    # スレッドの親が未キャッシュの場合はAPIで取得を試みる
+    if not _parent_resolved and hasattr(ch, "parent_id") and ch.parent_id:
         _p = client.get_channel(ch.parent_id)
+        if _p is None:
+            try:
+                _p = await client.fetch_channel(ch.parent_id)
+            except Exception:
+                logger.warning("書記丸防衛: 親チャンネルfetch失敗 parent_id=%s", ch.parent_id)
+                _p = None
         if _p and hasattr(_p, "name"):
             _names.append(_p.name)
+            _parent_resolved = True
+
     if hasattr(ch, "category") and ch.category and hasattr(ch.category, "name"):
         _names.append(ch.category.name)
+
     if any("書記丸" in n for n in _names):
+        logger.debug("書記丸ブロック(名前): names=%s", _names)
+        return
+
+    # ③ 安全側フォールバック: スレッドなのに親チャンネルが解決できなかった場合は無視
+    #    （書記丸チャンネル内スレッドのすり抜け防止）
+    if isinstance(ch, discord.Thread) and not _parent_resolved:
+        logger.warning("書記丸防衛: スレッド親未解決のため無視 ch=%s(%s) names=%s", ch.name, ch.id, _names)
+        return
+
+    # ④ 他のBotがメンションされているメッセージは将軍がスキップ
+    if any(u.bot and u != client.user for u in message.mentions):
         return
 
     content = message.content.strip()
@@ -1183,7 +1273,7 @@ async def on_message(message: discord.Message):
         try:
             await handler(message, clean)
         except Exception as e:
-            logger.error("ハンドラ例外 [%s]: %s", channel_type, e)
+            logger.error("ハンドラ例外 [%s]: %s", channel_type, e, exc_info=True)
             await message.channel.send(f"(エラーが発生しました: {e})")
     else:
         # フォールバック: 将軍として応答

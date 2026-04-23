@@ -245,7 +245,7 @@ def compute_rebalance(state: dict, signal: dict) -> dict:
 def send_discord(message: str, webhook_url: str = None):
     """Discord Webhookに通知を送る。失敗してもクラッシュしない。"""
     if webhook_url is None:
-        webhook_url = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("GTAA_DISCORD_WEBHOOK")
+        webhook_url = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("GTAA_DISCORD_WEBHOOK") or os.getenv("DISCORD_WEBHOOK_YORIAI")
     if not webhook_url:
         print("  ⚠️ Discord Webhook未設定 (DISCORD_WEBHOOK_URL)")
         return False
